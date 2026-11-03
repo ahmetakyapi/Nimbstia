@@ -212,7 +212,7 @@ local function create()
     :deleteOnClose(false)
     :level(hs.drawing.windowLevels.screenSaver)
     :behavior(hs.drawing.windowBehaviors.canJoinAllSpaces + hs.drawing.windowBehaviors.fullScreenAuxiliary)
-  wv:url("file://" .. HTML)
+  wv:url("file://" .. HTML .. "?lang=" .. require("panel").lang()) -- i18n.js reads ?lang=
   M.webview = wv
 end
 

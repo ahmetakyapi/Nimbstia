@@ -10,6 +10,8 @@
 local HOME = os.getenv("HOME")
 
 local C = {
+  -- Interface language of the panels and the hub: "tr" (default) or "en".
+  language = "tr",
   -- ⌃⌥J opens "<jiraBase><KEY-123>". nil = the shortcut tells you to set it.
   jiraBase = nil,
   -- Status menu reachability check over the VPN: { name, host, port }. nil = no VPN/DEV indicator.
