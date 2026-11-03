@@ -4,22 +4,25 @@
 <meta charset="utf-8">
 <style>
 :root{
-  --bg:#f3f3f6; --bg2:#eeeef2; --pane:#ffffff; --ctl:#ffffff;
-  --line:rgba(17,17,20,.10); --line2:rgba(17,17,20,.16);
-  --text:#111114; --muted:#4d4d57; --faint:#6b6b76;
-  --accent:#0a6cff; --accent-fill:#0a6cff; --accent-hover:#0860e0; --accent-press:#0a52c2; --accent-ink:#0857cf;
-  --accent-soft:#e9f1ff; --accent-ring:rgba(10,108,255,.45); --on-accent:#ffffff;
-  --hover:rgba(17,17,20,.045); --chip:rgba(17,17,20,.06); --mark:rgba(255,190,0,.42);
-  --ok:#12703c; --danger:#c8281d; --warn:#9a5b00; --warn-soft:rgba(199,119,0,.14);
-  --tile-mix:10%; --tile-ring:26%;
-  --k-text:#5b6170; --k-code:#7a4cf0; --k-link:#0a6cff; --k-mail:#d23f7a; --k-path:#b86900; --k-number:#0b8a7f; --k-image:#d93a74; --k-shot:#17874a; --k-pin:#d9530a;
-  --shadow:0 30px 70px rgba(0,0,0,.28),0 0 0 .5px rgba(0,0,0,.22);
-  --ctl-shadow:0 1px 1px rgba(0,0,0,.04); --top:#f9f9fb; --seg-on:#ffffff; --ink-code:#6a38e0; --group-bg:#fafafc;
+  --pv-bg:#f2f4fa; --pv-card:#ffffff; --card-lift:0 1px 2px rgba(23,30,60,.06),0 0 0 1px rgba(23,30,60,.08);
+  --bg:#f6f7fb; --bg2:#eef1f8; --pane:#ffffff; --ctl:#ffffff;
+  --line:rgba(23,30,60,.09); --line2:rgba(23,30,60,.14);
+  --text:#0f1222; --muted:#4a5068; --faint:#636a80;
+  --accent:#2563ff; --accent-fill:#2563ff; --accent-hover:#1d4fe0; --accent-press:#1842c4; --accent-ink:#1d4fe0;
+  --accent-soft:#e8efff; --accent-ring:rgba(37,99,255,.45); --on-accent:#ffffff;
+  --accent-grad:linear-gradient(180deg,#2a68ff,#2563ff); --accent-shadow:0 2px 6px rgba(37,99,255,.28);
+  --hover:rgba(23,30,60,.05); --chip:rgba(23,30,60,.065); --mark:rgba(255,196,0,.42);
+  --ok:#166534; --danger:#be123c; --warn:#92400e; --warn-soft:rgba(217,119,6,.14);
+  --tile-mix:11%; --tile-ring:28%; --glyph:90%;
+  --k-text:#475569; --k-code:#7c3aed; --k-link:#2563ff; --k-mail:#db2777; --k-path:#d97706; --k-number:#0d9488; --k-image:#e11d48; --k-shot:#16a34a; --k-pin:#ea580c;
+  --shadow:0 30px 70px rgba(15,18,34,.28),0 0 0 .5px rgba(15,18,34,.22);
+  --ctl-shadow:0 1px 1px rgba(23,30,60,.05); --top:#fbfcff; --seg-on:#ffffff; --ink-code:#6d28d9; --group-bg:#f8f9fd;
   --font-ui:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",sans-serif;
   --font-display:"SF Pro Display",-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;
   --font-mono:"SF Mono",ui-monospace,Menlo,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --pv-bg:var(--pane); --pv-card:var(--bg); --card-lift:0 0 0 1px var(--line);
   --bg:#1e1e22; --bg2:#1a1a1e; --pane:#17171a; --ctl:rgba(255,255,255,.06);
   --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.16);
   --text:#f2f2f5; --muted:#bcbcc6; --faint:#92929d;
@@ -30,9 +33,10 @@
   --tile-mix:16%; --tile-ring:30%;
   --k-text:#9aa1b2; --k-code:#a98bff; --k-link:#5b9dff; --k-mail:#ff7aa8; --k-path:#f0a63a; --k-number:#2fc2b5; --k-image:#ff7aa6; --k-shot:#3ccf7a; --k-pin:#ff8a47;
   --shadow:0 30px 70px rgba(0,0,0,.6),0 0 0 .5px rgba(255,255,255,.13);
-  --ctl-shadow:none; --top:#26262c; --seg-on:rgba(255,255,255,.15); --ink-code:#b9a0ff; --group-bg:#1b1b1f;
+  --accent-grad:#2a6de0; --accent-shadow:0 1px 2px rgba(0,0,0,.35); --glyph:100%; --ctl-shadow:none; --top:#26262c; --seg-on:rgba(255,255,255,.15); --ink-code:#b9a0ff; --group-bg:#1b1b1f;
 }}
 :root[data-theme="dark"]{
+  --pv-bg:var(--pane); --pv-card:var(--bg); --card-lift:0 0 0 1px var(--line);
   --bg:#1e1e22; --bg2:#1a1a1e; --pane:#17171a; --ctl:rgba(255,255,255,.06);
   --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.16);
   --text:#f2f2f5; --muted:#bcbcc6; --faint:#92929d;
@@ -43,17 +47,36 @@
   --tile-mix:16%; --tile-ring:30%;
   --k-text:#9aa1b2; --k-code:#a98bff; --k-link:#5b9dff; --k-mail:#ff7aa8; --k-path:#f0a63a; --k-number:#2fc2b5; --k-image:#ff7aa6; --k-shot:#3ccf7a; --k-pin:#ff8a47;
   --shadow:0 30px 70px rgba(0,0,0,.6),0 0 0 .5px rgba(255,255,255,.13);
-  --ctl-shadow:none; --top:#26262c; --seg-on:rgba(255,255,255,.15); --ink-code:#b9a0ff; --group-bg:#1b1b1f;
+  --accent-grad:#2a6de0; --accent-shadow:0 1px 2px rgba(0,0,0,.35); --glyph:100%; --ctl-shadow:none; --top:#26262c; --seg-on:rgba(255,255,255,.15); --ink-code:#b9a0ff; --group-bg:#1b1b1f;
 }
+@property --bg{syntax:"<color>";inherits:true;initial-value:#f6f7fb}
+@property --bg2{syntax:"<color>";inherits:true;initial-value:#eef1f8}
+@property --top{syntax:"<color>";inherits:true;initial-value:#fbfcff}
+@property --pane{syntax:"<color>";inherits:true;initial-value:#ffffff}
+@property --ctl{syntax:"<color>";inherits:true;initial-value:#ffffff}
+@property --line{syntax:"<color>";inherits:true;initial-value:rgba(23,30,60,.09)}
+@property --line2{syntax:"<color>";inherits:true;initial-value:rgba(23,30,60,.14)}
+@property --text{syntax:"<color>";inherits:true;initial-value:#0f1222}
+@property --muted{syntax:"<color>";inherits:true;initial-value:#4a5068}
+@property --faint{syntax:"<color>";inherits:true;initial-value:#636a80}
+@property --chip{syntax:"<color>";inherits:true;initial-value:rgba(23,30,60,.065)}
+@property --hover{syntax:"<color>";inherits:true;initial-value:rgba(23,30,60,.05)}
+@property --accent-soft{syntax:"<color>";inherits:true;initial-value:#e8efff}
+@property --accent-fill{syntax:"<color>";inherits:true;initial-value:#2563ff}
+@property --accent-ink{syntax:"<color>";inherits:true;initial-value:#1d4fe0}
+@property --group-bg{syntax:"<color>";inherits:true;initial-value:#f8f9fd}
+@property --seg-on{syntax:"<color>";inherits:true;initial-value:#ffffff}
+:root{transition:--bg .16s ease,--bg2 .16s ease,--top .16s ease,--pane .16s ease,--ctl .16s ease,--line .16s ease,--line2 .16s ease,--text .16s ease,--muted .16s ease,--faint .16s ease,--chip .16s ease,--hover .16s ease,--accent-soft .16s ease,--accent-fill .16s ease,--accent-ink .16s ease,--group-bg .16s ease,--seg-on .16s ease}
+@media (prefers-reduced-motion:reduce){:root{transition:none}}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:transparent;overflow:hidden}
-body{font:13px/1.45 var(--font-ui);color:var(--text);-webkit-user-select:none;cursor:default;-webkit-font-smoothing:antialiased}
+body{font:13px/1.45 var(--font-ui);color:var(--text);-webkit-user-select:none;cursor:default}
 .app{position:absolute;inset:16px;border-radius:16px;background:linear-gradient(180deg,var(--top) 0,var(--bg) 110px,var(--bg2) 100%);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;opacity:0;transform:scale(.985) translateY(-6px);transition:opacity .12s ease,transform .16s cubic-bezier(.2,.8,.2,1)}
 .app.show{opacity:1;transform:none}
 svg{display:block}
 
 /* header: search */
-header{display:flex;align-items:center;gap:10px;padding:14px 18px 12px}
+header{display:flex;align-items:center;gap:10px;height:56px;padding:0 14px 0 18px;flex:none}
 header>svg{width:18px;height:18px;color:var(--muted);flex:none}
 #q{flex:1;min-width:0;border:0;outline:0;background:transparent;font:400 17px/1.3 var(--font-display);letter-spacing:-.012em;color:var(--text);padding:3px 0;caret-color:var(--accent)}
 #q::placeholder{color:var(--faint)}
@@ -61,41 +84,45 @@ header>svg{width:18px;height:18px;color:var(--muted);flex:none}
 .reset.on{display:block}
 .reset:hover{background:color-mix(in srgb,var(--accent-soft) 80%,var(--accent))}
 
-/* filter bar */
-.bar{display:flex;align-items:center;gap:10px;padding:0 16px 12px;border-bottom:1px solid var(--line)}
-.seg{display:flex;gap:6px;flex-wrap:nowrap}
-.seg.time{margin-left:auto;background:var(--chip);padding:2px;border-radius:9px;gap:2px}
-.f{display:flex;align-items:center;gap:6px;height:28px;padding:0 8px 0 9px;border-radius:8px;font-size:12.5px;font-weight:500;color:var(--text);background:var(--ctl);box-shadow:0 0 0 1px var(--line2),var(--ctl-shadow);white-space:nowrap;transition:background .1s,color .1s,box-shadow .1s}
-.f svg{width:15px;height:15px;color:var(--muted)}
-.f b{font-size:11px;font-weight:600;min-width:18px;text-align:center;padding:0 5px;border-radius:9px;background:var(--chip);color:var(--muted);font-variant-numeric:tabular-nums;line-height:17px}
-.f:hover:not(.on){background:color-mix(in srgb,var(--ctl) 90%,var(--text))}
-.f.on{background:var(--accent-fill);color:var(--on-accent);box-shadow:0 0 0 1px rgba(0,0,0,.08),0 1px 2px rgba(10,60,160,.28),inset 0 1px 0 rgba(255,255,255,.24)}
-.f.on:hover{background:var(--accent-hover)}
-.f.on svg{color:var(--on-accent)}
-.f.on b{background:rgba(255,255,255,.24);color:var(--on-accent)}
+/* filter bar: pills never wrap or shift; the segmented control keeps its width pinned right */
+.bar{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--line)}
+.seg{display:flex;gap:5px;flex-wrap:nowrap}
+#kinds{flex:1 1 0;min-width:0}
+.seg.time{flex:none;margin-left:auto;background:var(--chip);box-shadow:inset 0 0 0 1px var(--line);padding:2px;border-radius:10px;gap:2px}
+.f{flex:none;display:flex;align-items:center;gap:7px;height:30px;padding:0 10px;border-radius:9px;font-size:12.5px;font-weight:500;color:var(--muted);background:transparent;white-space:nowrap;transition:background .1s,color .1s,box-shadow .1s}
+.f svg{width:16px;height:16px;flex:none;color:var(--muted)}
+.f b{font-size:11.5px;font-weight:600;padding:0;background:none;color:var(--faint);font-variant-numeric:tabular-nums;line-height:17px}
+.bar.compact .f .lb{display:none}
+.bar.compact .f{gap:5px;padding:0 6px 0 8px}
+.f:hover:not(.on){background:var(--hover);color:var(--text)}
+.f.on{background:var(--accent-soft);color:var(--accent-ink);font-weight:600;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 30%,transparent)}
+
+.f.on svg{color:var(--accent-ink)}
+.f.on b{color:var(--accent-ink);opacity:.75}
 .f.zero:not(.on){color:var(--muted)}
 .f.zero:not(.on) svg{opacity:.6}
-.t{height:24px;padding:0 11px;border-radius:7px;font-size:12px;font-weight:500;color:var(--muted);display:flex;align-items:center;white-space:nowrap;transition:background .1s,color .1s}
+.t{flex:none;height:24px;padding:0 10px;border-radius:8px;font-size:12.5px;font-weight:500;color:var(--muted);display:flex;align-items:center;white-space:nowrap;transition:background .1s,color .1s}
 .t:hover:not(.on){color:var(--text)}
-.t.on{background:var(--seg-on);color:var(--text);box-shadow:0 0 0 .5px var(--line2),0 1px 2px rgba(0,0,0,.10)}
+.t.on{background:var(--seg-on);color:var(--text);font-weight:600;box-shadow:0 0 0 .5px var(--line2),0 1px 2px rgba(15,18,34,.12)}
 
 /* list */
 #list{overflow-y:auto;padding:0 8px 10px;background:var(--pane);scroll-padding:34px 0 8px}
-.group{position:sticky;top:0;z-index:1;background:var(--group-bg);box-shadow:0 1px 0 var(--line);margin:0 -8px 4px;padding:9px 18px 7px;display:flex;align-items:baseline;gap:7px;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.005em}
+.group{position:sticky;top:0;z-index:1;background:var(--group-bg);box-shadow:0 1px 0 var(--line);margin:0 -8px 4px;padding:9px 18px 7px;display:flex;align-items:baseline;gap:7px;font-size:11.5px;font-weight:650;color:var(--muted);letter-spacing:.005em}
 .group span{font-weight:500;color:var(--faint);text-transform:none;letter-spacing:0;font-variant-numeric:tabular-nums}
-.row{position:relative;display:flex;align-items:center;gap:12px;padding:0 8px 0 12px;border-radius:10px;height:52px;transition:background .1s,box-shadow .1s}
+.row{position:relative;display:flex;align-items:center;gap:12px;padding:0 8px 0 12px;border-radius:12px;height:52px;transition:background .1s,box-shadow .1s}
 .row:hover{background:var(--hover)}
 .row.sel{background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent-ring)}
+.row.sel .ti{font-weight:600}
 .row.sel::before{content:"";position:absolute;left:0;top:11px;bottom:11px;width:3px;border-radius:0 3px 3px 0;background:var(--accent)}
-.ico{width:36px;height:36px;border-radius:10px;background:color-mix(in srgb,var(--k,var(--k-text)) var(--tile-mix),transparent);display:grid;place-items:center;flex:none;overflow:hidden;color:var(--k,var(--k-text));box-shadow:inset 0 0 0 .5px color-mix(in srgb,var(--k,var(--k-text)) var(--tile-ring),transparent)}
+.ico{width:36px;height:36px;border-radius:10px;background:color-mix(in srgb,var(--k,var(--k-text)) var(--tile-mix),transparent);display:grid;place-items:center;flex:none;overflow:hidden;color:color-mix(in srgb,var(--k,var(--k-text)) var(--glyph),#000);box-shadow:inset 0 0 0 .5px color-mix(in srgb,var(--k,var(--k-text)) var(--tile-ring),transparent)}
 .ico svg{width:18px;height:18px}
 .meta{min-width:0;flex:1}
-.ti{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13.5px;font-weight:500;letter-spacing:-.005em}
-.su{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px;color:var(--muted);margin-top:1px;font-variant-numeric:tabular-nums}
+.ti{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px;font-weight:500;letter-spacing:-.005em}
+.su{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12.5px;color:var(--muted);margin-top:1px;font-variant-numeric:tabular-nums}
 .end{display:flex;align-items:center;gap:7px;color:var(--faint);font-size:11px;flex:none}
 .end .pin svg{width:13px;height:13px;color:var(--k-pin)}
 .end .n{font-variant-numeric:tabular-nums;min-width:20px;text-align:right}
-.cp{display:none;width:26px;height:26px;border-radius:7px;place-items:center;color:var(--muted);background:var(--ctl);box-shadow:0 0 0 1px var(--line2),var(--ctl-shadow);transition:color .1s,background .1s}
+.cp{display:none;width:28px;height:28px;border-radius:8px;place-items:center;color:var(--muted);background:var(--ctl);box-shadow:0 0 0 1px var(--line2),var(--ctl-shadow);transition:color .1s,background .1s}
 .cp svg{width:14px;height:14px}
 .cp:hover{color:var(--accent-ink)}
 .row:hover .cp,.row.sel .cp{display:grid}
@@ -104,33 +131,33 @@ header>svg{width:18px;height:18px;color:var(--muted);flex:none}
 mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
 
 /* buttons */
-.btn{display:flex;align-items:center;gap:6px;height:28px;padding:0 11px 0 9px;border-radius:8px;font-size:12px;font-weight:500;color:var(--text);background:var(--ctl);box-shadow:0 0 0 1px var(--line2),var(--ctl-shadow);white-space:nowrap;transition:background .1s,color .1s}
+.btn{display:flex;align-items:center;gap:6px;height:28px;padding:0 11px 0 9px;border-radius:8px;font-size:12.5px;font-weight:500;color:var(--text);background:var(--ctl);box-shadow:0 0 0 1px var(--line2),var(--ctl-shadow);white-space:nowrap;transition:background .1s,color .1s}
 .btn svg{width:15px;height:15px;color:var(--muted)}
 .btn:hover{background:color-mix(in srgb,var(--ctl) 90%,var(--text))}
-.btn.primary{background:var(--accent-fill);color:var(--on-accent);box-shadow:0 0 0 1px rgba(0,0,0,.08),0 1px 2px rgba(10,60,160,.28),inset 0 1px 0 rgba(255,255,255,.24)}
+.btn.primary{background:var(--accent-grad);color:var(--on-accent);box-shadow:0 0 0 1px rgba(20,50,160,.30),var(--accent-shadow),inset 0 1px 0 rgba(255,255,255,.22)}
 .btn.primary:hover{background:var(--accent-hover)}
 .btn.primary:active{background:var(--accent-press)}
 .btn.primary svg{color:var(--on-accent)}
 .btn.danger:hover,.btn.danger:hover svg{color:var(--danger)}
 
-footer{background:var(--bg2);display:flex;align-items:center;gap:16px;padding:9px 18px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+footer{background:var(--bg2);display:flex;align-items:center;gap:16px;padding:9px 18px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
 footer>span{display:flex;align-items:center}
 footer .sp{flex:1}
-kbd{font:500 11px/1 var(--font-ui);display:inline-grid;place-items:center;min-width:19px;height:18px;padding:0 5px;margin-right:6px;border-radius:5px;background:var(--ctl);color:var(--muted);box-shadow:0 0 0 1px var(--line2),0 1.5px 0 var(--line2)}
+kbd{font:600 11px/1 var(--font-ui);display:inline-grid;place-items:center;min-width:19px;height:18px;padding:0 5px;margin-right:6px;border-radius:5px;background:var(--ctl);color:var(--muted);box-shadow:0 0 0 1px var(--line2),0 1.5px 0 var(--line2)}
 .btn kbd{margin:0 0 0 2px;background:transparent;color:inherit;opacity:.7;padding:0;min-width:0;height:auto;box-shadow:none}
 .empty{height:100%;display:grid;place-items:center;text-align:center;color:var(--muted);padding:40px 24px;font-size:13px}
 .empty svg{width:32px;height:32px;margin:0 auto 12px;color:var(--faint)}
 .empty svg+div{font-size:13.5px;font-weight:500;color:var(--text)}
 .empty .hint{color:var(--muted);font-size:12px;font-weight:400;margin-top:3px}
 .empty .btn{margin:16px auto 0;display:inline-flex}
-.toast{position:absolute;left:50%;bottom:54px;transform:translate(-50%,8px);background:var(--text);color:var(--pane);font-size:12.5px;font-weight:500;padding:7px 14px 7px 12px;border-radius:9px;opacity:0;transition:opacity .15s,transform .15s;pointer-events:none;display:flex;gap:7px;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.toast{position:absolute;left:50%;bottom:54px;transform:translate(-50%,8px);background:var(--text);color:var(--pane);font-size:12.5px;font-weight:500;padding:7px 14px 7px 12px;border-radius:9px;opacity:0;transition:opacity .15s,transform .15s;pointer-events:none;display:flex;gap:7px;align-items:center;box-shadow:0 8px 24px rgba(15,18,34,.25)}
 .toast svg{width:14px;height:14px;color:var(--ok)}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 ::-webkit-scrollbar{width:9px}
 ::-webkit-scrollbar-thumb{background:var(--line2);border-radius:5px;border:2px solid transparent;background-clip:content-box}
 
 /* projects: list + preview */
-main{flex:1;display:grid;grid-template-columns:380px 1fr;min-height:0}
+main{flex:1;display:grid;grid-template-columns:400px 1fr;min-height:0}
 #list{border-right:1px solid var(--line)}
 .sync{display:none;align-items:center;gap:6px;font-size:12px;color:var(--muted);white-space:nowrap}
 .sync.on{display:flex}
@@ -140,31 +167,99 @@ main{flex:1;display:grid;grid-template-columns:380px 1fr;min-height:0}
 .ico.k-main{--k:var(--k-link)}.ico.k-copy{--k:var(--k-code)}
 .dirty{font-size:11px;font-weight:600;color:var(--warn);background:var(--warn-soft);padding:0 7px;border-radius:9px;line-height:18px;font-variant-numeric:tabular-nums}
 .sy{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
-#preview{display:flex;flex-direction:column;min-width:0;min-height:0;background:var(--pane)}
-.pv-actions{display:flex;gap:6px;padding:12px 16px;border-bottom:1px solid var(--line);align-items:center}
+#preview{display:flex;flex-direction:column;min-width:0;min-height:0;background:var(--pv-bg)}
+.pv-actions{display:flex;gap:8px;padding:12px 20px;border-bottom:1px solid var(--line);align-items:center}
 .pv-actions .sp{flex:1}
-.pv-body{flex:1;min-height:0;overflow:auto;padding:20px 24px}
-.pv-name{font:600 22px/1.25 var(--font-display);letter-spacing:-.02em;word-break:break-all;-webkit-user-select:text}
+.pv-body{flex:1;min-height:0;overflow:auto;padding:22px 28px 20px}
+.pv-name{font:650 22px/1.25 var(--font-display);letter-spacing:-.02em;word-break:break-all;-webkit-user-select:text}
 .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
 .tag{font-size:11.5px;font-weight:600;padding:0 9px;border-radius:9px;line-height:19px;background:var(--chip);color:var(--muted)}
 .tag.main{background:var(--accent-soft);color:var(--accent-ink)}
 .tag.copy{background:color-mix(in srgb,var(--k-code) 13%,transparent);color:var(--ink-code)}
 .tag.warn{background:var(--warn-soft);color:var(--warn)}
 .tag.stale{background:color-mix(in srgb,var(--ok) 14%,transparent);color:var(--ok)}
-.pv-path{display:flex;align-items:center;gap:8px;margin-top:16px;padding:9px 10px 9px 14px;border-radius:12px;background:var(--bg);box-shadow:inset 0 0 0 1px var(--line)}
-.pv-path code{flex:1;min-width:0;font:12.5px/1.5 var(--font-mono);word-break:break-all;-webkit-user-select:text;cursor:text}
-.pv-path .cp{display:grid;flex:none}
-.sec{margin:22px 0 6px;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.005em}
-.commit{display:flex;align-items:baseline;gap:12px;padding:8px 0;border-bottom:1px solid var(--line)}
+.pv-path{display:flex;align-items:center;gap:8px}
+.pv-path code{flex:1;min-width:0;font:12.5px/1.5 var(--font-mono);color:var(--muted);word-break:break-all;-webkit-user-select:text;cursor:text}
+.pv-path .cp{display:grid;flex:none;width:26px;height:26px;box-shadow:none;background:transparent}
+.pv-path .cp:hover{background:var(--hover)}
+.sec{margin:26px 0 8px;font:650 12px/1.2 var(--font-display);color:var(--faint);letter-spacing:.01em}
+.commit{display:flex;flex-direction:column;gap:3px;padding:9px 0;border-bottom:1px solid var(--line)}
 .commit:last-child{border-bottom:0}
-.commit code{font:11.5px var(--font-mono);color:var(--accent-ink);flex:none}
-.commit .s{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;-webkit-user-select:text}
-.commit .w{flex:none;font-size:11px;color:var(--faint);white-space:nowrap;font-variant-numeric:tabular-nums}
+.commit code{font:11.5px var(--font-mono);color:var(--accent-ink)}
+.commit .s{min-width:0;font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;-webkit-user-select:text}
+.commit .w{display:flex;gap:8px;align-items:baseline;font-size:11.5px;color:var(--faint);white-space:nowrap;font-variant-numeric:tabular-nums}
 .pv-note{font-size:12px;color:var(--muted);padding:6px 0}
-.pv-meta{margin:0;border-top:1px solid var(--line);padding:12px 24px 14px;display:grid;grid-template-columns:auto minmax(0,1fr) auto minmax(0,1fr);gap:5px 16px;font-size:12px;background:var(--group-bg)}
-.pv-meta dt{color:var(--muted)}
+.pv-meta{margin:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 18px;font-size:13px}
+.pv-meta div{min-width:0}
+.pv-meta dt{font-size:11.5px;color:var(--faint);margin-bottom:3px}
 .pv-meta dd{margin:0;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
 .pv-meta dd.warn{color:var(--warn)}.pv-meta dd.ok{color:var(--ok)}
+/* theme switch */
+.tb{position:relative;width:28px;height:28px;flex:none;border:0;padding:0;font:inherit;background:none;border-radius:8px;display:grid;place-items:center;color:var(--muted);transition:background .1s,color .1s}
+.tb svg{width:16px;height:16px}
+.tb:hover{background:var(--hover);color:var(--text)}
+.tb[data-tip]:hover::after{content:attr(data-tip);position:absolute;top:calc(100% + 6px);right:0;white-space:nowrap;background:var(--text);color:var(--pane);font-size:11.5px;font-weight:500;padding:4px 8px;border-radius:6px;pointer-events:none;z-index:9}
+body{-webkit-font-smoothing:auto}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body{-webkit-font-smoothing:antialiased}}
+:root[data-theme="dark"] body{-webkit-font-smoothing:antialiased}
+#closeBtn{color:#e5484d}
+#closeBtn:hover{color:#fff;background:#e5484d}
+/* "Bugün" strip */
+.today[hidden]{display:none}
+.today{position:relative;display:flex;align-items:center;gap:6px;margin:0;padding:10px 16px 12px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  background:radial-gradient(420px 90px at 0% 0%,color-mix(in srgb,var(--accent) 7%,transparent),transparent 70%)}
+.today .gl{display:flex;align-items:center;gap:10px;font:650 13.5px/1.2 var(--font-display);letter-spacing:-.01em;color:var(--text);padding:0 18px 0 4px;margin-right:4px;border-right:1px solid var(--line)}
+.today .gl i{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,#4f8bff,#7b3df0);box-shadow:0 4px 10px rgba(79,100,255,.32),inset 0 1px 0 rgba(255,255,255,.3)}
+.today .gl i svg{width:16px;height:16px}
+.today .gl span{display:flex;flex-direction:column;gap:2px}
+.today .gl small{font:500 11.5px/1.2 var(--font-ui);color:var(--faint)}
+.gs{position:relative;display:flex;flex-direction:column;gap:4px;padding:7px 12px 7px;border:0;border-radius:11px;background:none;font:inherit;font-size:11.5px;font-weight:500;color:var(--muted);text-align:left}
+.gs b{display:flex;align-items:center;gap:5px;font:700 19px/1 var(--font-display);letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--c)}
+.gs b svg{width:12px;height:12px;color:var(--faint);opacity:0;transition:opacity .12s}
+button.gs{cursor:pointer;transition:background .12s,box-shadow .12s}
+button.gs:hover,button.gs.on{background:color-mix(in srgb,var(--c) 9%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 22%,transparent)}
+button.gs:hover b svg,button.gs.on b svg{opacity:1;color:var(--c)}
+.gs.pr,.gpop.pr{--c:#2563ff} .gs.cm,.gpop.cm{--c:#7c3aed} .gs.add{--c:#15803d} .gs.del{--c:#e11d48}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) :is(.gs,.gpop).pr{--c:#8ab4ff} :root:not([data-theme="light"]) :is(.gs,.gpop).cm{--c:#c4a5ff} :root:not([data-theme="light"]) .gs.add{--c:#5ee08a} :root:not([data-theme="light"]) .gs.del{--c:#ff8a9b}}
+:root[data-theme="dark"] :is(.gs,.gpop).pr{--c:#8ab4ff} :root[data-theme="dark"] :is(.gs,.gpop).cm{--c:#c4a5ff} :root[data-theme="dark"] .gs.add{--c:#5ee08a} :root[data-theme="dark"] .gs.del{--c:#ff8a9b}
+.today .sp{flex:1}
+.gb{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 10px 0 13px;margin-left:6px;border:0;border-radius:10px;font:inherit;font-size:12.5px;font-weight:600;color:var(--text);background:var(--ctl);box-shadow:0 0 0 1px var(--line2),var(--ctl-shadow);transition:box-shadow .12s,background .12s}
+.gb:hover,.gb.on{box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 45%,var(--line2)),0 4px 12px color-mix(in srgb,var(--accent) 14%,transparent)}
+.gb b{font-variant-numeric:tabular-nums;color:var(--accent-ink);background:var(--accent-soft);padding:2px 7px;border-radius:7px;font-size:11.5px}
+.gb.hot b{color:#fff;background:linear-gradient(180deg,#3b7bff,#2563ff);box-shadow:0 1px 3px rgba(37,99,255,.4)}
+.gb svg{width:13px;height:13px;color:var(--muted);transition:transform .15s}
+.gb.on svg{transform:rotate(180deg)}
+/* dropdown list */
+.gpop{position:absolute;top:calc(100% + 8px);z-index:20;width:600px;max-height:440px;display:flex;flex-direction:column;border-radius:16px;background:var(--pane);overflow:hidden;
+  box-shadow:0 24px 60px rgba(15,18,34,.26),0 4px 14px rgba(15,18,34,.10),0 0 0 1px var(--line2);animation:gpIn .14s ease-out}
+.gpop.left{left:16px} .gpop.right{right:16px}
+@keyframes gpIn{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.gpop{animation:none}}
+.gph{display:flex;align-items:center;gap:10px;padding:14px 16px 12px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,color-mix(in srgb,var(--c,var(--accent)) 8%,transparent),transparent)}
+.gph b{font:650 14px/1.2 var(--font-display);letter-spacing:-.01em}
+.gph small{font-size:11.5px;font-weight:600;color:var(--c,var(--accent-ink));background:color-mix(in srgb,var(--c,var(--accent)) 12%,transparent);padding:2px 8px;border-radius:8px;font-variant-numeric:tabular-nums}
+.gph .sp{flex:1}
+.gph button{border:0;background:none;font:inherit;font-size:12px;font-weight:600;color:var(--accent-ink);padding:5px 8px;border-radius:7px;display:flex;align-items:center;gap:5px}
+.gph button:hover{background:var(--hover)}
+.gph button svg{width:12px;height:12px}
+.gpl{overflow:auto;padding:6px}
+.gp{display:flex;align-items:center;gap:12px;width:100%;padding:10px 10px;border:0;border-radius:11px;background:none;font:inherit;color:var(--text);text-align:left;transition:background .1s}
+.gp+.gp{margin-top:1px}
+.gp:hover{background:var(--hover)}
+.av{flex:none;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font:700 13px/1 var(--font-display);color:#fff;background:linear-gradient(145deg,hsl(var(--h) 75% 60%),hsl(calc(var(--h) + 28) 70% 48%));box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 2px 6px hsl(var(--h) 60% 45% / .28)}
+.gpm{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.gp .pt{min-width:0;font-size:13.5px;font-weight:550;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gp .a{display:flex;align-items:center;gap:6px;min-width:0;font-size:11.5px;color:var(--faint);white-space:nowrap;overflow:hidden}
+.gp .a b{color:var(--muted);font-weight:650}
+.gp .a .rp{color:var(--muted);font-weight:600}
+.gp .a code{font:600 11px/1 var(--font-mono);color:var(--accent-ink);background:var(--accent-soft);padding:3px 5px;border-radius:5px}
+.gp .a .pl{color:var(--ok);font-weight:650;font-variant-numeric:tabular-nums} .gp .a .mi{color:var(--danger);font-weight:650;font-variant-numeric:tabular-nums}
+.gp .d{flex:none;font-size:10.5px;font-weight:650;color:var(--muted);padding:2px 7px;border-radius:6px;background:var(--chip)}
+.gp .go{flex:none;width:15px;height:15px;color:var(--faint);opacity:.6;transition:opacity .1s,color .1s}
+.gp:hover .go{color:var(--accent);opacity:1}
+.ge{display:flex;flex-direction:column;align-items:center;gap:4px;padding:34px 16px;font-size:12.5px;color:var(--faint)}
+.ge b{font:600 13.5px/1.3 var(--font-display);color:var(--text)}
+.gn{font-size:11px;color:var(--faint)}
 </style>
 </head>
 <body>
@@ -172,9 +267,12 @@ main{flex:1;display:grid;grid-template-columns:380px 1fr;min-height:0}
   <header>
     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5.5" fill="currentColor" fill-opacity=".14" stroke="none"/><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4 4"/></svg>
     <input id="q" placeholder="Projelerde ara: ad, dal, son commit…" autocomplete="off" spellcheck="false">
-    <div class="sync" id="sync"><i></i>yenileniyor…</div>
+    <div class="sync" id="sync"><i></i>Yenileniyor…</div>
     <div class="reset" id="reset">Filtreleri Temizle</div>
+    <button class="tb" id="theme" type="button"></button>
+    <button class="tb" id="closeBtn" type="button" aria-label="Kapat" data-tip="Kapat · Esc"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg></button>
   </header>
+  <div class="today" id="gh" hidden></div>
   <div class="bar">
     <div class="seg" id="kinds"></div>
     <div class="seg time" id="sorts"></div>
@@ -214,6 +312,28 @@ const ICONS = {
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const lower = s => String(s || '').toLocaleLowerCase('tr');
 const post = m => window.webkit.messageHandlers.projects.postMessage(m);
+
+// Theme switch: sun while the panel is dark (click -> light), moon while it is light (click -> dark).
+const SUN = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3" fill="currentColor" fill-opacity=".28" stroke="none"/><circle cx="8" cy="8" r="3"/><path d="M8 1.6v1.4M8 13v1.4M1.6 8H3M13 8h1.4M3.5 3.5l1 1M11.5 11.5l1 1M12.5 3.5l-1 1M4.5 11.5l-1 1"/></svg>', MOON = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 9.4A5.6 5.6 0 0 1 6.6 3a5.6 5.6 0 1 0 6.4 6.4z" fill="currentColor" fill-opacity=".28" stroke="none"/><path d="M13 9.4A5.6 5.6 0 0 1 6.6 3a5.6 5.6 0 1 0 6.4 6.4z"/></svg>';
+const themeBtn = $('#theme'), darkMQ = matchMedia('(prefers-color-scheme: dark)');
+const isDark = () => { const t = document.documentElement.dataset.theme; return t ? t === 'dark' : darkMQ.matches; };
+function syncTheme() {
+  const d = isDark(), tip = d ? 'Açık Tema' : 'Koyu Tema';
+  themeBtn.innerHTML = d ? SUN : MOON; themeBtn.dataset.tip = tip; themeBtn.setAttribute('aria-label', tip);
+}
+new MutationObserver(syncTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+darkMQ.addEventListener('change', syncTheme);
+themeBtn.addEventListener('mousedown', e => { e.preventDefault(); post({ action: 'toggleTheme' }); });
+$('#closeBtn').addEventListener('mousedown', e => { e.preventDefault(); post({ action: 'close' }); });
+syncTheme();
+
+// Pills collapse to icon + count as one unit when their labels no longer fit: nothing wraps, shifts or clips.
+const barEl = document.querySelector('.bar');
+function fitBar() {
+  barEl.classList.remove('compact');
+  if (kindsEl.scrollWidth > kindsEl.clientWidth + 1) barEl.classList.add('compact');
+}
+new ResizeObserver(fitBar).observe(barEl);
 const num = n => Number(n).toLocaleString('tr-TR');
 const DAY = 864e2;
 function day0(t) { const d = new Date(t * 1000); d.setHours(0, 0, 0, 0); return d.getTime() / 1000; }
@@ -317,18 +437,19 @@ function refresh(keepPath) {
 function renderFilters(toks) {
   kindsEl.innerHTML = KINDS.map(f => {
     const n = items.filter(p => f.test(p) && (!toks.length || score(p, toks))).length;
-    return `<div class="f${f.key === kind ? ' on' : ''}${n ? '' : ' zero'}" data-k="${f.key}">${ICONS[f.icon]}${f.label}<b>${num(n)}</b></div>`;
+    return `<div class="f${f.key === kind ? ' on' : ''}${n ? '' : ' zero'}" data-k="${f.key}" title="${f.label}">${ICONS[f.icon]}<span class="lb">${f.label}</span><b>${num(n)}</b></div>`;
   }).join('');
   sortsEl.innerHTML = SORTS.map(s => `<div class="t${s.key === sort ? ' on' : ''}" data-s="${s.key}">${s.label}</div>`).join('');
   resetEl.classList.toggle('on', !isDefault() || !!q);
+  fitBar();
 }
 
 function emptyHTML(toks) {
-  if (!items.length) return `<div class="empty"><div>${ICONS.folder}<div>${scanning ? 'Projeler taranıyor…' : 'Proje bulunamadı'}</div><div class="hint">~/Projects altındaki git kopyaları burada listelenir.</div></div></div>`;
+  if (!items.length) return `<div class="empty"><div>${ICONS.folder}<div>${scanning ? 'Projeler Taranıyor…' : 'Proje Bulunamadı'}</div><div class="hint">~/Projects altındaki git kopyaları burada listelenir.</div></div></div>`;
   const all = items.filter(p => !toks.length || score(p, toks)).length;
   if (!isDefault() && all) {
     const K = KINDS.find(x => x.key === kind);
-    return `<div class="empty"><div>${ICONS[K.icon]}<div>“${K.label}” filtresinde ${q ? 'eşleşen ' : ''}proje yok</div><div class="hint">Filtre kaldırılınca ${num(all)} proje var.</div><div class="btn" data-act="clear">${ICONS.x}Filtreyi kaldır</div></div></div>`;
+    return `<div class="empty"><div>${ICONS[K.icon]}<div>“${K.label}” filtresinde ${q ? 'eşleşen ' : ''}proje yok</div><div class="hint">Filtre kaldırılınca ${num(all)} proje var.</div><div class="btn" data-act="clear">${ICONS.x}Filtreyi Kaldır</div></div></div>`;
   }
   return `<div class="empty"><div>${ICONS.folder}<div>“${esc(q)}” için sonuç yok</div><div class="hint">Farklı bir kelime dene ya da Esc ile aramayı temizle.</div></div></div>`;
 }
@@ -393,7 +514,7 @@ function renderPreview() {
   let commits = '';
   if (!lg) commits = '<div class="pv-note">Yükleniyor…</div>';
   else if (!lg.commits.length) commits = '<div class="pv-note">Commit bulunamadı.</div>';
-  else commits = lg.commits.map(c => `<div class="commit"><code>${esc(c.sha)}</code><span class="s">${esc(c.subject)}</span><span class="w">${esc(c.author)} · ${esc(rel(c.t))}</span></div>`).join('');
+  else commits = lg.commits.map(c => `<div class="commit"><span class="s">${esc(c.subject)}</span><span class="w"><code>${esc(c.sha)}</code>${esc(c.author)} · ${esc(rel(c.t))}</span></div>`).join('');
 
   const [st, stCls] = statusText(p);
   const meta = [
@@ -404,9 +525,9 @@ function renderPreview() {
   ];
   pvEl.innerHTML = `<div class="pv-actions">${acts}</div>` +
     `<div class="pv-body"><div class="pv-name">${esc(p.name)}</div><div class="tags">${tags.join('')}</div>` +
-    `<div class="pv-path"><code>${esc(p.path)}</code><div class="cp" data-act="copy" title="Yolu Kopyala">${ICONS.copyi}</div></div>` +
-    `<div class="sec">Son Commit’ler</div>${commits}</div>` +
-    `<dl class="pv-meta">${meta.map(([k, v, c]) => `<dt>${esc(k)}</dt><dd class="${c}">${esc(v)}</dd>`).join('')}</dl>`;
+    `<div class="sec">Özet</div><dl class="pv-meta">${meta.map(([k, v, c]) => `<div><dt>${esc(k)}</dt><dd class="${c}">${esc(v)}</dd></div>`).join('')}</dl>` +
+    `<div class="sec">Son Commit’ler</div>${commits}` +
+    `<div class="sec">Konum</div><div class="pv-path"><code>${esc(p.path)}</code><div class="cp" data-act="copy" title="Yolu Kopyala">${ICONS.copyi}</div></div></div>`;
   wantLog(p);
 }
 
@@ -418,8 +539,8 @@ function wantLog(p) {
 }
 
 function renderFooter() {
-  const h = ['<span><kbd>↩</kbd>VS Code</span>', '<span><kbd>⌘↩</kbd>Terminal</span>', '<span><kbd>⌘C</kbd>Yolu Kopyala</span>'];
-  footEl.innerHTML = h.join('') + `<span class="sp"></span><span>${num(view.length)} proje</span>`;
+  const h = ['<span><kbd>↩</kbd>VS Code</span>', '<span><kbd>Cmd ↩</kbd>Terminal</span>', '<span><kbd>Cmd C</kbd>Yolu Kopyala</span>'];
+  footEl.innerHTML = h.join('') + `<span class="sp"></span><span>${num(view.length)} Proje</span>`;
 }
 
 function select(i, scroll = true) {
@@ -498,7 +619,80 @@ document.addEventListener('keydown', e => {
 // Relative times and recency groups stay correct while the panel is open.
 setInterval(() => { if (app.classList.contains('show')) refresh(selPath); }, 30000);
 
+// ---------- "Bugün" strip: today's PRs, commits and lines, plus PR lists (data from the Nimbstia hub)
+const ghEl = $('#gh');
+// "3 sa önce", "dün", "2 gün önce", then a short date ("28 Eki") after a week.
+function prAge(iso) {
+  const t = Date.parse(iso); if (!t) return '';
+  const s = (Date.now() - t) / 1000;
+  if (s < 3600) return Math.max(1, Math.floor(s / 60)) + ' dk önce';
+  if (s < 86400) return Math.floor(s / 3600) + ' sa önce';
+  if (s < 2 * 86400) return 'dün';
+  if (s < 7 * 86400) return Math.floor(s / 86400) + ' gün önce';
+  return new Date(t).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' });
+}
+let gh = null, ghOpen = null;
+const GO = '<svg class="go" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h4v4M13 3 7.5 8.5M11 9.5V12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h2.5"/></svg>';
+const CHEV = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 6.5 3 3 3-3"/></svg>';
+const PULSE = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1.8 8.5h2.6l1.8-4.2 3.2 7.4 1.8-3.2h3"/></svg>';
+// A stable colour per repository, so the same repo always gets the same avatar.
+const hue = s => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };
+const avatar = name => `<span class="av" style="--h:${hue(name)}">${esc(String(name || '?').replace(/^[^a-z0-9]+/i, '').charAt(0).toUpperCase() || '?')}</span>`;
+const LISTS = {
+  opened:  { title: 'Bugün Açılan PR\'lar', color: 'pr', empty: 'Bugün PR açılmadı.', all: 'https://github.com/pulls' },
+  commits: { title: 'Bugünkü Commit\'ler', color: 'cm', empty: 'Bugün commit yok.' },
+  review:  { title: 'İnceleme Bekleyen', empty: 'Bekleyen inceleme yok.', all: 'https://github.com/pulls/review-requested' },
+  open:    { title: 'Açık PR\'larım', empty: 'Açık PR yok.', all: 'https://github.com/pulls' },
+};
+function prRow(p) {
+  const who = [p.author ? `Açan: <b>${esc(p.author)}</b>` : '', p.created ? esc(prAge(p.created)) : ''].filter(Boolean).join(' · ');
+  return `<button class="gp" data-url="${esc(p.url)}" type="button" title="${esc(p.url)}">${avatar(p.repo)}<span class="gpm"><span class="pt">${esc(p.title)}</span>` +
+    `<span class="a"><span class="rp">${esc(p.repo)} #${esc(p.number)}</span>${who ? ' · ' + who : ''}</span></span>${p.draft ? '<span class="d">Taslak</span>' : ''}${GO}</button>`;
+}
+function commitRow(c) {
+  const lines = `<span class="pl">+${num(c.added || 0)}</span><span class="mi">−${num(c.deleted || 0)}</span>`;
+  const inner = `${avatar(c.repo)}<span class="gpm"><span class="pt">${esc(c.subject)}</span><span class="a"><code>${esc(String(c.sha).slice(0, 7))}</code><span class="rp">${esc(c.repo)}</span> · ${esc(rel(c.t))} · ${lines}</span></span>`;
+  return c.url ? `<button class="gp" data-url="${esc(c.url)}" type="button" title="${esc(c.url)}">${inner}${GO}</button>` : `<div class="gp">${inner}</div>`;
+}
+function renderGitHub() {
+  if (!gh) { ghEl.hidden = true; return; }
+  ghEl.hidden = false;
+  const n = v => Number(v || 0).toLocaleString('tr-TR');
+  // PR and commit numbers open their own list; line counts are plain numbers.
+  const stat = (cls, v, label, key) => key
+    ? `<button class="gs ${cls}${ghOpen === key ? ' on' : ''}" data-gh="${key}" type="button"><b>${v}${CHEV}</b>${label}</button>`
+    : `<span class="gs ${cls}"><b>${v}</b>${label}</span>`;
+  const btn = (key, label, count) => count == null ? '' :
+    `<button class="gb${ghOpen === key ? ' on' : ''}${key === 'review' && count > 0 ? ' hot' : ''}" data-gh="${key}" type="button">${label}<b>${n(count)}</b>${CHEV}</button>`;
+  let html = `<span class="gl"><i>${PULSE}</i><span>Bugün<small>${gh.org ? esc(gh.org) + ' · ' : ''}Senin Hareketlerin</small></span></span>` +
+    stat('pr', gh.prsToday == null ? '–' : n(gh.prsToday), 'Açılan PR', gh.opened ? 'opened' : null) +
+    stat('cm', n(gh.commits), 'Commit', 'commits') +
+    stat('add', '+' + n(gh.added), 'Eklenen Satır') + stat('del', '−' + n(gh.deleted), 'Silinen Satır') +
+    `<span class="sp"></span>` + btn('review', 'İnceleme Bekleyen', gh.reviewCount) + btn('open', 'Açık PR\'larım', gh.openCount);
+  if (ghOpen && LISTS[ghOpen]) {
+    const L = LISTS[ghOpen];
+    const list = (ghOpen === 'commits' ? gh.commitList : gh[ghOpen]) || [];
+    const total = { opened: gh.prsToday, commits: gh.commits, review: gh.reviewCount, open: gh.openCount }[ghOpen] || list.length;
+    const side = ghOpen === 'opened' || ghOpen === 'commits' ? 'left' : 'right';
+    html += `<div class="gpop ${side} ${L.color || ''}"><div class="gph"><b>${L.title}</b><small>${n(total)}</small><span class="sp"></span>` +
+      (L.all ? `<button data-url="${L.all}" type="button">GitHub'da Gör${GO}</button>` : '') + `</div><div class="gpl">` +
+      (list.length ? list.map(ghOpen === 'commits' ? commitRow : prRow).join('') : `<div class="ge"><b>${L.empty}</b></div>`) +
+      (total > list.length ? `<div class="ge">${n(total - list.length)} tane daha</div>` : '') + `</div></div>`;
+  }
+  if (gh.ghMissing) html += `<span class="gn">PR'lar için GitHub CLI (gh) gerekiyor</span>`;
+  ghEl.innerHTML = html;
+}
+ghEl.addEventListener('mousedown', e => {
+  const b = e.target.closest('[data-gh]'), u = e.target.closest('[data-url]');
+  // stopPropagation: re-rendering detaches the clicked button, so the document 'click outside' handler
+  // below would otherwise mistake this click for an outside one and close the list straight away.
+  if (b) { e.preventDefault(); e.stopPropagation(); ghOpen = ghOpen === b.dataset.gh ? null : b.dataset.gh; renderGitHub(); }
+  else if (u) { e.preventDefault(); e.stopPropagation(); post({ action: 'url', url: u.dataset.url }); }
+});
+document.addEventListener('mousedown', e => { if (ghOpen && !e.target.closest('#gh')) { ghOpen = null; renderGitHub(); } });
+
 window.Projects = {
+  setGitHub(g) { gh = g && typeof g === 'object' ? g : null; renderGitHub(); },
   setItems(data) {
     items = Array.isArray(data.items) ? data.items : [];
     scanning = !!data.scanning;
@@ -513,6 +707,7 @@ window.Projects = {
   toast,
   open() {
     input.value = q = ''; kind = 'all'; sort = 'recent'; selPath = null;
+    if (ghOpen) { ghOpen = null; renderGitHub(); } // lists start closed on every open
     refresh();
     listEl.scrollTop = 0;
     app.classList.remove('show');

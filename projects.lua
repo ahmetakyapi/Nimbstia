@@ -124,7 +124,7 @@ local function startScan(force)
     end
   end
 
-  scanTask = hs.task.new(PYTHON, function(code)
+  scanTask = hs.task.new("/usr/bin/nice", function(code) -- low CPU priority
     -- Flush a trailing line without newline, if any.
     if buf ~= "" then handleLine(buf); buf = "" end
     finishScan(gotDone and code == 0)
@@ -137,7 +137,7 @@ local function startScan(force)
       buf = buf:sub(nl + 1)
     end
     return true
-  end, { SCAN_SCRIPT, ROOT })
+  end, { "-n", "10", PYTHON, SCAN_SCRIPT, ROOT })
 
   if not scanTask or not scanTask:start() then
     scanning = false; scanTask = nil
@@ -204,6 +204,11 @@ local function launch(p, path, args)
 end
 
 local function handle(p, msg)
+  if msg.action == "url" then
+    -- Only GitHub links from the "Bugün" strip are opened.
+    if type(msg.url) == "string" and msg.url:match("^https://github%.com/") then p:hide(false); hs.urlevent.openURL(msg.url) end
+    return
+  end
   local a, path = msg.action, msg.path
   if a == "refresh" then
     startScan(true)
@@ -238,6 +243,12 @@ end
 local function onShow()
   pushItems(true)
   startScan(false)
+  -- Today's GitHub numbers come from the Nimbstia hub (status.lua / bin/dev-stats.py).
+  if Status and Status.githubData then
+    local g = Status.githubData()
+    if g then panel:js("Projects.setGitHub(" .. hs.json.encode(g) .. ")") end
+    Status.fetchDevStats(false)
+  end
 end
 
 if panel then
