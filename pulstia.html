@@ -68,36 +68,36 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .wh .sp{flex:1}
 .wh .meta{font-size:11.5px;font-weight:500;color:var(--faint);white-space:nowrap}
 
-/* connection: a colour widget that says the state before you read it */
-.w.vpn{display:flex;flex-direction:column;color:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.06),0 10px 24px -10px var(--vglow);
-  background:radial-gradient(120% 90% at 0% 0%,rgba(255,255,255,.28),transparent 55%),linear-gradient(160deg,var(--v1),var(--v2))}
-.w.vpn{--v1:#94a3b8;--v2:#64748b;--vglow:rgba(71,85,105,.45)}
-.w.vpn.ok{--v1:#34d399;--v2:#059669;--vglow:rgba(5,150,105,.5)}
-.w.vpn.warn{--v1:#fbbf24;--v2:#d97706;--vglow:rgba(217,119,6,.5)}
-.w.vpn.bad{--v1:#fb7185;--v2:#e11d48;--vglow:rgba(225,29,72,.45)}
-.w.vpn .wh .wi{background:rgba(255,255,255,.24)}
-.w.vpn .wh b{color:rgba(255,255,255,.92)}
-.w.vpn .ib{width:26px;height:26px;color:#fff;background:rgba(255,255,255,.18)}
+/* connection: neutral card, colour only in the status chip and the icon */
+.w.vpn{display:flex;flex-direction:column;--vc:var(--faint)}
+.w.vpn.ok{--vc:var(--ok-bar)} .w.vpn.warn{--vc:var(--warn-bar)} .w.vpn.bad{--vc:var(--bad-bar)}
+.w.vpn .wh .wi{background:color-mix(in srgb,var(--vc) 16%,transparent);color:var(--vc)}
+.w.vpn .ib{width:26px;height:26px}
 .w.vpn .ib svg{width:13px;height:13px}
-.w.vpn .ib:hover{background:rgba(255,255,255,.3)}
 .w.vpn .ib[data-tip]:hover::after{right:-4px}
-.vt{font:700 19px/1.15 var(--font-display);letter-spacing:-.025em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.vh{margin-top:4px;font:450 11.5px/1 var(--font-mono);color:rgba(255,255,255,.78);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.vs{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px;font-size:13px;font-weight:650}
-.vs .lat{display:inline-flex;align-items:flex-end;gap:6px;font-size:12px;font-weight:600;color:rgba(255,255,255,.85);font-variant-numeric:tabular-nums}
+.vt{font:700 17px/1.2 var(--font-display);letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vh{margin-top:3px;font:450 11.5px/1 var(--font-mono);color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vs{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px}
+.vchip{display:inline-flex;align-items:center;gap:7px;height:26px;padding:0 11px 0 9px;border-radius:var(--r-pill);font-size:12px;font-weight:650;color:color-mix(in srgb,var(--vc) 70%,var(--text));background:color-mix(in srgb,var(--vc) 13%,transparent)}
+.vchip i{position:relative;width:7px;height:7px;border-radius:50%;background:var(--vc)}
+.w.vpn.ok .vchip i::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:1.5px solid var(--vc);animation:ping 2.4s var(--ease-out) infinite}
+@keyframes ping{0%{transform:scale(.5);opacity:.8}80%,100%{transform:scale(1.7);opacity:0}}
+.vs .lat{display:inline-flex;align-items:flex-end;gap:6px;font-size:12px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
 .sig{display:inline-flex;align-items:flex-end;gap:2px;height:12px}
-.sig i{width:3px;border-radius:1.5px;background:rgba(255,255,255,.35)}
-.sig i.on{background:#fff}
-.vbtn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;height:34px;margin-top:12px;border-radius:12px;font-size:12.5px;font-weight:650;color:#fff;background:rgba(255,255,255,.2);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);transition:background var(--dur-1),transform var(--dur-1) var(--ease-out)}
-.vbtn:hover{background:rgba(255,255,255,.3)}
+.sig i{width:3px;border-radius:1.5px;background:var(--line2)}
+.sig i.on{background:var(--vc)}
+.vbtn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;height:34px;margin-top:14px;border-radius:12px;font-size:12.5px;font-weight:600;color:var(--text);background:var(--chip);transition:background var(--dur-1),color var(--dur-1),transform var(--dur-1) var(--ease-out)}
+.vbtn:hover{background:color-mix(in srgb,var(--bad-bar) 12%,transparent);color:var(--danger)}
 .vbtn:active{transform:scale(.97)}
 .vbtn svg{width:13px;height:13px}
-.vbtn.solid{background:#fff;color:var(--v2);box-shadow:0 2px 8px rgba(0,0,0,.12)}
-.vbtn[disabled]{opacity:.75}
+.vbtn.solid{color:var(--on-primary);background:var(--primary);box-shadow:var(--primary-shadow)}
+.vbtn.solid:hover{color:var(--on-primary);background:var(--primary);filter:brightness(1.05)}
+.vbtn[disabled]{opacity:.7}
 
 /* Claude usage */
-.w.claude{display:flex;flex-direction:column;--wc:linear-gradient(145deg,#e8906f,#d97757)}
-.w.claude .plan{font-size:11px;font-weight:650;color:#c2410c;padding:3px 8px;border-radius:var(--r-pill);background:rgba(217,119,87,.14)}
+.w.claude{display:flex;flex-direction:column;--wc:rgba(217,119,87,.16)}
+.w.claude .wh .wi{color:#d97757}
+.w.claude .plan{font-size:11px;font-weight:650;color:var(--muted);padding:3px 8px;border-radius:var(--r-pill);background:var(--chip)}
 .big{display:flex;align-items:baseline;gap:2px;font:720 38px/.95 var(--font-display);letter-spacing:-.045em;font-variant-numeric:tabular-nums}
 .big small{font-size:18px;font-weight:650;letter-spacing:-.02em;color:var(--faint)}
 .bl{margin-top:5px;font-size:12px;font-weight:550;color:var(--muted)}
@@ -118,10 +118,9 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .slink small{font-size:11.5px;font-weight:550;color:var(--ok)}
 .slink svg{width:12px;height:12px;color:var(--faint);transition:transform var(--dur-2) var(--ease-out)}
 .slink:hover svg{transform:translateX(3px)}
-.sdots{display:inline-flex}
-.sdots i{width:16px;height:16px;border-radius:50%;margin-left:-5px;background:var(--chip);box-shadow:0 0 0 2px var(--card)}
-.sdots i:first-child{margin-left:0}
-.sdots i.b{background:linear-gradient(145deg,#4ade80,#16a34a)}
+.sdot{width:8px;height:8px;border-radius:50%;background:var(--line2)}
+.sdot.b{background:var(--ok-bar);box-shadow:0 0 0 3px color-mix(in srgb,var(--ok-bar) 20%,transparent)}
+.vago{margin-top:10px;font-size:11.5px;color:var(--faint)}
 
 /* launcher: the primary action */
 .launch{display:flex;align-items:center;gap:12px;width:100%;height:48px;padding:0 8px 0 8px;border-radius:16px;color:var(--on-primary);background:var(--primary);box-shadow:var(--primary-shadow);transition:transform var(--dur-1) var(--ease-out),filter var(--dur-1)}
@@ -140,12 +139,12 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .tw{display:grid;grid-template-columns:repeat(var(--n,5),1fr);gap:2px;margin:-4px -6px -6px}
 .ti{position:relative;display:flex;flex-direction:column;align-items:center;min-width:0;padding:6px 2px 8px;border-radius:14px;transition:background var(--dur-1)}
 .ti:hover{background:var(--hover)}
-.ti .ico{position:relative;width:50px;height:50px;border-radius:15px;display:grid;place-items:center;margin-bottom:8px;color:#fff;overflow:hidden;
-  background:linear-gradient(160deg,color-mix(in srgb,var(--k) 72%,#fff) 0%,var(--k) 48%,color-mix(in srgb,var(--k) 78%,#000) 100%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -1px 0 rgba(0,0,0,.12),0 6px 14px -6px color-mix(in srgb,var(--k) 70%,transparent),0 1px 2px rgba(0,0,0,.12);
-  transition:transform var(--dur-2) var(--ease-spring)}
-.ti .ico::after{content:"";position:absolute;inset:0 0 50% 0;background:linear-gradient(180deg,rgba(255,255,255,.22),transparent);border-radius:15px 15px 0 0}
-.ti .ico svg{position:relative;width:24px;height:24px;filter:drop-shadow(0 1px 1px rgba(0,0,0,.15))}
+.ti .ico{position:relative;width:48px;height:48px;border-radius:15px;display:grid;place-items:center;margin-bottom:8px;color:var(--k);
+  background:linear-gradient(180deg,color-mix(in srgb,var(--k) 10%,var(--card)),color-mix(in srgb,var(--k) 16%,var(--card)));
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--k) 20%,transparent),0 1px 2px rgba(20,24,40,.06);
+  transition:transform var(--dur-2) var(--ease-spring),box-shadow var(--dur-2)}
+.ti .ico svg{position:relative;width:23px;height:23px}
+.ti:hover .ico{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--k) 34%,transparent),0 6px 14px -6px color-mix(in srgb,var(--k) 50%,transparent)}
 .ti:hover .ico{transform:translateY(-2px) scale(1.03)}
 .ti:active .ico{transform:scale(.95)}
 .ti .nm{font-size:12.5px;font-weight:650;letter-spacing:-.01em;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -161,9 +160,9 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .rt:active .rc{transform:scale(.92)}
 .rt .rn{display:block;font-size:13px;font-weight:650;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .rt small{display:block;margin-top:2px;font-size:11.5px;font-weight:550;color:var(--faint)}
-.rt.on{background:color-mix(in srgb,var(--q) 12%,var(--card));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--q) 30%,transparent)}
+.rt.on{background:var(--card);box-shadow:inset 0 0 0 1px var(--line2),0 1px 3px rgba(20,24,40,.06)}
 .rt.on .rc{color:#fff;background:linear-gradient(150deg,color-mix(in srgb,var(--q) 75%,#fff),var(--q));box-shadow:0 4px 12px -3px color-mix(in srgb,var(--q) 60%,transparent)}
-.rt.on small{color:color-mix(in srgb,var(--q) 80%,var(--text))}
+.rt.on small{color:color-mix(in srgb,var(--q) 70%,var(--text))}
 .meets{margin:12px 0 0;padding:8px 0 0;border-top:1px solid var(--line)}
 .mrow{display:flex;align-items:center;gap:10px;width:calc(100% + 16px);margin:0 -8px;padding:0 8px;height:32px;border-radius:9px;font-size:13px}
 .mrow.link:hover{background:var(--hover)}
@@ -358,7 +357,8 @@ function renderMain() {
     row1.push(`<section class="w vpn ${tone}">
       ${wh(ICONS.shield, 'Bağlantı', `<button class="ib" data-act="check" type="button" data-tip="${esc(tip)}" aria-label="Yeniden Kontrol Et">${ICONS.refresh}</button>`)}
       <div class="vt">${esc(dev.title || 'VPN Bağlantısı')}</div>${dev.host ? `<div class="vh">${esc(dev.host)}</div>` : ''}
-      <div class="vs"><span>${esc(label)}</span>${tone === 'ok' ? `<span class="lat">${sig}${ms != null ? ms + ' ms' : ''}</span>` : ''}</div>
+      <div class="vs"><span class="vchip"><i></i>${esc(label)}</span>${tone === 'ok' ? `<span class="lat">${sig}${ms != null ? ms + ' ms' : ''}</span>` : ''}</div>
+      ${dev.checkedAgo ? `<div class="vago"><span>Son kontrol</span> <span>${esc(dev.checkedAgo)}</span></div>` : ''}
       <span style="flex:1"></span>${action}</section>`);
   }
   if (d.claude) {
@@ -376,7 +376,7 @@ function renderMain() {
       ${lim && lim.resets ? `<div class="rs"><span>Sıfırlanma</span> <span>${esc(lim.resets)}</span></div>` : ''}
       ${second}
       ${lim && typeof lim.today === 'number' ? `<div class="today">Bugün +%${lim.today}</div>` : ''}
-      ${sess.length ? `<button class="slink" data-act="sessions" type="button"><span class="sdots">${sess.slice(0, 4).map(x => `<i class="${x.busy ? 'b' : ''}"></i>`).join('')}</span><span>${sess.length} oturum</span>${busy ? `<small>${busy} aktif</small>` : ''}<span class="sp"></span>${CHEV}</button>` : ''}
+      ${sess.length ? `<button class="slink" data-act="sessions" type="button"><span class="sdot${busy ? ' b' : ''}"></span><span>${sess.length} oturum</span>${busy ? `<small>${busy} aktif</small>` : ''}<span class="sp"></span>${CHEV}</button>` : ''}
       </section>`);
   }
   if (row1.length) out.push(`<div class="wrow${row1.length === 1 ? ' one' : ''}">${row1.join('')}</div>`);
