@@ -53,6 +53,10 @@ end)
 
 -- ⌃V: pano geçmişi paneli (Windows'taki Win+V gibi): metin, kopyalanan görseller ve Screenshots klasörü.
 -- Ayrıntı: clipboard.lua / clipboard.html. ⌘V normal yapıştırır, dokunulmadı.
+-- Toasts and pickers share one style with the panels (ui.lua).
+UIStyle = load("ui")
+if UIStyle then pcall(UIStyle.start) end
+
 Clip = load("clipboard")
 if Clip then hs.hotkey.bind({ "ctrl" }, "v", Clip.toggle) end
 

@@ -5,8 +5,20 @@ Panel.__index = Panel
 
 -- Theme for every panel: "auto" follows macOS, "light"/"dark" force it (status menu → Tema).
 local THEME_KEY = "nimbstia.theme"
+local all = {} -- every panel, so a theme change reaches all of them at once
 function Panel.theme() return hs.settings.get(THEME_KEY) or "auto" end
-function Panel.setTheme(t) hs.settings.set(THEME_KEY, t) end
+function Panel.setTheme(t)
+  hs.settings.set(THEME_KEY, t)
+  for _, p in ipairs(all) do p:js(Panel.themeJS()) end
+  if Panel.onThemeChange then pcall(Panel.onThemeChange, t) end
+end
+
+-- The header button flips between light and dark; "auto" resolves to what macOS shows right now.
+function Panel.toggleTheme()
+  local t = Panel.theme()
+  if t == "auto" then t = (hs.host.interfaceStyle() == "Dark") and "dark" or "light" end
+  Panel.setTheme(t == "dark" and "light" or "dark")
+end
 function Panel.themeJS()
   local t = Panel.theme()
   if t == "light" or t == "dark" then return "document.documentElement.dataset.theme='" .. t .. "'" end
@@ -33,6 +45,8 @@ function Panel.new(opts)
       return
     elseif body.action == "close" then
       return self:hide(true)
+    elseif body.action == "toggleTheme" then
+      return Panel.toggleTheme()
     end
     local ok, err = pcall(opts.onMessage, self, body)
     if not ok then print(opts.name .. ": " .. tostring(err)) end
@@ -50,6 +64,7 @@ function Panel.new(opts)
       if action == "focusChange" and state == false and self.visible then self:hide(false) end
     end)
   self.wv:html(readFile(opts.html) or ("<body>" .. opts.html .. " missing</body>"))
+  table.insert(all, self)
   return self
 end
 
