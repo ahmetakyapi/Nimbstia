@@ -34,18 +34,18 @@ local function micMuted()
   return d and (d:inputMuted() or (d:inputVolume() or 1) == 0) or false
 end
 
--- Menu bar glyph: the Nimbstia mark (one tall pane + two stacked panes), drawn at 2x and
--- marked as a template so macOS tints it for light/dark menu bars.
+-- Menu bar glyph: the Nimbstia N (two rounded bars + a diagonal), drawn at 2x and marked as a
+-- template so macOS tints it for light/dark menu bars.
 local function glyph()
   local k = 2
   local c = hs.canvas.new({ x = 0, y = 0, w = 18 * k, h = 18 * k })
-  local black = { white = 0, alpha = 1 }
-  c[1] = { type = "rectangle", action = "fill", fillColor = black, roundedRectRadii = { xRadius = 1.8 * k, yRadius = 1.8 * k },
-    frame = { x = 1.5 * k, y = 3 * k, w = 6.6 * k, h = 12 * k } }
-  c[2] = { type = "rectangle", action = "stroke", strokeColor = black, strokeWidth = 1.3 * k, roundedRectRadii = { xRadius = 1.6 * k, yRadius = 1.6 * k },
-    frame = { x = 10.1 * k, y = 3.65 * k, w = 6.3 * k, h = 4.7 * k } }
-  c[3] = { type = "rectangle", action = "stroke", strokeColor = black, strokeWidth = 1.3 * k, roundedRectRadii = { xRadius = 1.6 * k, yRadius = 1.6 * k },
-    frame = { x = 10.1 * k, y = 9.65 * k, w = 6.3 * k, h = 4.7 * k } }
+  local ink = { white = 0, alpha = 1 }
+  c[1] = { type = "segments", action = "stroke", strokeColor = ink, strokeWidth = 3.1 * k, strokeCapStyle = "round",
+    coordinates = { { x = 6.2 * k, y = 4.6 * k }, { x = 11.8 * k, y = 13.4 * k } } }
+  c[2] = { type = "rectangle", action = "fill", fillColor = ink, roundedRectRadii = { xRadius = 1.55 * k, yRadius = 1.55 * k },
+    frame = { x = 3.1 * k, y = 3.1 * k, w = 3.1 * k, h = 11.8 * k } }
+  c[3] = { type = "rectangle", action = "fill", fillColor = ink, roundedRectRadii = { xRadius = 1.55 * k, yRadius = 1.55 * k },
+    frame = { x = 11.8 * k, y = 3.1 * k, w = 3.1 * k, h = 11.8 * k } }
   local img = c:imageFromCanvas()
   c:delete()
   return img:setSize({ w = 18, h = 18 }):template(true)
@@ -94,6 +94,36 @@ end
 -- ---------------------------------------------------------------- VPN / DEV checks (async)
 
 local checking = false
+-- The VPN service as macOS knows it (FortiClient and most VPN apps register a NetworkExtension
+-- service). config devCheck.vpnService names it explicitly; otherwise the first VPN service wins.
+local vpnName
+local function vpnService()
+  if DEV and DEV.vpnService then return DEV.vpnService end
+  if vpnName ~= nil then return vpnName or nil end
+  local out = hs.execute("/usr/sbin/scutil --nc list") or ""
+  vpnName = false
+  for line in out:gmatch("[^\n]+") do
+    local name = line:match('VPN %([^)]*%)%s+"([^"]+)"')
+    if name then vpnName = name; break end
+  end
+  return vpnName or nil
+end
+
+-- Connect or disconnect through macOS (scutil), then re-check right away.
+function M.vpn(connect)
+  local svc = vpnService()
+  if not svc then hs.alert.show("VPN hizmeti bulunamadı", 1.5); return end
+  state.vpnBusy = connect and "Bağlanıyor…" or "Bağlantı Kesiliyor…"
+  if M.pushPopover then M.pushPopover() end
+  Keep.task("/usr/sbin/scutil", function(code)
+    if code ~= 0 then hs.alert.show(connect and "VPN bağlanamadı" or "VPN bağlantısı kesilemedi", 1.5) end
+    -- NetworkExtension needs a moment; check a few times until the state settles.
+    for _, t in ipairs({ 1.5, 4, 8 }) do
+      Keep.after(t, function() M.check(false); if t == 8 then state.vpnBusy = nil; render() end end)
+    end
+  end, { "--nc", connect and "start" or "stop", svc })
+end
+
 local checkStarted = 0
 function M.check(manual)
   if not DEV then return end
@@ -200,7 +230,7 @@ end
 -- ---------------------------------------------------------------- popover (pulstia.html)
 
 local Panel = require("panel")
-local POP_W = 400 -- 380 px card + 10 px transparent inset on each side for the shadow
+local POP_W = 470 -- 450 px card + 10 px transparent inset on each side for the shadow
 local pop
 
 local function ago(t)
@@ -229,24 +259,85 @@ local function overall(claudePeak)
 end
 
 local TOOLS = {
-  { id = "clip",   name = "Pastia",   what = "Pano Geçmişi",      keys = "⌃V",     ok = function() return Clip end,    run = function() Clip.toggle() end },
-  { id = "shot",   name = "Clipstia", what = "Ekran Görüntüsü",   keys = "⌘.",     ok = function() return Shot end,    run = function() Shot.start() end, delay = 0.3 },
-  { id = "layout", name = "Panestia", what = "Pencere Düzenleri", keys = "⌃Space", ok = function() return Layouts end, run = function() Layouts.toggle() end },
-  { id = "repo",   name = "Repostia", what = "Projeler",          keys = "⌃⌥P",    ok = function() return Projects end, run = function() Projects.toggle() end },
-  { id = "text",   name = "Inkstia",  what = "Ekrandan Metin",    keys = "⌃⌥O",    ok = function() return Tools and Tools.ocr end, run = function() Tools.ocr() end, delay = 0.3 },
+  { id = "clip",   name = "Pastia",   what = "Pano",      keys = "⌃V",     ok = function() return Clip end,    run = function() Clip.toggle() end },
+  { id = "shot",   name = "Clipstia", what = "Ekran Al",   keys = "⌃.",     ok = function() return Shot end,    run = function() Shot.start() end, delay = 0.3 },
+  { id = "layout", name = "Panestia", what = "Düzen", keys = "⌃Space", ok = function() return Layouts end, run = function() Layouts.toggle() end },
+  { id = "repo",   name = "Repostia", what = "Projeler",          keys = "⌃⇧P",    ok = function() return Projects end, run = function() Projects.toggle() end },
+  { id = "text",   name = "Lexstia",  what = "Metin Oku",    keys = "⌃⇧O",    ok = function() return Tools and Tools.ocr end, run = function() Tools.ocr() end, delay = 0.3 },
 }
 
+-- ---------------------------------------------------------------- system strip (battery, memory, disk)
+
+-- Top memory users, grouped by app (Chrome/Electron helpers count towards their app). Async.
+local function appName(cmd)
+  local n = cmd:gsub("%s+Helper.*$", ""):gsub("%s+%(.*%)$", ""):gsub("%s+WebView$", "")
+  return n
+end
+function M.fetchProcs()
+  Keep.task("/bin/ps", function(code, out)
+    if code ~= 0 or not pop or not pop.visible then return end
+    local groups, total = {}, 0
+    for line in (out or ""):gmatch("[^\n]+") do
+      -- %cpu uses the locale's decimal mark ("23,6" on Turkish systems)
+      local rss, cpu, cmd = line:match("^%s*(%d+)%s+([%d%.,]+)%s+(.+)$")
+      if cpu then cpu = cpu:gsub(",", ".") end
+      if rss then
+        local name = appName(cmd)
+        local g = groups[name] or { name = name, mb = 0, cpu = 0 }
+        g.mb = g.mb + tonumber(rss) / 1024
+        g.cpu = g.cpu + (tonumber(cpu) or 0)
+        groups[name] = g
+        total = total + tonumber(rss) / 1024
+      end
+    end
+    local list = {}
+    for _, g in pairs(groups) do table.insert(list, g) end
+    table.sort(list, function(a, b) return a.mb > b.mb end)
+    local top = {}
+    for i = 1, math.min(10, #list) do
+      table.insert(top, { name = list[i].name, mb = math.floor(list[i].mb + 0.5), cpu = math.floor(list[i].cpu + 0.5) })
+    end
+    local memGB
+    pcall(function() memGB = hs.host.vmStat().memSize / 1073741824 end)
+    pop:js("Pulse.setProcs(" .. hs.json.encode({ list = top, totalMB = math.floor(total + 0.5), memMB = memGB and math.floor(memGB * 1024) or nil }) .. ")")
+  end, { "-axco", "rss=,%cpu=,comm=" })
+end
+
+local function systemData()
+  local sys = {}
+  pcall(function()
+    local pct = hs.battery.percentage()
+    if pct then sys.battery = { pct = math.floor(pct + 0.5), charging = hs.battery.isCharging() == true or hs.battery.powerSource() == "AC Power" } end
+  end)
+  pcall(function()
+    local v = hs.host.vmStat()
+    local used = (v.pagesActive or 0) + (v.pagesWiredDown or 0) + (v.pagesUsedByVMCompressor or 0)
+    if v.memSize and v.pageSize and v.memSize > 0 then sys.mem = math.floor(used * v.pageSize / v.memSize * 100 + 0.5) end
+  end)
+  pcall(function()
+    local root = hs.fs.volume.allVolumes()["/"]
+    local free = root and (root.NSURLVolumeAvailableCapacityForImportantUsageKey or root.NSURLVolumeAvailableCapacityKey)
+    local total = root and root.NSURLVolumeTotalCapacityKey
+    if free then sys.disk = math.floor(free / 1e9 + 0.5) end
+    if free and total and total > 0 then sys.diskUsed = math.floor((1 - free / total) * 100 + 0.5) end
+  end)
+  return sys
+end
+
+local githubData -- defined with the GitHub numbers below; popoverData only runs after start-up
 local function popoverData()
   local d = { errors = LOAD_ERRORS or {}, theme = Panel.theme(), shortcuts = M.help or {},
     toggles = { awake = hs.caffeinate.get("displayIdle") or false, mic = micMuted(), meetings = meetingsEnabled() } }
   if DEV then
     local h = health()
     d.health = h
-    d.dev = { name = DEV_NAME, host = DEV_HOST,
-      status = h == nil and "Kontrol Ediliyor…" or h == "ok" and ("Bağlı · " .. state.devMs .. " ms")
+    d.dev = { name = DEV_NAME, title = DEV.title or "VPN Bağlantısı", host = DEV_HOST,
+      status = state.vpnBusy or h == nil and "Kontrol Ediliyor…" or h == "ok" and ("Bağlı · " .. state.devMs .. " ms")
         or h == "warn" and "Yanıt Vermiyor" or "VPN Kapalı",
-      checkedAgo = state.checkedAt > 0 and ago(state.checkedAt) or "" }
+      checkedAgo = state.checkedAt > 0 and ago(state.checkedAt) or "", ms = state.devMs,
+      state = state.vpnBusy and "busy" or h }
     d.forti = hs.application.pathForBundleID("com.fortinet.FortiClient") ~= nil
+    if vpnService() then d.vpn = { connected = state.vpn == true, busy = state.vpnBusy } end
   end
   if launcherOk() then d.launcher = { title = LAUNCHER.title or "Başlatıcıyı Çalıştır" } end
   local u = Claude.usage()
@@ -256,10 +347,19 @@ local function popoverData()
     for _, l in ipairs(u.limits) do
       local pct = math.floor(l.percent + 0.5)
       if not peak or pct > peak then peak = pct end
-      table.insert(limits, { label = l.label, percent = pct, resets = l.resetsAt and Claude.when(l.resetsAt) or "" })
+      local item = { label = l.label, percent = pct, resets = l.resetsAt and Claude.when(l.resetsAt) or "" }
+      if l.weekly then
+        Claude.record(l.percent, u.fetchedAt)
+        local t = Claude.today(l.percent)
+        if t then item.today = math.floor(t + 0.5) end
+      end
+      table.insert(limits, item)
     end
     local sessions = {}
-    for _, ss in ipairs(Claude.sessions()) do table.insert(sessions, { name = ss.name, busy = ss.busy, url = ss.url }) end
+    for _, ss in ipairs(Claude.sessions()) do
+      table.insert(sessions, { name = ss.name, busy = ss.busy, url = ss.url,
+        folder = ss.cwd and ss.cwd:match("[^/]+$") or nil, ago = ss.updated and ago(ss.updated) or nil })
+    end
     d.claude = { plan = u.plan, updatedAgo = u.fetchedAt and ago(u.fetchedAt) or nil, limits = limits, sessions = sessions }
   end
   d.tools = {}
@@ -275,8 +375,66 @@ local function popoverData()
       end
     end
   end
+  d.system = systemData()
   d.status = overall(peak)
   return d
+end
+
+-- ---------------------------------------------------------------- GitHub / git numbers (bin/dev-stats.py)
+
+local devStats, devStatsBusy = nil, false
+function M.fetchDevStats(force)
+  if devStatsBusy then return end
+  if not force and devStats and os.time() - (devStats.at or 0) < 90 then return end
+  devStatsBusy = true
+  -- low CPU priority (nice): never compete with what the user is doing
+  Keep.task("/usr/bin/nice", function(code, out)
+    devStatsBusy = false
+    local ok, data = pcall(hs.json.decode, out or "")
+    if code == 0 and ok and type(data) == "table" then
+      devStats = data
+      if M.pushPopover then M.pushPopover() end
+      -- Repostia shows these numbers; refresh it if it is open.
+      if Projects and Projects.panel and Projects.panel.visible and githubData then
+        Projects.panel:js("Projects.setGitHub(" .. hs.json.encode(githubData() or {}) .. ")")
+      end
+    end
+  end, (function()
+    local args = { "-n", "10", "/usr/bin/python3", HOME .. "/.hammerspoon/bin/dev-stats.py" }
+    -- config.githubOrg limits every number and PR list to one GitHub organisation
+    if type(Config.githubOrg) == "string" and Config.githubOrg ~= "" then table.insert(args, "--org"); table.insert(args, Config.githubOrg) end
+    return args
+  end)())
+end
+
+function githubData()
+  if not devStats then return nil end
+  local g, h = devStats.git or {}, devStats.gh
+  local function top(list)
+    local out = {}
+    for i, p in ipairs(list or {}) do
+      if i > 8 then break end
+      table.insert(out, { title = p.title, url = p.url, repo = p.repo, owner = p.owner, number = p.number, draft = p.draft, author = p.author, created = p.created })
+    end
+    return out
+  end
+  return {
+    commits = g.commits or 0, added = g.added or 0, deleted = g.deleted or 0,
+    prsToday = h and h.openedToday or nil, opened = h and top(h.opened) or nil,
+    commitList = (function()
+      local out = {}
+      for i, c in ipairs(g.list or {}) do
+        if i > 12 then break end
+        table.insert(out, { sha = c.sha, subject = c.subject, t = c.t, added = c.added, deleted = c.deleted, repo = c.repo, owner = c.owner, url = c.url })
+      end
+      return out
+    end)(),
+    open = h and top(h.open) or nil, openCount = h and #(h.open or {}) or nil,
+    review = h and top(h.review) or nil, reviewCount = h and #(h.review or {}) or nil,
+    org = devStats.org,
+    updatedAgo = devStats.at and ago(devStats.at) or nil,
+    ghMissing = h == nil,
+  }
 end
 
 local function pushPopover()
@@ -297,7 +455,8 @@ local function popPosition(_, w, h)
   local sf = screen:frame()
   local x = f and (f.x + f.w / 2 - w / 2) or (sf.x + sf.w - w - 8)
   x = math.max(sf.x + 4, math.min(x, sf.x + sf.w - w - 4))
-  return { x = x, y = sf.y + 2, w = w, h = math.min(h, sf.h - 4) }
+  -- a little below the menu bar, like Control Center, not glued to it
+  return { x = x, y = sf.y + 8, w = w, h = math.min(h, sf.h - 12) }
 end
 
 local function onPopMessage(p, msg)
@@ -311,6 +470,17 @@ local function onPopMessage(p, msg)
     end
   elseif a == "check" then
     M.check(true)
+  elseif a == "procs" then
+    M.fetchProcs()
+  elseif a == "sys" then
+    local targets = {
+      battery = function() hs.urlevent.openURL("x-apple.systempreferences:com.apple.Battery-Settings.extension") end,
+      disk = function() hs.urlevent.openURL("x-apple.systempreferences:com.apple.settings.Storage") end,
+      activity = function() hs.application.launchOrFocusByBundleID("com.apple.ActivityMonitor") end,
+    }
+    if targets[msg.id] then after(targets[msg.id]) end
+  elseif a == "vpn" then
+    M.vpn(msg.v == "connect")
   elseif a == "forti" then
     after(function() hs.application.launchOrFocusByBundleID("com.fortinet.FortiClient") end)
   elseif a == "launcher" and launcherOk() then
@@ -344,14 +514,27 @@ function M.start(help)
   pop = Panel.new({
     name = "pulse", html = HOME .. "/.hammerspoon/pulstia.html", w = POP_W, h = 560,
     position = popPosition, onMessage = onPopMessage,
-    onShow = function(p) p:js("Pulse.set(" .. hs.json.encode(popoverData()) .. ");Pulse.open()") end,
+    onShow = function(p)
+      p:js("Pulse.set(" .. hs.json.encode(popoverData()) .. ");Pulse.open()")
+      M.fetchDevStats(false)
+    end,
   })
   M.popover = pop
+  Panel.onThemeChange = function() pushPopover() end
   bar:setClickCallback(function() pop:toggle() end)
   render()
   M.check(false)
   M.timer = hs.timer.doEvery(CHECK_EVERY, function() M.check(false) end)
   M.meetTimer = hs.timer.doEvery(MEET_EVERY, M.fetchMeetings)
+  -- git log over ~100 repos is the heaviest thing here: refresh on demand (popover / Repostia open)
+  -- and only every 15 minutes in the background.
+  M.statsTimer = hs.timer.doEvery(900, function() M.fetchDevStats(true) end)
+  -- Claude Code rewrites ~/.claude.json whenever it refreshes usage: follow it right away.
+  M.claudeWatch = hs.pathwatcher.new(HOME .. "/.claude.json", function()
+    if M.claudeTimer then M.claudeTimer:stop() end
+    M.claudeTimer = hs.timer.doAfter(0.5, function() render() end)
+  end):start()
+  M.fetchDevStats(true)
   M.fetchMeetings()
   M.tick = hs.timer.doEvery(20, render) -- meeting countdown in the title
   -- Re-check right away after wake or a network change instead of waiting for the next tick.
@@ -369,6 +552,7 @@ end
 
 M.render = render
 M._popoverData = popoverData -- exposed for tests
+function M.githubData() return githubData and githubData() or nil end
 function M.iconFrame() return bar and bar:frame() end
 M.state = state
 return M

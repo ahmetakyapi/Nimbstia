@@ -61,13 +61,50 @@ function M.usage()
       local label = l.kind == "weekly_all" and "Haftalık Limit" or "Haftalık"
       local model = l.scope and l.scope.model and l.scope.model.display_name
       if l.kind ~= "weekly_all" and model then label = "Haftalık · " .. model end
-      table.insert(out.limits, { label = label, percent = l.percent, resetsAt = parseTime(l.resets_at), severity = l.severity })
+      table.insert(out.limits, { label = label, percent = l.percent, resetsAt = parseTime(l.resets_at), severity = l.severity, weekly = l.kind == "weekly_all" })
     end
   end
   if #out.limits == 0 and type(util.seven_day) == "table" and util.seven_day.utilization then
     table.insert(out.limits, { label = "Haftalık Limit", percent = util.seven_day.utilization, resetsAt = parseTime(util.seven_day.resets_at) })
   end
   return out
+end
+
+-- ---------------------------------------------------------------- today's share of the weekly limit
+-- Claude Code only stores the current percentage, so every new reading is logged locally
+-- (hs.settings, 14 days). Today's use = latest reading minus the last reading before midnight.
+local LOG_KEY = "nimbstia.claudeLog"
+
+local function midnight()
+  local t = os.date("*t")
+  return os.time({ year = t.year, month = t.month, day = t.day, hour = 0 })
+end
+
+function M.record(percent, fetchedAt)
+  if not percent or not fetchedAt then return end
+  local log = hs.settings.get(LOG_KEY) or {}
+  local last = log[#log]
+  if last and last.t == fetchedAt then return end
+  table.insert(log, { t = fetchedAt, p = percent })
+  local keep, cutoff = {}, os.time() - 14 * 86400
+  for _, e in ipairs(log) do if e.t >= cutoff then table.insert(keep, e) end end
+  hs.settings.set(LOG_KEY, keep)
+end
+
+-- Percentage points of the weekly limit used today, or nil while there is no baseline yet.
+function M.today(current)
+  local log = hs.settings.get(LOG_KEY) or {}
+  if not current or #log == 0 then return nil end
+  -- Only a reading from before midnight is a true baseline; without one "today" is unknown
+  -- (using today's first reading would undercount), so the badge stays hidden until then.
+  local m0, base = midnight(), nil
+  for _, e in ipairs(log) do
+    if e.t < m0 then base = e.p end
+  end
+  if not base then return nil end
+  local d = current - base
+  if d < 0 then d = current end -- the weekly window reset today
+  return d
 end
 
 -- Highest current percent across limits (for the menu bar warning), or nil.
