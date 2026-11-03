@@ -1,6 +1,6 @@
 -- Clipstia: Lightshot-style screenshot tool. Freezes the screen under the mouse, the user drags a region
 -- and annotates it (shot.html does all UI/drawing), then a full-resolution PNG is saved and optionally copied.
--- API: M.trigger() (⌘.), M.start() (toggle), M.close(), M.webview, M.visible, M.lastOpenMs, M.destroy()
+-- API: M.trigger() (⌃.), M.start() (toggle), M.close(), M.webview, M.visible, M.lastOpenMs, M.destroy()
 --
 -- Memory: encoding a full-screen hs.image (saveToFile / encodeAsURLString) leaks ~270 MB of native memory
 -- per call in Hammerspoon 1.1, and loading a full-screen TIFF with hs.image.imageFromPath leaks ~58 MB.
@@ -146,6 +146,11 @@ local function onMessage(msg)
     -- the page decoded its own copy of the frozen screen: drop the native placeholder
     shownSession = session
     dropCanvas()
+    -- editing an image: start with the whole image selected, ready to crop or mark up
+    if cur and cur.editRect then
+      js("Shot.test(" .. hs.json.encode(cur.editRect) .. ",{objs:[]})")
+      cur.editRect = nil
+    end
     M.fullReadyMs = (hs.timer.secondsSinceEpoch() - openT0) * 1000
   elseif a == "imgError" then
     sendDataUrl()
@@ -226,7 +231,7 @@ function M.menuOpen()
   return false
 end
 
--- Entry point for ⌘. : if a menu is open, freeze the screen right now (the menu stays in the
+-- Entry point for ⌃. : if a menu is open, freeze the screen right now (the menu stays in the
 -- shot), close the menu with Escape and open the editor a moment later, so that Escape can
 -- never reach the overlay.
 function M.trigger()
@@ -252,11 +257,12 @@ function M.start(opts)
   prevApp = hs.application.frontmostApplication()
 
   -- Freeze the screen before anything is shown so the overlay never ends up in the capture.
-  local img = opts.snap or screen:snapshot()
+  -- Editing an existing image (opts.noFreeze): TMP_IMG is already prepared, nothing to freeze.
+  local img = opts.noFreeze and true or (opts.snap or screen:snapshot())
   if not (opts.captured or captureToFile(screen)) or not img then hs.alert.show("Ekran görüntüsü alınamadı", 1.5); return end
   local f = screen:fullFrame()
   local mode = screen:currentMode()
-  cur = { scale = (mode and mode.scale) or 2 }
+  cur = { scale = (mode and mode.scale) or 2, editRect = opts.editRect }
   local t1 = hs.timer.secondsSinceEpoch()
 
   session = session + 1
@@ -268,11 +274,13 @@ function M.start(opts)
 
   -- Instant paint: native canvas with the frozen image (the page adds dim/selection on top, transparently).
   dropCanvas()
-  freezeCanvas = hs.canvas.new(f)
-    :level(hs.drawing.windowLevels.screenSaver)
-    :behavior(hs.drawing.windowBehaviors.canJoinAllSpaces + hs.drawing.windowBehaviors.fullScreenAuxiliary)
-  freezeCanvas[1] = { type = "image", image = img, imageScaling = "scaleToFit", frame = { x = 0, y = 0, w = f.w, h = f.h } }
-  freezeCanvas:show()
+  if not opts.noFreeze then
+    freezeCanvas = hs.canvas.new(f)
+      :level(hs.drawing.windowLevels.screenSaver)
+      :behavior(hs.drawing.windowBehaviors.canJoinAllSpaces + hs.drawing.windowBehaviors.fullScreenAuxiliary)
+    freezeCanvas[1] = { type = "image", image = img, imageScaling = "scaleToFit", frame = { x = 0, y = 0, w = f.w, h = f.h } }
+    freezeCanvas:show()
+  end
   wv:frame(f)
   wv:show()
   wv:bringToFront(true)
@@ -316,6 +324,33 @@ function M.start(opts)
       hs.alert.show("Ekran görüntüsü aracı açılamadı", 1.5)
     end
   end)
+end
+
+-- Open an existing image in the editor: it is scaled to fit and centred on a dark backdrop the size of
+-- the screen (out of process, with sips), and the editor starts with the image selected. Saving writes
+-- a new file; the original stays untouched.
+function M.editFile(path)
+  if M.visible or exporting or type(path) ~= "string" or not hs.fs.attributes(path) then return end
+  local screen = hs.mouse.getCurrentScreen() or hs.screen.mainScreen()
+  local f = screen:fullFrame()
+  local mode = screen:currentMode()
+  local k = (mode and mode.scale) or 2
+  local W, H = math.floor(f.w * k), math.floor(f.h * k)
+  local q = function(x) return "'" .. x:gsub("'", "'\\''") .. "'" end
+  local info = hs.execute("/usr/bin/sips -g pixelWidth -g pixelHeight " .. q(path)) or ""
+  local iw, ih = tonumber(info:match("pixelWidth:%s*(%d+)")), tonumber(info:match("pixelHeight:%s*(%d+)"))
+  if not iw or not ih then hs.alert.show("Görsel açılamadı", 1.5); return end
+  local s = math.min(1, W * 0.86 / iw, H * 0.8 / ih)
+  local dw, dh = math.floor(iw * s), math.floor(ih * s)
+  hs.fs.mkdir(DIR .. "/clipdata")
+  os.remove(TMP_IMG)
+  local scaled = DIR .. "/clipdata/edit-scaled.tiff"
+  hs.execute(string.format("/usr/bin/sips -s format tiff -z %d %d %s --out %s >/dev/null && /usr/bin/sips --padToHeightWidth %d %d --padColor 15171C %s --out %s >/dev/null",
+    dh, dw, q(path), q(scaled), H, W, q(scaled), q(TMP_IMG)))
+  os.remove(scaled)
+  if not hs.fs.attributes(TMP_IMG) then hs.alert.show("Görsel açılamadı", 1.5); return end
+  local rect = { x = math.floor((W - dw) / 2 / k), y = math.floor((H - dh) / 2 / k), w = math.floor(dw / k), h = math.floor(dh / k) }
+  M.start({ captured = true, noFreeze = true, screen = screen, editRect = rect })
 end
 
 -- Replace a previous instance (re-running dofile) so only one hidden webview exists.
