@@ -16,7 +16,7 @@ local C = {
   devCheck = nil,
   -- Optional launcher shown in the status menu: { title, path }.
   launcher = nil,
-  -- Where screenshots (⌘.) are saved; the clipboard panel lists this folder too.
+  -- Where screenshots (⌃.) are saved; the clipboard panel lists this folder too.
   screenshotDir = HOME .. "/Documents/Screenshots",
 }
 

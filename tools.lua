@@ -2,6 +2,7 @@
 -- Call M.start() once from init.lua; every hotkey is listed in M.HELP (shown in the status menu).
 local Keep = require("keep")
 local PB = require("pb")
+local UI = require("ui")
 local Config = require("config")
 local M = {}
 
@@ -83,7 +84,7 @@ local function focusApp(a)
   end
 end
 
--- ---------------------------------------------------------------- OCR (⌃⌥O)
+-- ---------------------------------------------------------------- OCR (⌃⇧O)
 
 local function ocr()
   local img = TMP .. "/ocr-" .. os.time() .. ".png"
@@ -149,7 +150,7 @@ local function transform()
       local size = (utf8.len(input) or #input) .. " karakter"
       chooser:placeholderText(sel and ("Seçili metin · " .. size) or
         (input ~= "" and ("Panodaki metin · " .. size) or "Üretici seç…"))
-      chooser:show()
+      UI.styleChooser(chooser):show()
     end, { BIN .. "/transform.py", TMP .. "/transform-in.txt" })
   end)
 end
@@ -232,7 +233,7 @@ local function pickSnippet()
     table.insert(choices, { text = s.label .. "   " .. s.key, subText = oneLine(snippetText(s) or "(hatalı şablon)"), key = s.key })
   end
   snipChooser:choices(choices)
-  snipChooser:show()
+  UI.styleChooser(snipChooser):show()
 end
 
 -- ---------------------------------------------------------------- Jira (⌃⌥J)
@@ -283,7 +284,7 @@ function M.start()
   end):searchSubText(true):rows(10):width(36):placeholderText("Şablon seç…")
 
   for _, a in ipairs(M.APPS) do bind(HYPER, a.key, "Hopstia · " .. a.name, focusApp(a)) end
-  bind(MOD, "o", "Inkstia · Ekrandan Metin Oku", ocr)
+  bind({ "ctrl", "shift" }, "o", "Lexstia · Ekrandan Metin Oku", ocr)
   bind(MOD, "t", "Twistia · Metni Dönüştür (JSON, Base64, Tarih…)", transform)
   bind(MOD, "s", "Snipstia · Şablon Seç (ya da ;anahtar)", pickSnippet)
   bind(MOD, "j", "Jira Anahtarını Aç", openJira)

@@ -123,20 +123,21 @@ hs.hotkey.bind({ "ctrl", "alt", "cmd" }, "left",  toScreen("prev"))
 
 
 
--- ⌘.: ekran görüntüsü (Lightshot yerine, Apple Silicon'a yerel). Alan seç, çiz, ⌘S kaydet, ⌘C/⌃C/↩ kaydet + kopyala.
+-- ⌃.: ekran görüntüsü (Lightshot yerine, Apple Silicon'a yerel). Alan seç, çiz, ⌘S kaydet, ⌘C/⌃C/↩ kaydet + kopyala.
 -- Ayrıntı: shot.lua / shot.html. Görüntüler ~/Documents/Screenshots'a kaydedilir; ⌃V panelinde de görünür.
 Shot = load("shot")
--- ⌘. is macOS' "cancel" key: an open menu swallows it before a normal hotkey sees it. An event tap
--- sees the key first, so ⌘. also works while any menu is open (and the menu ends up in the shot).
+-- ⌃. (Ctrl+period) opens Clipstia. An event tap sees the key before any app or open menu, so it also
+-- works while a menu is open (and the menu ends up in the shot). ⌘. was dropped: it is macOS' cancel
+-- key and VS Code's Quick Fix.
 if Shot then
   shotTap = hs.eventtap.new({ hs.eventtap.event.types.keyDown }, function(e)
-    if hs.keycodes.map[e:getKeyCode()] ~= "." or not e:getFlags():containExactly({ "cmd" }) then return false end
+    if hs.keycodes.map[e:getKeyCode()] ~= "." or not e:getFlags():containExactly({ "ctrl" }) then return false end
     local ok, err = pcall(Shot.trigger) -- heavy work runs after the tap returns
     if not ok then print("shot: " .. tostring(err)) end
     return true
   end):start()
 end
--- ⌘. artık bizde. Lightshot (Intel) açılışta kendiliğinden başlarsa kısayolu geri alır: kapat ve kısayolu tazele.
+-- Lightshot (Intel) açılışta kendiliğinden başlarsa kapatılır; ekran görüntüsü artık Clipstia'da.
 local LIGHTSHOT = "com.skillbrains.lightshot"
 local function stopLightshot(app)
   app:kill()
@@ -146,9 +147,9 @@ lightshotWatcher = hs.application.watcher.new(function(_, ev, app)
   if Shot and ev == hs.application.watcher.launched and app and app:bundleID() == LIGHTSHOT then stopLightshot(app) end
 end):start()
 
--- ⌃⌥P: proje açıcı (~/Projects altındaki depolar; ↩ VS Code, ⌘↩ Terminal). Ayrıntı: projects.lua / projects.html.
+-- ⌃⇧P: proje açıcı (~/Projects altındaki depolar; ↩ VS Code, ⌘↩ Terminal). Ayrıntı: projects.lua / projects.html.
 Projects = load("projects")
-if Projects then hs.hotkey.bind(MOD, "p", Projects.toggle) end
+if Projects then hs.hotkey.bind({ "ctrl", "shift" }, "p", Projects.toggle) end
 
 -- Terminal'de ⇧↩ = alt satır (Claude Code). Terminal.app ⇧↩'yu düz ↩ gibi gönderir; ⌃J'yi Claude Code yeni satır sayar.
 newlineTap = hs.eventtap.new({ hs.eventtap.event.types.keyDown }, function(e)
@@ -160,7 +161,7 @@ newlineTap = hs.eventtap.new({ hs.eventtap.event.types.keyDown }, function(e)
 end)
 newlineTap:start()
 
--- Araçlar: uygulama kısayolları (⌃⌥⌘ + harf), ⌃⌥O metin oku, ⌃⌥T dönüştür, ⌃⌥S / ;şablon, ⌃⌥J Jira. Ayrıntı: tools.lua.
+-- Araçlar: uygulama kısayolları (⌃⌥⌘ + harf), ⌃⇧O metin oku, ⌃⌥T dönüştür, ⌃⌥S / ;şablon, ⌃⌥J Jira. Ayrıntı: tools.lua.
 Tools = load("tools")
 if Tools then
   local ok, err = pcall(Tools.start)
@@ -177,8 +178,8 @@ end
 local HELP = {
   { keys = "⌃V", label = "Pastia · Pano Geçmişi" },
   { keys = "⌃Space", label = "Panestia · Pencere Düzenleri" },
-  { keys = "⌘.", label = "Clipstia · Ekran Görüntüsü (⌘S Kaydet, ⌃C Kopyala)" },
-  { keys = "⌃⌥P", label = "Repostia · Projeler" },
+  { keys = "⌃.", label = "Clipstia · Ekran Görüntüsü (⌘S Kaydet, ⌃C Kopyala)" },
+  { keys = "⌃⇧P", label = "Repostia · Projeler" },
   { keys = "⌃⌥← / →", label = "Sola / Sağa Yasla (Tekrar Bas: ⅓ · ⅔)" },
   { keys = "⌃⌥↑ / ↓ / ↩", label = "Üst Yarı / Alt Yarı / Tam Ekran" },
   { keys = "⌃⌥C", label = "Ortala" },
@@ -194,6 +195,14 @@ if Status then
   local ok, err = pcall(Status.start, HELP)
   if not ok then table.insert(LOAD_ERRORS, "status.start: " .. tostring(err)) end
 end
+
+-- Nimbstia.app (Applications / Dock) opens the hub through this URL: hammerspoon://nimbstia
+hs.urlevent.bind("nimbstia", function()
+  if Status and Status.togglePopover then
+    if Status.popover and Status.popover.visible then return end -- a second click must not close it
+    Status.togglePopover()
+  end
+end)
 
 if #LOAD_ERRORS > 0 then
   hs.alert.show("⚠︎ Hammerspoon: " .. #LOAD_ERRORS .. " modül yüklenemedi (konsola bak)", 3)
