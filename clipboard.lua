@@ -339,6 +339,23 @@ local function handle(p, msg)
     bump(e, idx)
     pushItems(false, e.id)
     p:js("Clip.toast('Güncellendi')")
+  elseif a == "editImage" and (e.kind == "shot" or e.kind == "image") and e.path then
+    -- open the image in Clipstia to crop / mark it up; saving there writes a new file
+    p:hide(false)
+    if Shot and Shot.editFile then Keep.after(0.2, function() Shot.editFile(e.path) end) end
+  elseif a == "delete" and e.kind == "shot" then
+    -- Screenshot files go to the Trash (recoverable), never straight to deletion.
+    local name = e.path:match("[^/]+$")
+    local base, ext = name:match("^(.*)(%.[^.]+)$")
+    local dest, n = HOME .. "/.Trash/" .. name, 2
+    while hs.fs.attributes(dest) do dest = HOME .. "/.Trash/" .. (base or name) .. " " .. n .. (ext or ""); n = n + 1 end
+    if os.rename(e.path, dest) then
+      scanShots()
+      pushItems(false)
+      p:js("Clip.toast('Çöp Sepeti\\'ne taşındı')")
+    else
+      p:js("Clip.toast('Silinemedi')")
+    end
   elseif a == "delete" and idx then
     table.remove(history, idx)
     if e.kind == "image" and e.path then os.remove(e.path) end
