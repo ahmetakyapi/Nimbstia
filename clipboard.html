@@ -527,10 +527,11 @@ function mailHTML(t) {
   const at = t.lastIndexOf('@'), lp = t.slice(0, at), dm = t.slice(at);
   return `<div class="pv-card pv-mail"><div class="av" style="${hues(dm)}">${esc((lp.charAt(0) || '?').toLocaleUpperCase('tr'))}</div><div class="who"><div class="lp">${esc(lp)}</div><div class="dm">${esc(dm)}</div></div></div>`;
 }
+const FILE = P('<path d="M4 2.5h4.6L12 5.9v7.1c0 .3-.2.5-.5.5h-7a.5.5 0 0 1-.5-.5z"/>', '<path d="M4.5 1.8h4.3L12.4 5.4v7.6c0 .6-.5 1.2-1.2 1.2H4.5c-.6 0-1.1-.5-1.1-1.2V3c0-.7.5-1.2 1.1-1.2z"/><path d="M8.6 1.9v2.9c0 .4.3.7.7.7h2.9M5.8 9h4.4M5.8 11.4h2.8"/>');
 function pathHTML(t) {
   const parts = t.split('/').filter(Boolean), name = parts.pop() || t, m = name.match(/\.([a-z0-9]{1,8})$/i);
   const crumbs = parts.length ? `<div class="crumbs">${(t.startsWith('/') ? ['/'] : []).concat(parts).slice(-6).map(s => `<span>${esc(s)}</span>`).join(`<i>${CHEV_R}</i>`)}</div>` : '';
-  return `<div class="pv-card pv-path"><div class="hd"><div class="ft">${m ? ICONS.clip : ICONS.path}</div><div class="ht" style="min-width:0"><div class="fn"><b>${esc(name)}</b>${m ? `<span class="ext">${esc(m[1].toUpperCase())}</span>` : ''}</div>${crumbs}</div></div><div class="full">${esc(t)}</div></div>`;
+  return `<div class="pv-card pv-path"><div class="hd"><div class="ft">${m ? FILE : ICONS.path}</div><div class="ht" style="min-width:0"><div class="fn"><b>${esc(name)}</b>${m ? `<span class="ext">${esc(m[1].toUpperCase())}</span>` : ''}</div>${crumbs}</div></div><div class="full">${esc(t)}</div></div>`;
 }
 function langOf(t) {
   const s = t.trim();

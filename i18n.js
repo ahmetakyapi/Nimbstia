@@ -112,7 +112,8 @@
     'Küçük': 'Small', 'Orta': 'Medium', 'Büyük': 'Large',
 
     // Pulstia hub (pulstia.html, status.lua, claude.lua)
-    'Günlük Durum Paneli': 'Daily Status Panel', 'Sıfırlanma': 'Resets', 'Son kontrol': 'Checked', 'Son Kontrol': 'Checked', 'Çevrimiçi': 'Online', 'Her Şey Yolunda': 'All Good',
+    'Günlük Durum Paneli': 'Daily Status Panel', 'Geliştirme Sunucuları': 'Dev Servers', 'Durdur': 'Stop',
+    'Koyu Görünüm': 'Dark Mode', 'Açık Görünüm': 'Light Mode', 'Sıfırlanma': 'Resets', 'Son kontrol': 'Checked', 'Son Kontrol': 'Checked', 'Çevrimiçi': 'Online', 'Her Şey Yolunda': 'All Good',
     'Bağlantı Yok': 'No Connection', 'Dikkat': 'Attention', 'Bağlı': 'Connected', 'Bağlı Değil': 'Not Connected',
     'Yanıt Vermiyor': 'Not Responding', 'Kontrol Ediliyor…': 'Checking…', 'Bağlantıyı Kes': 'Disconnect',
     'Bağlan': 'Connect', 'Bağlanıyor…': 'Connecting…', 'Bağlantı Kesiliyor…': 'Disconnecting…',
@@ -221,7 +222,7 @@
     R('^([^·]+) yanıt vermiyor$', function (m) { return m[1] + ' not responding'; }),
     R('^([^·]+) Yanıt Vermiyor$', function (m) { return m[1] + ' Not Responding'; }),
     R('^/ ([^·]+) kullanımda$', function (m) { return '/ ' + m[1] + ' in use'; }),
-    R('^(\\d+),(\\d+) (B|KB|MB|GB|TB)$', function (m) { return m[1] + '.' + m[2] + ' ' + m[3]; }),
+    R('^([^A-Za-zÀ-ɏ\\d]*)(\\d+),(\\d+) (B|KB|MB|GB|TB)$', function (m) { return m[1] + m[2] + '.' + m[3] + ' ' + m[4]; }), // "1,5 MB", "/ 16,0 GB"
     R('^(\\d+),(\\d)$', function (m) { return m[1] + '.' + m[2]; }), // decimal comma (free disk "0,4 TB")
   ];
 
@@ -324,8 +325,8 @@
     } },
     // Panestia: the focused window (app + title) and app names in the previews.
     layouts: { sel: '#target,#target b,.win b,.app-ic,.eyebrow em', mode: function (el) { return el.id === 'target' || el.tagName === 'EM' ? 2 : 1; } },
-    // Hub: launcher title, host, meeting titles, process names, session names.
-    hub: { sel: '.lt,.hostin,.mrow,.pn,.ss-tx b', mode: function () { return 1; } },
+    // Hub: launcher title, host, meeting titles, process names, session names, dev server commands.
+    hub: { sel: '.lt,.hostin,.mrow,.pn,.ss-tx b,.pp small', mode: function () { return 1; } },
     shot: { sel: '#editor,#pill', mode: function () { return 1; } },
   };
   function detect() {
