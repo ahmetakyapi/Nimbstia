@@ -122,22 +122,9 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .sdot.b{background:var(--ok-bar);box-shadow:0 0 0 3px color-mix(in srgb,var(--ok-bar) 20%,transparent)}
 .vago{margin-top:10px;font-size:11.5px;color:var(--faint)}
 
-/* launcher: the primary action */
-.launch{display:flex;align-items:center;gap:12px;width:100%;height:48px;padding:0 8px 0 8px;border-radius:16px;color:var(--on-primary);background:var(--primary);box-shadow:var(--primary-shadow);transition:transform var(--dur-1) var(--ease-out),filter var(--dur-1)}
-.launch:hover{filter:brightness(1.05)}
-.launch:active{transform:scale(.985)}
-.launch .pi{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:rgba(255,255,255,.2)}
-.launch .pi svg{width:14px;height:14px}
-.launch .lt{flex:1;min-width:0;text-align:left}
-.launch .lt b{display:block;font-size:13.5px;font-weight:650;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.launch .lt small{display:block;margin-top:1px;font-size:11.5px;font-weight:500;opacity:.78}
-.launch .go{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.18);transition:transform var(--dur-2) var(--ease-out)}
-.launch .go svg{width:13px;height:13px}
-.launch:hover .go{transform:translateX(2px)}
-
 /* tools: glossy app icons */
 .tw{display:grid;grid-template-columns:repeat(var(--n,5),1fr);gap:2px;margin:-4px -6px -6px}
-.ti{position:relative;display:flex;flex-direction:column;align-items:center;min-width:0;padding:6px 2px 8px;border-radius:14px;transition:background var(--dur-1)}
+.ti{position:relative;display:flex;flex-direction:column;align-items:center;min-width:0;padding:6px 2px 14px;border-radius:14px;transition:background var(--dur-1)}
 .ti:hover{background:var(--hover)}
 .ti .ico{position:relative;width:48px;height:48px;border-radius:15px;display:grid;place-items:center;margin-bottom:8px;color:var(--k);
   background:linear-gradient(180deg,color-mix(in srgb,var(--k) 10%,var(--card)),color-mix(in srgb,var(--k) 16%,var(--card)));
@@ -148,14 +135,15 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .ti:hover .ico{transform:translateY(-2px) scale(1.03)}
 .ti:active .ico{transform:scale(.95)}
 .ti .nm{font-size:12.5px;font-weight:650;letter-spacing:-.01em;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ti .wt{font-size:11.5px;color:var(--faint);white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
-.ti .ky{margin-top:5px;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.04em;white-space:nowrap;padding:2px 7px;border-radius:6px;background:var(--chip)}
+.ti .wt{font-size:11.5px;line-height:1.25;color:var(--faint);text-align:center;max-width:100%;padding:0 2px}
+.ti .ky{margin-top:auto;position:relative;top:6px;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.04em;white-space:nowrap;padding:2px 7px;border-radius:6px;background:var(--chip)}
 
 /* quick toggles: Control Center */
-.rw{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.rt{display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:12px;border-radius:16px;text-align:left;background:var(--chip);transition:background var(--dur-2),box-shadow var(--dur-2)}
+.rw{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.rt{display:flex;align-items:center;gap:11px;padding:10px 12px 10px 10px;border-radius:16px;text-align:left;background:var(--chip);transition:background var(--dur-2),box-shadow var(--dur-2)}
 .rt:hover{background:color-mix(in srgb,var(--chip) 70%,var(--hover))}
-.rt .rc{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--muted);background:var(--card);box-shadow:0 1px 2px rgba(20,24,40,.08);transition:background var(--dur-2),color var(--dur-2),transform var(--dur-2) var(--ease-spring)}
+.rt .rc{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--muted);background:var(--card);box-shadow:0 1px 2px rgba(20,24,40,.08);transition:background var(--dur-2),color var(--dur-2),transform var(--dur-2) var(--ease-spring)}
+.rt > span:last-child{min-width:0}
 .rt .rc svg{width:18px;height:18px}
 .rt:active .rc{transform:scale(.92)}
 .rt .rn{display:block;font-size:13px;font-weight:650;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
@@ -163,6 +151,20 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .rt.on{background:var(--card);box-shadow:inset 0 0 0 1px var(--line2),0 1px 3px rgba(20,24,40,.06)}
 .rt.on .rc{color:#fff;background:linear-gradient(150deg,color-mix(in srgb,var(--q) 75%,#fff),var(--q));box-shadow:0 4px 12px -3px color-mix(in srgb,var(--q) 60%,transparent)}
 .rt.on small{color:color-mix(in srgb,var(--q) 70%,var(--text))}
+/* dev servers */
+.w.ports .wh .wi{background:var(--chip);color:var(--muted)}
+.pl{display:flex;flex-direction:column;margin:-4px -6px -6px}
+.pr{display:flex;align-items:center;gap:6px;padding:3px 4px 3px 8px;border-radius:12px;transition:background var(--dur-1)}
+.pr:hover{background:var(--hover)}
+.pr + .pr{box-shadow:0 -1px 0 var(--line)}
+.pd{flex:none;width:7px;height:7px;border-radius:50%;background:var(--ok-bar);box-shadow:0 0 0 3px color-mix(in srgb,var(--ok-bar) 18%,transparent)}
+.pp{flex:1;min-width:0;display:flex;align-items:baseline;gap:9px;padding:7px 4px}
+.pp b{flex:none;font:650 13.5px/1 var(--font-mono);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.pp small{min-width:0;font-size:12px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pr .ib{opacity:.75}
+.pr:hover .ib{opacity:1}
+.pr .ib.stop:hover{color:#fff;background:var(--bad-bar)}
+.pr .ib[data-tip]:hover::after{top:auto;bottom:calc(100% + 6px)}
 .meets{margin:12px 0 0;padding:8px 0 0;border-top:1px solid var(--line)}
 .mrow{display:flex;align-items:center;gap:10px;width:calc(100% + 16px);margin:0 -8px;padding:0 8px;height:32px;border-radius:9px;font-size:13px}
 .mrow.link:hover{background:var(--hover)}
@@ -274,12 +276,15 @@ const ICONS = {
 };
 // App identity colours: each tool keeps the colour people learn it by.
 const TOOL_COLOR = { clip: '#3b82f6', shot: '#22c55e', layout: '#8b5cf6', repo: '#f59e0b', text: '#14b8a6' };
+ICONS.moonf = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 9.4A5.6 5.6 0 0 1 6.6 3a5.6 5.6 0 1 0 6.4 6.4z" fill="currentColor" fill-opacity=".28"/></svg>';
 const TOOL_ICON = { clip: 'clip', shot: 'shot', layout: 'layout', repo: 'repo', text: 'text' };
 const W_ICON = {
   spark: '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.5c.3 2.9 1.6 4.2 4.5 4.5v.5C9.6 6.8 8.3 8.1 8 11h-.5c-.3-2.9-1.6-4.2-4.5-4.5V6c2.9-.3 4.2-1.6 4.5-4.5z" transform="translate(.6 1.6)"/></svg>',
   grid: '<svg viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="2" width="5" height="5" rx="1.5"/><rect x="9" y="2" width="5" height="5" rx="1.5"/><rect x="2" y="9" width="5" height="5" rx="1.5"/><rect x="9" y="9" width="5" height="5" rx="1.5" opacity=".6"/></svg>',
   toggle: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 5h6M3 11h3"/><circle cx="11.5" cy="5" r="1.8" fill="currentColor"/><circle cx="8.5" cy="11" r="1.8" fill="currentColor"/><path d="M10.5 11H13"/></svg>',
   chip: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="4" y="4" width="8" height="8" rx="2" fill="currentColor" fill-opacity=".35"/><path d="M6.5 2v2M9.5 2v2M6.5 12v2M9.5 12v2M2 6.5h2M2 9.5h2M12 6.5h2M12 9.5h2"/></svg>',
+  ext: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5H4a1 1 0 0 0-1 1V12a1 1 0 0 0 1 1h7.5a1 1 0 0 0 1-1v-2"/><path d="M9 3h4v4M13 3 7.5 8.5"/></svg>',
+  stop: '<svg viewBox="0 0 16 16" fill="currentColor"><rect x="4" y="4" width="8" height="8" rx="2"/></svg>',
   play: '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M5 3.2v9.6c0 .5.5.8.9.5l7.2-4.8a.6.6 0 0 0 0-1L5.9 2.7c-.4-.3-.9 0-.9.5z"/></svg>',
 };
 
@@ -381,8 +386,6 @@ function renderMain() {
   }
   if (row1.length) out.push(`<div class="wrow${row1.length === 1 ? ' one' : ''}">${row1.join('')}</div>`);
 
-  // ---- launcher (config.local.lua → launcher): the primary action
-  if (d.launcher) out.push(`<button class="launch" data-act="launcher" type="button"><span class="pi">${W_ICON.play}</span><span class="lt"><b>${esc(d.launcher.title)}</b></span><span class="go">${ARROW}</span></button>`);
 
   // ---- tools: app icons
   const tools = Array.isArray(d.tools) ? d.tools : [];
@@ -391,11 +394,19 @@ function renderMain() {
       `<button class="ti" data-act="tool" data-id="${esc(t.id)}" style="--k:${TOOL_COLOR[t.id] || '#64748b'}" aria-label="${esc(t.name + ' · ' + t.what)}"><span class="ico">${ICONS[TOOL_ICON[t.id]] || ICONS.clip}</span><span class="nm">${esc(t.name)}</span><span class="wt">${esc(t.what)}</span><span class="ky">${esc(Array.from(String(t.keys || '')).join(' ').replace('S p a c e', 'Space'))}</span></button>`).join('') + `</div></section>`);
   }
 
+  // ---- dev servers that are listening right now (status.lua → fetchPorts)
+  const ports = Array.isArray(d.ports) ? d.ports : [];
+  if (ports.length) {
+    out.push(`<section class="w ports">${wh(ICONS.term, 'Geliştirme Sunucuları', `<span class="meta">${ports.length}</span>`)}<div class="pl">` + ports.map(x =>
+      `<div class="pr"><span class="pd"></span><button class="pp" data-act="port" data-v="open" data-port="${x.port}" type="button" aria-label="localhost:${x.port}"><b>:${x.port}</b><small>${esc(x.cmd)}${x.folder ? ' · ' + esc(x.folder) : ''}</small></button><button class="ib sm" data-act="port" data-v="open" data-port="${x.port}" type="button" data-tip="Aç" aria-label="Aç">${W_ICON.ext}</button><button class="ib sm stop" data-act="port" data-v="stop" data-port="${x.port}" type="button" data-tip="Durdur" aria-label="Durdur">${W_ICON.stop}</button></div>`).join('') + `</div></section>`);
+  }
+
   // ---- quick toggles
   const tg = d.toggles || {};
   const rt = (id, label, icon, color, states) => `<button class="rt${tg[id] ? ' on' : ''}" role="switch" aria-checked="${tg[id] ? 'true' : 'false'}" data-act="toggle" data-id="${id}" style="--q:${color}"><span class="rc">${ICONS[icon]}</span><span><span class="rn">${label}</span><small>${(states || ['Açık', 'Kapalı'])[tg[id] ? 0 : 1]}</small></span></button>`;
   let q = `<section class="w quick"><div class="rw">` +
-    rt('awake', 'Uyanık Tut', 'cup', '#f59e0b') + rt('mic', 'Mikrofon', 'mic', '#f43f5e', ['Sessiz', 'Açık']) + rt('meetings', 'Toplantılar', 'cal', '#8b5cf6') + `</div>`;
+    rt('awake', 'Uyanık Tut', 'cup', '#f59e0b') + rt('mic', 'Mikrofon', 'mic', '#f43f5e', ['Sessiz', 'Açık']) +
+    rt('meetings', 'Toplantılar', 'cal', '#8b5cf6') + rt('appearance', 'Koyu Görünüm', 'moonf', '#6366f1') + `</div>`;
   const meets = Array.isArray(d.meetings) ? d.meetings : [];
   if (tg.meetings && meets.length) {
     q += `<div class="meets">` + meets.slice(0, 3).map(m => {
@@ -502,6 +513,7 @@ document.addEventListener('click', e => {
   switch (a) {
     case 'url': if (el.dataset.url) post({ action: 'url', url: el.dataset.url }); break;
     case 'vpn': post({ action: 'vpn', v: el.dataset.v }); break;
+    case 'port': post({ action: 'port', v: el.dataset.v, port: +el.dataset.port }); break;
     case 'tool': post({ action: 'tool', id: el.dataset.id }); break;
     case 'toggle': post({ action: 'toggle', id: el.dataset.id }); break;
     case 'theme': post({ action: 'theme', v: el.dataset.v }); break;

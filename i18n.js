@@ -112,7 +112,7 @@
     'Küçük': 'Small', 'Orta': 'Medium', 'Büyük': 'Large',
 
     // Pulstia hub (pulstia.html, status.lua, claude.lua)
-    'Günlük Durum Paneli': 'Daily Status Panel', 'Çevrimiçi': 'Online', 'Her Şey Yolunda': 'All Good',
+    'Günlük Durum Paneli': 'Daily Status Panel', 'Sıfırlanma': 'Resets', 'Son kontrol': 'Checked', 'Son Kontrol': 'Checked', 'Çevrimiçi': 'Online', 'Her Şey Yolunda': 'All Good',
     'Bağlantı Yok': 'No Connection', 'Dikkat': 'Attention', 'Bağlı': 'Connected', 'Bağlı Değil': 'Not Connected',
     'Yanıt Vermiyor': 'Not Responding', 'Kontrol Ediliyor…': 'Checking…', 'Bağlantıyı Kes': 'Disconnect',
     'Bağlan': 'Connect', 'Bağlanıyor…': 'Connecting…', 'Bağlantı Kesiliyor…': 'Disconnecting…',
@@ -323,7 +323,7 @@
       return 1;
     } },
     // Panestia: the focused window (app + title) and app names in the previews.
-    layouts: { sel: '#target,#target b,.win b,.app-ic,.eyebrow em', mode: function (el) { return el.id === 'target' ? 2 : 1; } },
+    layouts: { sel: '#target,#target b,.win b,.app-ic,.eyebrow em', mode: function (el) { return el.id === 'target' || el.tagName === 'EM' ? 2 : 1; } },
     // Hub: launcher title, host, meeting titles, process names, session names.
     hub: { sel: '.lt,.hostin,.mrow,.pn,.ss-tx b', mode: function () { return 1; } },
     shot: { sel: '#editor,#pill', mode: function () { return 1; } },
