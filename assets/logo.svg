@@ -1,49 +1,35 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Nimbstia mark: a bold N built from three rounded panes on a vivid squircle. -->
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#2a2b3d"/>
-      <stop offset="1" stop-color="#0d0e16"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3d82ff"/>
+      <stop offset=".55" stop-color="#2f5cf5"/>
+      <stop offset="1" stop-color="#7b3df0"/>
     </linearGradient>
-    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#4fb3ff"/>
-      <stop offset=".55" stop-color="#0a84ff"/>
-      <stop offset="1" stop-color="#7d5cff"/>
-    </linearGradient>
-    <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+    <radialGradient id="sheen" cx=".22" cy=".12" r=".9">
       <stop offset="0" stop-color="#ffffff" stop-opacity=".34"/>
-      <stop offset="1" stop-color="#ffffff" stop-opacity=".12"/>
-    </linearGradient>
+      <stop offset=".45" stop-color="#ffffff" stop-opacity=".06"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
     <linearGradient id="rim" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ffffff" stop-opacity=".28"/>
-      <stop offset="1" stop-color="#ffffff" stop-opacity=".04"/>
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".45"/>
+      <stop offset=".5" stop-color="#ffffff" stop-opacity=".08"/>
+      <stop offset="1" stop-color="#000000" stop-opacity=".12"/>
     </linearGradient>
-    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="18"/>
+    <linearGradient id="bar" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#e6ecff"/>
+    </linearGradient>
+    <filter id="lift" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#14185a" flood-opacity=".32"/>
     </filter>
   </defs>
-  <!-- squircle body -->
-  <path d="M256 16c150 0 240 18 240 240s-90 240-240 240S16 478 16 256 106 16 256 16z" fill="url(#bg)"/>
-  <path d="M256 17.5c149 0 238.5 18 238.5 238.5S405 494.5 256 494.5 17.5 476.5 17.5 256 107 17.5 256 17.5z" fill="none" stroke="url(#rim)" stroke-width="3"/>
-  <!-- glow behind the main pane -->
-  <rect x="104" y="128" width="148" height="256" rx="30" fill="#0a84ff" opacity=".55" filter="url(#glow)"/>
-  <!-- main pane -->
-  <rect x="104" y="120" width="148" height="272" rx="30" fill="url(#accent)"/>
-  <rect x="104.75" y="120.75" width="146.5" height="270.5" rx="29.25" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="1.5"/>
-  <!-- cursor caret in the main pane -->
-  <rect x="140" y="166" width="58" height="12" rx="6" fill="#fff" opacity=".9"/>
-  <rect x="140" y="196" width="80" height="12" rx="6" fill="#fff" opacity=".55"/>
-  <rect x="140" y="226" width="44" height="12" rx="6" fill="#fff" opacity=".55"/>
-  <!-- stacked glass panes -->
-  <rect x="270" y="120" width="138" height="128" rx="28" fill="url(#glass)"/>
-  <rect x="270.75" y="120.75" width="136.5" height="126.5" rx="27.25" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="1.5"/>
-  <rect x="270" y="264" width="138" height="128" rx="28" fill="url(#glass)"/>
-  <rect x="270.75" y="264.75" width="136.5" height="126.5" rx="27.25" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="1.5"/>
-  <!-- keycap hint: command loop on the lower pane -->
-  <path d="M322 312h34M322 344h34M322 312v32M356 312v32" stroke="#fff" stroke-opacity=".85" stroke-width="10" stroke-linecap="round" fill="none"/>
-  <circle cx="314" cy="304" r="10" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="9"/>
-  <circle cx="364" cy="304" r="10" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="9"/>
-  <circle cx="314" cy="352" r="10" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="9"/>
-  <circle cx="364" cy="352" r="10" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="9"/>
-  <!-- spark on the upper pane -->
-  <path d="M339 150l8 22 22 8-22 8-8 22-8-22-22-8 22-8z" fill="#fff" opacity=".9"/>
+  <path d="M256 0C462 0 512 50 512 256S462 512 256 512 0 462 0 256 50 0 256 0Z" fill="url(#bg)"/>
+  <path d="M256 0C462 0 512 50 512 256S462 512 256 512 0 462 0 256 50 0 256 0Z" fill="url(#sheen)"/>
+  <path d="M256 2C460.5 2 510 51.5 510 256S460.5 510 256 510 2 460.5 2 256 51.5 2 256 2Z" fill="none" stroke="url(#rim)" stroke-width="4"/>
+  <g filter="url(#lift)">
+    <line x1="176" y1="168" x2="336" y2="344" stroke="url(#bar)" stroke-width="66" stroke-linecap="round" opacity=".9"/>
+    <rect x="143" y="135" width="66" height="242" rx="33" fill="url(#bar)"/>
+    <rect x="303" y="135" width="66" height="242" rx="33" fill="url(#bar)"/>
+  </g>
 </svg>

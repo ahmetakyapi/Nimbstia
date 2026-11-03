@@ -2,7 +2,7 @@
 # Install Nimbstia into ~/.hammerspoon. Safe to re-run: an existing, different config is backed up first.
 set -euo pipefail
 
-REPO="https://github.com/ahmetakyapi/nimbstia.git"
+REPO="https://github.com/ahmetakyapi/Nimbstia.git"
 DEST="$HOME/.hammerspoon"
 
 say() { printf '\033[1m▸ %s\033[0m\n' "$*"; }
@@ -19,7 +19,7 @@ if [[ ! -d "/Applications/Hammerspoon.app" && ! -d "$HOME/Applications/Hammerspo
   fi
 fi
 
-if [[ -d "$DEST/.git" ]] && git -C "$DEST" remote get-url origin 2>/dev/null | grep -q "nimbstia"; then
+if [[ -d "$DEST/.git" ]] && git -C "$DEST" remote get-url origin 2>/dev/null | grep -qi "nimbstia"; then
   say "Updating existing Nimbstia checkout"
   git -C "$DEST" pull --ff-only
 else
@@ -37,6 +37,9 @@ if [[ ! -f "$DEST/config.local.lua" ]]; then
   say "Created config.local.lua — edit it to enable the Jira, VPN/DEV and launcher features"
 fi
 
+say "Building Nimbstia.app (Applications) — drag it to the Dock if you like"
+"$DEST/scripts/build-app.sh" >/dev/null || echo "Could not build Nimbstia.app; the menu bar icon works without it."
+
 say "Starting Hammerspoon"
 # A running Hammerspoon keeps the old config: restart it so Nimbstia loads.
 if pgrep -x Hammerspoon >/dev/null; then pkill -x Hammerspoon; sleep 1; fi
@@ -45,7 +48,7 @@ cat <<'MSG'
 
 Almost done. macOS will ask for two permissions for Hammerspoon:
   • Accessibility      (System Settings › Privacy & Security › Accessibility)  — hotkeys, window moves, snippets
-  • Screen Recording   (System Settings › Privacy & Security › Screen Recording) — ⌘. screenshots, ⌃⌥O text recognition
+  • Screen Recording   (System Settings › Privacy & Security › Screen Recording) — ⌃. screenshots, ⌃⇧O text recognition
 Turn on "Launch Hammerspoon at login" in its preferences (Nimbstia also asks for it).
 Click the Nimbstia icon in the menu bar for status, Claude usage, tools and every shortcut.
 MSG

@@ -67,7 +67,7 @@ if Layouts then hs.hotkey.bind({ "ctrl" }, "space", Layouts.toggle) end
 -- Window snapping (like Win+arrow): ⌃⌥← / ⌃⌥→ cycle the width ½ → ⅓ → ⅔ on repeated presses,
 -- ⌃⌥↑ top half, ⌃⌥↓ bottom half, ⌃⌥↩ full, ⌃⌥C center, ⌃⌥⌘←/→ other screen, ⌃⌥Z undo.
 hs.window.animationDuration = 0
--- A hung app must not freeze ⌘. or ⌃Space while we ask it for its windows (Accessibility timeout, seconds).
+-- A hung app must not freeze ⌃. or ⌃Space while we ask it for its windows (Accessibility timeout, seconds).
 hs.window.timeout(0.5)
 local MOD = { "ctrl", "alt" }
 local WIDTHS = { 1 / 2, 1 / 3, 2 / 3 }
