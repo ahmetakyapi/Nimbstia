@@ -2,20 +2,20 @@
 const now = Math.floor(Date.now()/1000), DAY = 86400;
 const ti = (id, text, ago, app, pinned) => ({ id, kind: 'text', text, t: now - ago, app, pinned: !!pinned, len: [...text].length, lines: text.split('\n').length, words: text.split(/\s+/).filter(Boolean).length });
 exports.CLIP = { now, items: [
-  ti('d1', "const total = cart.items.reduce((sum, item) => sum + item.price, 0);\nconsole.log(`Toplam: ${total} ₺`);", 40, 'Visual Studio Code'),
+  ti('d1', "const total = cart.items.reduce((sum, item) => sum + item.price, 0);\nconsole.log(`Total: ${total} USD`);", 40, 'Visual Studio Code'),
   ti('d2', 'https://github.com/ahmetakyapi/Nimbstia', 260, 'Google Chrome', true),
   ti('d3', '#0A84FF', 950, 'Figma'),
-  ti('d4', 'Sürüm notu: pano geçmişi artık en yeni öğeyi her zaman en üstte gösteriyor.', 2500, 'Notlar'),
-  ti('d5', '~/Projects/nimbstia/README.md', 5600, 'Terminal'),
-  ti('d6', 'merhaba@ornek.com', DAY + 3000, 'Mail'),
-  ti('d7', '{\n  "name": "nimbstia",\n  "version": "1.0.0",\n  "license": "MIT"\n}', DAY + 9000, 'Visual Studio Code'),
+  ti('d4', 'Release note: clipboard history now always shows the newest item first.', 2500, 'Notes'),
+  ti('d5', '~/Projects/Nimbstia/README.md', 5600, 'Terminal'),
+  ti('d6', 'hello@example.com', DAY + 3000, 'Mail'),
+  ti('d7', '{\n  "name": "Nimbstia",\n  "version": "1.0.0",\n  "license": "MIT"\n}', DAY + 9000, 'Visual Studio Code'),
   ti('d8', '42.195', 2 * DAY + 400, 'Numbers'),
-  ti('d9', 'Cuma 14:00 · tasarım gözden geçirme', 3 * DAY, 'Takvim'),
+  ti('d9', 'Friday 2 pm · design review', 3 * DAY, 'Calendar'),
 ]};
 const P = '/Users/demo/Projects/';
 const proj = (name, o) => Object.assign(o, { name, path: P + name, mtime: o.ct });
 exports.PROJECTS = { scanning: false, items: [
-  proj('nimbstia', { branch: 'main', sha: '4f2c9e1', ct: now - 600, subject: 'feat: menu bar status with VPN check', dirty: 2, ahead: 1, behind: 0 }),
+  proj('Nimbstia', { branch: 'main', sha: '4f2c9e1', ct: now - 600, subject: 'feat: menu bar status with VPN check', dirty: 2, ahead: 1, behind: 0 }),
   proj('website', { branch: 'main', sha: 'a91b3d0', ct: now - 5400, subject: 'docs: refresh landing copy', dirty: 0, ahead: 0, behind: 0 }),
   proj('api-server', { branch: 'feature/auth-refresh', sha: '77de210', ct: now - 9000, subject: 'fix: rotate refresh tokens', dirty: 5, ahead: 2, behind: 3 }),
   proj('mobile-app', { branch: 'develop', sha: 'c03f8aa', ct: now - DAY - 4000, subject: 'chore: bump SDK to 51', dirty: 0, ahead: 0, behind: 0 }),
@@ -38,12 +38,13 @@ exports.GH = { commits: 12, added: 1840, deleted: 412, prsToday: 2, updatedAgo: 
   reviewCount: 5, review: [{ owner: 'acme', repo: 'api-server', number: 231, title: 'fix: rotate refresh tokens', author: 'selin', url: G }, { owner: 'acme', repo: 'design-system', number: 57, title: 'feat: new focus ring tokens', author: 'mert', url: G }, { owner: 'acme', repo: 'mobile-app', number: 412, title: 'chore: bump SDK to 51', author: 'deniz', url: G }],
   openCount: 2, open: [{ owner: 'ahmetakyapi', repo: 'Nimbstia', number: 14, title: 'feat: control center hub', author: 'ahmetakyapi', url: G }, { owner: 'acme', repo: 'website', number: 88, title: 'docs: refresh landing copy', author: 'ahmetakyapi', url: G, draft: true }] };
 exports.POP = { health: 'ok', status: { text: 'Her Şey Yolunda', tone: 'ok' },
-  dev: { name: 'DEV', title: 'Ofis VPN', host: '10.0.0.10', status: 'Bağlı · 18 ms', checkedAgo: 'az önce' },
-  vpn: { connected: true }, github: exports.GH, forti: false, launcher: { title: 'Geliştirme Ortamını Başlat' },
+  dev: { name: 'DEV', title: 'Office VPN', host: '10.0.0.10', status: 'Bağlı · 18 ms', checkedAgo: 'az önce', ms: 18 },
+  vpn: { connected: true }, github: exports.GH, forti: false,
+  ports: [{ port: 3000, cmd: 'node', folder: 'Nimbstia-site' }, { port: 5173, cmd: 'node', folder: 'design-system' }, { port: 8000, cmd: 'Python', folder: 'api-server' }],
   claude: { plan: 'Max', updatedAgo: '2 dk önce', limits: [{ label: 'Haftalık Limit', percent: 33, resets: 'Cumartesi 12:00' }, { label: 'Oturum Limiti', percent: 71, resets: '14:20' }],
-    sessions: [{ name: 'nimbstia-docs', busy: true, url: 'https://claude.ai' }, { name: 'api-server', busy: true, url: 'https://claude.ai' }, { name: 'website', busy: false, url: 'https://claude.ai' }] },
+    sessions: [{ name: 'Nimbstia docs', busy: true, url: 'https://claude.ai' }, { name: 'api-server', busy: true, url: 'https://claude.ai' }, { name: 'website', busy: false, url: 'https://claude.ai' }] },
   tools: [{ id: 'clip', name: 'Pastia', what: 'Pano', keys: '⌃V' }, { id: 'shot', name: 'Clipstia', what: 'Ekran Al', keys: '⌃.' }, { id: 'layout', name: 'Panestia', what: 'Düzen', keys: '⌃Space' }, { id: 'repo', name: 'Repostia', what: 'Projeler', keys: '⌃⇧P' }, { id: 'text', name: 'Lexstia', what: 'Metin Oku', keys: '⌃⇧O' }],
-  toggles: { awake: true, mic: false, meetings: false },
+  toggles: { awake: true, mic: false, meetings: false, appearance: false },
   system: { battery: { pct: 82, charging: false }, mem: 58, disk: 412, diskUsed: 57 },
   theme: 'auto', shortcuts: [{ keys: '⌃V', label: 'Pastia · Pano Geçmişi' }, { keys: '⌃.', label: 'Clipstia · Ekran Görüntüsü' }], errors: [] };
 // layouts
@@ -53,7 +54,7 @@ const apps = {}; for (const k in COLORS) apps[k] = { name: NAMES[k], color: COLO
 const cols = (a, b, r) => [{ app: a, rect: [0, 0, r, 1] }, { app: b, rect: [r, 0, 1 - r, 1] }];
 const ms = (a, b, c, r) => [{ app: a, rect: [0, 0, r, 1] }, { app: b, rect: [r, 0, 1 - r, .5] }, { app: c, rect: [r, .5, 1 - r, .5] }];
 const L = (id, group, name, cells, ratio, extra) => Object.assign({ id, group, name, cells, adjustable: ratio != null, ratio, custom: false, hideOthers: false }, extra);
-exports.LAYOUTS = { apps, aspect: 1.6, last: 'code', canUndo: true, win: { app: 'Visual Studio Code', title: 'nimbstia — init.lua', icon: false },
+exports.LAYOUTS = { apps, aspect: 1.6, last: 'code', canUndo: true, win: { app: 'Visual Studio Code', title: 'Nimbstia — init.lua', icon: false },
   layouts: [L('pair', 'İki Uygulama', 'Son İki Pencere Yan Yana', cols('win1', 'win2', .5), .5), L('browser', 'İki Uygulama', 'Tarayıcı Ağırlıklı', cols('code', 'chrome', .35), .35), L('code', 'İki Uygulama', 'Kod Ağırlıklı', cols('code', 'chrome', .6), .6), L('half', 'İki Uygulama', 'Yarı Yarıya', cols('code', 'chrome', .5), .5), L('claude', 'İki Uygulama', 'Claude Yanında', cols('code', 'claude', .65), .65), L('terminal', 'İki Uygulama', 'Terminal Yanında', cols('code', 'terminal', .6), .6),
     L('dev', 'Üç Uygulama', 'Geliştirme', ms('code', 'chrome', 'terminal', .5), .5), L('ai', 'Üç Uygulama', 'Kod · Tarayıcı · Claude', [{ app: 'code', rect: [0, 0, .42, 1] }, { app: 'chrome', rect: [.42, 0, .32, 1] }, { app: 'claude', rect: [.74, 0, .26, 1] }], .42), L('comms', 'Üç Uygulama', 'İletişim', ms('outlook', 'teams', 'whatsapp', .5), .5),
     L('focusCode', 'Odak', 'Odak: VS Code', [{ app: 'code', rect: [.08, .04, .84, .92] }], null, { hideOthers: true }), L('focusChrome', 'Odak', 'Odak: Chrome', [{ app: 'chrome', rect: [.08, .04, .84, .92] }], null, { hideOthers: true })],

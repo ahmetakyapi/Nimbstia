@@ -48,10 +48,34 @@ function Panel.themeCSS()
   themeCSS = css
   return css
 end
+-- Interface language (config.language): "tr" (default) or "en". i18n.js translates the panels in place.
+function Panel.lang()
+  local ok, C = pcall(require, "config")
+  local l = ok and type(C) == "table" and C.language or "tr"
+  if type(l) ~= "string" or not l:match("^%a%a$") then return "tr" end
+  return l:lower()
+end
+local i18nJS
+function Panel.i18nJS()
+  if i18nJS == nil then
+    -- an inline script ends at the first "</script", so that sequence must not appear in the source
+    i18nJS = (readFile(BASE .. "i18n.js") or ""):gsub("</script", "<\\/script")
+  end
+  return i18nJS
+end
+
 function Panel.inline(html)
-  return (html:gsub('<link rel="stylesheet" href="theme%.css">', function()
+  html = html:gsub('<link rel="stylesheet" href="theme%.css">', function()
     return "<style>" .. Panel.themeCSS() .. "</style>"
-  end, 1))
+  end, 1)
+  -- The <script src> has no base URL to resolve against either: inline it, with the language first.
+  html = html:gsub('<script src="i18n%.js"></script>', function()
+    local js = Panel.i18nJS()
+    local out = '<script>window.NB_LANG="' .. Panel.lang() .. '";</script>'
+    if js ~= "" then out = out .. "<script>" .. js .. "</script>" end
+    return out
+  end, 1)
+  return html
 end
 
 -- opts: name (JS message handler), html (file path), w, h, onMessage(panel, body), onShow(panel),

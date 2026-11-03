@@ -8,7 +8,10 @@ const path = require('path'), fs = require('fs');
 const { chromium } = require('playwright');
 const D = require('./demo.js');
 const ROOT = path.resolve(__dirname, '../..');
-const args = process.argv.slice(2), readme = args[0] === '--readme';
+//   --lang en (anywhere in the arguments) renders the English interface; --readme always uses English.
+const argv = process.argv.slice(2), li = argv.indexOf('--lang');
+const args = li >= 0 ? argv.filter((_, i) => i !== li && i !== li + 1) : argv, readme = args[0] === '--readme';
+const lang = li >= 0 ? (argv[li + 1] || 'tr') : (readme ? 'en' : 'tr');
 const out = readme ? path.join(ROOT, 'assets/screens') : (args[0] || path.join(__dirname, 'out'));
 const only = readme ? [] : args.slice(1);
 const scale = readme ? 2 : 1;
@@ -21,13 +24,13 @@ const OBJS = [
   { t: 'num', at: rel(508, 208), n: 1, color: '#ff3b30', r: 14 },
   { t: 'rect', a: rel(966, 390), b: rel(1055, 682), color: '#ff3b30', w: 4 },
   { t: 'num', at: rel(966, 390), n: 2, color: '#ff3b30', r: 14 },
-  { t: 'text', at: rel(560, 420), text: 'Rekor gün: Cumartesi', color: '#ff3b30', fs: 24 },
+  { t: 'text', at: rel(560, 420), text: 'Best day: Saturday', color: '#ff3b30', fs: 24 },
   { t: 'arrow', a: rel(800, 445), b: rel(950, 470), color: '#ff3b30', w: 4 },
 ];
 
 const PANELS = {
   clipboard: { w: 1060, h: 660, run: `Clip.setItems(${JSON.stringify(D.CLIP)});Clip.open();` },
-  projects: { w: 1060, h: 660, run: `Projects.setGitHub(${JSON.stringify(D.GH)});Projects.setItems(${JSON.stringify(D.PROJECTS)});Projects.log('/Users/demo/Projects/nimbstia','4f2c9e1',${JSON.stringify(D.LOG)});Projects.open();` },
+  projects: { w: 1060, h: 660, run: `Projects.setGitHub(${JSON.stringify(D.GH)});Projects.setItems(${JSON.stringify(D.PROJECTS)});Projects.log('/Users/demo/Projects/Nimbstia','4f2c9e1',${JSON.stringify(D.LOG)});Projects.open();` },
   layouts: { w: 980, h: 680, run: `Layouts.setData(${JSON.stringify(D.LAYOUTS)});Layouts.open();` },
   pulstia: { w: 470, h: 1000, file: 'popover', run: `Pulse.set(${JSON.stringify(D.POP)});Pulse.open();`, fit: true },
   shot: { w: 1440, h: 900, file: 'screenshot', desktop: true, clip: { x: 205, y: 68, width: 1060, height: 740 },
@@ -51,11 +54,11 @@ const PANELS = {
       const pg = await b.newPage({ viewport: { width: P.w, height: P.h }, deviceScaleFactor: scale, colorScheme: theme });
       const errs = [];
       pg.on('pageerror', e => errs.push(e.message));
-      await pg.addInitScript(d => {
-        window.__msgs = []; window.__desk = d;
+      await pg.addInitScript(([d, lang]) => {
+        window.__msgs = []; window.__desk = d; window.NB_LANG = lang;
         const h = { postMessage: m => window.__msgs.push(m) };
         window.webkit = { messageHandlers: new Proxy({}, { get: () => h }) };
-      }, desk);
+      }, [desk, lang]);
       await pg.goto('file://' + path.join(ROOT, name + '.html'));
       await pg.evaluate(t => { document.documentElement.dataset.theme = t; }, theme);
       await pg.evaluate(P.run);

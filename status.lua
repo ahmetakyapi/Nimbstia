@@ -11,7 +11,6 @@ local DEV_NAME = DEV and (DEV.name or "DEV") or nil
 local CHECK_EVERY = 30
 local MEET_EVERY = 60
 local MEET_KEY = "status.meetings"
-local LAUNCHER = Config.launcher
 local Claude = require("claude")
 
 local state = { vpn = nil, dev = nil, devMs = nil, iface = nil, checkedAt = 0, meetings = {}, meetErr = nil }
@@ -242,8 +241,6 @@ local function ago(t)
   return math.floor(s / 86400) .. " gün önce"
 end
 
-local function launcherOk() return LAUNCHER and LAUNCHER.path and hs.fs.attributes(LAUNCHER.path) ~= nil end
-
 -- The single most important thing to say about the day, for the popover header.
 local function overall(claudePeak)
   local errs = LOAD_ERRORS or {}
@@ -327,7 +324,12 @@ end
 local githubData -- defined with the GitHub numbers below; popoverData only runs after start-up
 local function popoverData()
   local d = { errors = LOAD_ERRORS or {}, theme = Panel.theme(), shortcuts = M.help or {},
-    toggles = { awake = hs.caffeinate.get("displayIdle") or false, mic = micMuted(), meetings = meetingsEnabled() } }
+    toggles = { awake = hs.caffeinate.get("displayIdle") or false, mic = micMuted(), meetings = meetingsEnabled(),
+      appearance = hs.host.interfaceStyle() == "Dark" } }
+  if state.ports and #state.ports > 0 then
+    d.ports = {}
+    for _, x in ipairs(state.ports) do table.insert(d.ports, { port = x.port, cmd = x.cmd, folder = x.folder }) end
+  end
   if DEV then
     local h = health()
     d.health = h
@@ -339,7 +341,6 @@ local function popoverData()
     d.forti = hs.application.pathForBundleID("com.fortinet.FortiClient") ~= nil
     if vpnService() then d.vpn = { connected = state.vpn == true, busy = state.vpnBusy } end
   end
-  if launcherOk() then d.launcher = { title = LAUNCHER.title or "Başlatıcıyı Çalıştır" } end
   local u = Claude.usage()
   local peak
   if u then
@@ -378,6 +379,65 @@ local function popoverData()
   d.system = systemData()
   d.status = overall(peak)
   return d
+end
+
+-- ---------------------------------------------------------------- dev servers (listening TCP ports)
+
+-- Local dev servers (npm run dev, Vite, Django, Rails, Ollama…) that are listening right now, with the
+-- project folder they run in. AI coding agents start these and leave them behind; the hub shows them
+-- with open / stop. Only the user's own processes are visible to lsof, so nothing here needs sudo.
+local DEV_CMDS = { "node", "bun", "deno", "python", "Python", "ruby", "rails", "puma", "php", "java", "go", "air",
+  "uvicorn", "gunicorn", "hugo", "jekyll", "nginx", "httpd", "caddy", "postgres", "mysqld", "redis", "mongod",
+  "ollama", "dotnet", "beam.smp", "elixir", "next-server", "vite", "esbuild", "wrangler", "docker", "com.docker" }
+local NOT_DEV = { ControlCenter = true, rapportd = true, sharingd = true, Spotify = true, Dropbox = true,
+  ["Code Helper"] = true, ["Code Helper (Plugin)"] = true, Figma = true, ["figma_agent"] = true, Raycast = true,
+  ["Google Chrome"] = true, ["Google Chrome Helper"] = true, Hammerspoon = true, ["Adobe Desktop Service"] = true }
+local function isDev(cmd, port)
+  if NOT_DEV[cmd] then return false end
+  for _, c in ipairs(DEV_CMDS) do
+    if cmd == c or cmd:sub(1, #c) == c then return true end
+  end
+  -- unknown binary on a classic dev port (go/rust servers, custom tools)
+  return (port >= 3000 and port < 3100) or (port >= 4000 and port < 4400) or (port >= 5170 and port < 5180)
+    or (port >= 8000 and port < 8100) or port == 8888 or port == 9000
+end
+
+function M.fetchPorts()
+  Keep.task("/usr/sbin/lsof", function(code, out)
+    if code ~= 0 and (out or "") == "" then state.ports = {}; if M.pushPopover then M.pushPopover() end; return end
+    local found, seen, pid, cmd = {}, {}, nil, nil
+    for line in (out or ""):gmatch("[^\n]+") do
+      local k, v = line:sub(1, 1), line:sub(2)
+      if k == "p" then pid = tonumber(v)
+      elseif k == "c" then cmd = v
+      elseif k == "n" and pid and cmd then
+        local port = tonumber(v:match(":(%d+)$"))
+        if port and port >= 1024 and not seen[port] and isDev(cmd, port) then
+          seen[port] = true
+          table.insert(found, { port = port, pid = pid, cmd = cmd })
+        end
+      end
+    end
+    table.sort(found, function(a, b) return a.port < b.port end)
+    while #found > 6 do table.remove(found) end
+    if #found == 0 then state.ports = {}; if M.pushPopover then M.pushPopover() end; return end
+    -- second pass: the working directory of each server = the project it belongs to
+    local pids = {}
+    for _, x in ipairs(found) do table.insert(pids, tostring(x.pid)) end
+    Keep.task("/usr/sbin/lsof", function(_, cwdOut)
+      local cwd, cur = {}, nil
+      for line in (cwdOut or ""):gmatch("[^\n]+") do
+        local k, v = line:sub(1, 1), line:sub(2)
+        if k == "p" then cur = tonumber(v) elseif k == "n" and cur then cwd[cur] = v end
+      end
+      for _, x in ipairs(found) do
+        local dir = cwd[x.pid]
+        x.folder = dir and dir ~= "/" and dir ~= HOME and dir:match("[^/]+$") or nil
+      end
+      state.ports = found
+      if M.pushPopover then M.pushPopover() end
+    end, { "-a", "-d", "cwd", "-p", table.concat(pids, ","), "-Fpn" })
+  end, { "+c", "0", "-nP", "-iTCP", "-sTCP:LISTEN", "-Fpcn" })
 end
 
 -- ---------------------------------------------------------------- GitHub / git numbers (bin/dev-stats.py)
@@ -483,12 +543,26 @@ local function onPopMessage(p, msg)
     M.vpn(msg.v == "connect")
   elseif a == "forti" then
     after(function() hs.application.launchOrFocusByBundleID("com.fortinet.FortiClient") end)
-  elseif a == "launcher" and launcherOk() then
-    after(function() Keep.task("/usr/bin/open", nil, { LAUNCHER.path }) end)
+  elseif a == "port" and tonumber(msg.port) then
+    local port = tonumber(msg.port)
+    local hit
+    for _, x in ipairs(state.ports or {}) do if x.port == port then hit = x end end
+    if hit and msg.v == "open" then
+      after(function() hs.urlevent.openURL("http://localhost:" .. port) end)
+    elseif hit and msg.v == "stop" then
+      -- only a pid we listed ourselves, never one the page made up
+      Keep.task("/bin/kill", function() Keep.after(0.8, function() M.fetchPorts() end) end, { "-TERM", tostring(hit.pid) })
+      hs.alert.show("Durduruldu: " .. hit.cmd .. " · :" .. port, 1)
+    end
   elseif a == "toggle" then
     if msg.id == "awake" then M.toggleAwake()
     elseif msg.id == "mic" then M.toggleMic()
-    elseif msg.id == "meetings" then toggleMeetings() end
+    elseif msg.id == "meetings" then toggleMeetings()
+    elseif msg.id == "appearance" then
+      -- macOS appearance (asks once for Automation access to System Events); panels on "auto" follow it
+      hs.osascript.applescript('tell application "System Events" to tell appearance preferences to set dark mode to not dark mode')
+      Keep.after(0.4, pushPopover)
+    end
     pushPopover()
   elseif a == "theme" and (msg.v == "auto" or msg.v == "light" or msg.v == "dark") then
     Panel.setTheme(msg.v)
@@ -517,6 +591,7 @@ function M.start(help)
     onShow = function(p)
       p:js("Pulse.set(" .. hs.json.encode(popoverData()) .. ");Pulse.open()")
       M.fetchDevStats(false)
+      M.fetchPorts()
     end,
   })
   M.popover = pop

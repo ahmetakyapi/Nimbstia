@@ -97,7 +97,7 @@ local POP = {
     openCount = 2, open = {
       { owner = "ahmetakyapi", repo = "Nimbstia", number = 14, title = "feat: control center hub", author = "ahmetakyapi", url = "https://github.com" },
       { owner = "acme", repo = "website", number = 88, title = "docs: refresh landing copy", author = "ahmetakyapi", url = "https://github.com", draft = true } } },
-  forti = false, launcher = nil,
+  forti = false,
   claude = { plan = "Max", updatedAgo = "2 dk önce",
     limits = { { label = "Haftalık Limit", percent = 33, resets = "Cumartesi 12:00" } },
     sessions = { { name = "nimbstia-docs", busy = true, url = "https://claude.ai" },
