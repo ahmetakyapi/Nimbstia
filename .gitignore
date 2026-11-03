@@ -1,0 +1,10 @@
+# Personal data — never commit
+clipdata/
+config.local.lua
+*.bak
+*.bak-*
+
+# Generated / OS
+bin/__pycache__/
+Spoons/
+.DS_Store
