@@ -8,7 +8,6 @@ local Panel = require("panel")
 
 local HOME = os.getenv("HOME")
 local OUT = HOME .. "/.hammerspoon/assets/screens/"
-local DEMO_BG = HOME .. "/.hammerspoon/clipdata/demo-desktop.png"
 hs.fs.mkdir(HOME .. "/.hammerspoon/assets")
 hs.fs.mkdir(OUT)
 
@@ -22,7 +21,7 @@ end
 
 local CLIP = { now = now, items = {
   textItem("d1", "const total = cart.items.reduce((sum, item) => sum + item.price, 0);\nconsole.log(`Toplam: ${total} ₺`);", 40, "Visual Studio Code"),
-  textItem("d2", "https://github.com/ahmetakyapi/nimbstia", 260, "Google Chrome", true),
+  textItem("d2", "https://github.com/ahmetakyapi/Nimbstia", 260, "Google Chrome", true),
   textItem("d3", "#0A84FF", 950, "Figma"),
   textItem("d4", "Sürüm notu: pano geçmişi artık en yeni öğeyi her zaman en üstte gösteriyor.", 2500, "Notlar"),
   textItem("d5", "~/Projects/nimbstia/README.md", 5600, "Terminal"),
@@ -82,19 +81,35 @@ end
 
 local POP = {
   health = "ok", status = { text = "Her Şey Yolunda", tone = "ok" },
-  dev = { name = "DEV", host = "10.0.0.10", status = "Bağlı · 18 ms", checkedAgo = "az önce" },
-  forti = false, launcher = { title = "Geliştirme Ortamını Başlat" },
+  dev = { name = "DEV", title = "Ofis VPN", host = "10.0.0.10", status = "Bağlı · 18 ms", checkedAgo = "az önce" },
+  vpn = { connected = true },
+  github = { commits = 12, added = 1840, deleted = 412, prsToday = 2, updatedAgo = "1 dk önce", org = "acme",
+    opened = {
+      { owner = "acme", repo = "api-server", number = 233, title = "feat: audit log for token refresh", author = "ahmetakyapi", url = "https://github.com" },
+      { owner = "acme", repo = "website", number = 91, title = "fix: hero image on small screens", author = "ahmetakyapi", url = "https://github.com" } },
+    commitList = {
+      { sha = "4f2c9e1", subject = "feat: menu bar status with VPN check", repo = "api-server", added = 214, deleted = 38, t = now - 600, url = "https://github.com" },
+      { sha = "b17a0c4", subject = "fix: newest-first sort in clipboard history", repo = "website", added = 46, deleted = 12, t = now - 7200, url = "https://github.com" } },
+    reviewCount = 5, review = {
+      { owner = "acme", repo = "api-server", number = 231, title = "fix: rotate refresh tokens", author = "selin", url = "https://github.com" },
+      { owner = "acme", repo = "design-system", number = 57, title = "feat: new focus ring tokens", author = "mert", url = "https://github.com" },
+      { owner = "acme", repo = "mobile-app", number = 412, title = "chore: bump SDK to 51", author = "deniz", url = "https://github.com" } },
+    openCount = 2, open = {
+      { owner = "ahmetakyapi", repo = "Nimbstia", number = 14, title = "feat: control center hub", author = "ahmetakyapi", url = "https://github.com" },
+      { owner = "acme", repo = "website", number = 88, title = "docs: refresh landing copy", author = "ahmetakyapi", url = "https://github.com", draft = true } } },
+  forti = false, launcher = nil,
   claude = { plan = "Max", updatedAgo = "2 dk önce",
     limits = { { label = "Haftalık Limit", percent = 33, resets = "Cumartesi 12:00" } },
     sessions = { { name = "nimbstia-docs", busy = true, url = "https://claude.ai" },
                  { name = "api-server", busy = true, url = "https://claude.ai" },
                  { name = "website", busy = false, url = "https://claude.ai" } } },
-  tools = { { id = "clip", name = "Pastia", what = "Pano Geçmişi", keys = "⌃V" },
-            { id = "shot", name = "Clipstia", what = "Ekran Görüntüsü", keys = "⌘." },
-            { id = "layout", name = "Panestia", what = "Pencere Düzenleri", keys = "⌃Space" },
-            { id = "repo", name = "Repostia", what = "Projeler", keys = "⌃⌥P" },
-            { id = "text", name = "Inkstia", what = "Ekrandan Metin", keys = "⌃⌥O" } },
+  tools = { { id = "clip", name = "Pastia", what = "Pano", keys = "⌃V" },
+            { id = "shot", name = "Clipstia", what = "Ekran Al", keys = "⌃." },
+            { id = "layout", name = "Panestia", what = "Düzen", keys = "⌃Space" },
+            { id = "repo", name = "Repostia", what = "Projeler", keys = "⌃⇧P" },
+            { id = "text", name = "Lexstia", what = "Metin Oku", keys = "⌃⇧O" } },
   toggles = { awake = true, mic = false, meetings = false },
+  system = { battery = { pct = 82, charging = false }, mem = 58, disk = 412, diskUsed = 57 },
   theme = "auto", shortcuts = {}, errors = {},
 }
 
@@ -112,6 +127,7 @@ for _, theme in ipairs({ "light", "dark" }) do
   add(0.6, function()
     -- hs.json.encode only takes tables: wrap the path and strip the brackets.
     local pathJS = hs.json.encode({ P .. "nimbstia" }):sub(2, -2)
+    Projects.panel:js("window.__gh=window.__gh||Projects.setGitHub;__gh(" .. hs.json.encode(POP.github) .. ");Projects.setGitHub=function(){};")
     Projects.panel:js("Projects.setItems(" .. hs.json.encode(PROJECTS) .. ");Projects.log(" ..
       pathJS .. ",'4f2c9e1'," .. hs.json.encode(LOG) .. ");Projects.setItems=function(){};Projects.log=function(){};")
   end)
@@ -139,71 +155,117 @@ end
 add(0.3, function()
   local f = hs.screen.mainScreen():fullFrame()
   local c = hs.canvas.new({ x = 0, y = 0, w = f.w, h = f.h })
-  c[1] = { type = "rectangle", action = "fill", fillGradient = "linear", fillGradientAngle = 315,
-    fillGradientColors = { { hex = "#1b2550" }, { hex = "#5b3c8c" }, { hex = "#d9776a" } } }
-  local wx, wy, ww, wh = f.w * .2, f.h * .14, f.w * .6, f.h * .66
-  c[2] = { type = "rectangle", action = "fill", fillColor = { hex = "#ffffff", alpha = .97 },
-    roundedRectRadii = { xRadius = 14, yRadius = 14 }, frame = { x = wx, y = wy, w = ww, h = wh },
-    withShadow = true, shadow = { blurRadius = 40, color = { alpha = .45 }, offset = { h = -16, w = 0 } } }
-  c[3] = { type = "rectangle", action = "fill", fillColor = { hex = "#f2f2f5" }, frame = { x = wx, y = wy + 14, w = ww, h = 38 } }
-  for k, col in ipairs({ "#ff5f57", "#febc2e", "#28c840" }) do
-    c[#c + 1] = { type = "circle", action = "fill", fillColor = { hex = col }, center = { x = wx + 20 + (k - 1) * 20, y = wy + 24 }, radius = 6 }
+  local function R(x, y, w, h, col, r, extra)
+    local e = { type = "rectangle", action = "fill", fillColor = type(col) == "string" and { hex = col } or col,
+      roundedRectRadii = { xRadius = r or 0, yRadius = r or 0 }, frame = { x = x, y = y, w = w, h = h } }
+    for k, v in pairs(extra or {}) do e[k] = v end
+    c[#c + 1] = e
   end
-  -- headline + text lines
-  c[#c + 1] = { type = "rectangle", action = "fill", fillColor = { hex = "#1d1d1f" }, frame = { x = wx + 48, y = wy + 90, w = ww * .34, h = 22 }, roundedRectRadii = { xRadius = 6, yRadius = 6 } }
-  for k = 0, 3 do
-    c[#c + 1] = { type = "rectangle", action = "fill", fillColor = { hex = "#c7c7cc" }, frame = { x = wx + 48, y = wy + 136 + k * 26, w = ww * (.5 - k * .07), h = 11 }, roundedRectRadii = { xRadius = 5, yRadius = 5 } }
+  local function T(x, y, w, str, size, col, weight)
+    c[#c + 1] = { type = "text", frame = { x = x, y = y, w = w, h = size * 1.6 },
+      text = hs.styledtext.new(str, { font = { name = weight or ".AppleSystemUIFont", size = size }, color = { hex = col } }) }
+  end
+  -- wallpaper: vivid diagonal blend
+  R(0, 0, f.w, f.h, "#000000", 0, { fillGradient = "linear", fillGradientAngle = 300,
+    fillGradientColors = { { hex = "#2b1d6b" }, { hex = "#3a6df0" }, { hex = "#7fd3ff" } } })
+  -- app window
+  local wx, wy, ww, wh = f.w * .17, f.h * .12, f.w * .66, f.h * .72
+  R(wx, wy, ww, wh, "#ffffff", 14, { withShadow = true, shadow = { blurRadius = 50, color = { alpha = .45 }, offset = { h = -18, w = 0 } } })
+  local side = 210
+  R(wx, wy, side, wh, "#f4f6fb", 14)
+  R(wx + side - 14, wy, 14, wh, "#f4f6fb", 0)
+  for k, col in ipairs({ "#ff5f57", "#febc2e", "#28c840" }) do
+    c[#c + 1] = { type = "circle", action = "fill", fillColor = { hex = col }, center = { x = wx + 22 + (k - 1) * 20, y = wy + 22 }, radius = 6 }
+  end
+  local items = { { "Genel Bakış", "#2563ff" }, { "Satışlar", "#7c3aed" }, { "Müşteriler", "#16a34a" }, { "Raporlar", "#d97706" }, { "Ayarlar", "#64748b" } }
+  for k, it in ipairs(items) do
+    local y = wy + 64 + (k - 1) * 40
+    if k == 1 then R(wx + 12, y - 6, side - 24, 32, "#e8efff", 8) end
+    R(wx + 26, y + 4, 12, 12, it[2], 3)
+    T(wx + 48, y - 1, 140, it[1], 13.5, k == 1 and "#1d4fe0" or "#334155")
+  end
+  local cx = wx + side + 36
+  T(cx, wy + 30, 400, "Haftalık Rapor", 24, "#0f1222", ".AppleSystemUIFontBold")
+  T(cx, wy + 66, 400, "27 Ekim – 2 Kasım", 13, "#64748b")
+  -- KPI cards
+  local kw = (ww - side - 36 * 2 - 32) / 3
+  local kpis = { { "Gelir", "₺184.320", "+12,4%", "#16a34a" }, { "Yeni Müşteri", "1.248", "+8,1%", "#2563ff" }, { "Dönüşüm", "%3,9", "−0,3%", "#e11d48" } }
+  for k, kp in ipairs(kpis) do
+    local x = cx + (k - 1) * (kw + 16)
+    R(x, wy + 110, kw, 96, "#f8fafc", 12, { strokeColor = { hex = "#e2e8f0" }, strokeWidth = 1, action = "strokeAndFill" })
+    T(x + 18, wy + 124, kw - 30, kp[1], 12.5, "#64748b")
+    T(x + 18, wy + 146, kw - 30, kp[2], 24, "#0f1222", ".AppleSystemUIFontBold")
+    T(x + kw - 90, wy + 128, 76, kp[3], 12, kp[4], ".AppleSystemUIFontBold")
   end
   -- bar chart card
-  local cx, cy, cw, ch = wx + 48, wy + 270, ww * .55, wh * .5
-  c[#c + 1] = { type = "rectangle", action = "fill", fillColor = { hex = "#f5f5f7" }, frame = { x = cx, y = cy, w = cw, h = ch }, roundedRectRadii = { xRadius = 12, yRadius = 12 } }
-  local bars = { .45, .62, .38, .8, .55, .92, .7 }
+  local bx, by, bw, bh = cx, wy + 228, ww - side - 72, wh - 228 - 36
+  R(bx, by, bw, bh, "#f8fafc", 12, { strokeColor = { hex = "#e2e8f0" }, strokeWidth = 1, action = "strokeAndFill" })
+  T(bx + 18, by + 14, 300, "Günlük Gelir", 14, "#0f1222", ".AppleSystemUIFontBold")
+  local bars = { .42, .58, .36, .74, .52, .96, .66 }
+  local days = { "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz" }
+  local slot = (bw - 60) / #bars
   for k, v in ipairs(bars) do
-    local bw = cw / (#bars * 1.8)
-    c[#c + 1] = { type = "rectangle", action = "fill", fillColor = { hex = k == 6 and "#0a84ff" or "#9ecbff" },
-      frame = { x = cx + 30 + (k - 1) * bw * 1.8, y = cy + ch - 24 - (ch - 60) * v, w = bw, h = (ch - 60) * v }, roundedRectRadii = { xRadius = 5, yRadius = 5 } }
+    local hgt = (bh - 90) * v
+    local x = bx + 30 + (k - 1) * slot + slot * .22
+    R(x, by + bh - 34 - hgt, slot * .56, hgt, "#000000", 7, { fillGradient = "linear", fillGradientAngle = 90,
+      fillGradientColors = k == 6 and { { hex = "#1d4fe0" }, { hex = "#60a5fa" } } or { { hex = "#bcd3ff" }, { hex = "#dbe7ff" } } })
+    T(x - 4, by + bh - 28, slot * .7, days[k], 11.5, "#64748b")
   end
-  -- side cards
-  for k = 0, 2 do
-    c[#c + 1] = { type = "rectangle", action = "fill", fillColor = { hex = "#f5f5f7" }, frame = { x = cx + cw + 32, y = cy + k * (ch / 3 + 8), w = ww - cw - 128, h = ch / 3 - 8 }, roundedRectRadii = { xRadius = 12, yRadius = 12 } }
-  end
-  c:imageFromCanvas():saveToFile(DEMO_BG)
-  c:delete()
+  -- The demo desktop is shown as a full-screen window above every app (just below the overlay), so
+  -- the frozen screen IS the demo: the real screen can never end up in the image.
+  c:level(hs.drawing.windowLevels.screenSaver - 1)
+  c:behavior(hs.drawing.windowBehaviors.canJoinAllSpaces)
+  c:show()
+  M_demo = c
   hs.settings.set("shot.hintCount", 99)
-  Shot.start()
 end)
-add(1.4, function() Shot.webview:evaluateJavaScript("Shot.setSrc('file://" .. DEMO_BG .. "?" .. now .. "')") end)
+add(0.4, function() Shot.start() end)
+add(1.4, function() end)
 add(0.8, function()
   local f = hs.screen.mainScreen():fullFrame()
-  local r = { x = math.floor(f.w * .2 + 30), y = math.floor(f.h * .14 + 250), w = math.floor(f.w * .6 * .55 + 40), h = math.floor(f.h * .66 * .5 + 40) }
+  -- Select the whole demo report window and mark two things on it, positioned from the same
+  -- geometry the demo desktop was drawn with.
+  local wx, wy, ww, wh = f.w * .17, f.h * .12, f.w * .66, f.h * .72
+  local side = 210
+  local cx = wx + side + 36
+  local kw = (ww - side - 36 * 2 - 32) / 3
+  local bx, by, bw, bh = cx, wy + 228, ww - side - 72, wh - 228 - 36
+  local slot = (bw - 60) / 7
+  local x6 = bx + 30 + 5 * slot + slot * .22
+  local top6 = by + bh - 34 - (bh - 90) * .96
+  local function rel(x, y) return { (x - wx) / ww, (y - wy) / wh } end
+  local r = { x = math.floor(wx), y = math.floor(wy), w = math.floor(ww), h = math.floor(wh) }
   local objs = {
-    { t = "rect", a = { .62, .06 }, b = { .9, .62 }, color = "#ff453a", w = 4 },
-    { t = "arrow", a = { .34, .86 }, b = { .6, .5 }, color = "#ff453a", w = 4 },
-    { t = "num", at = { .66, .13 }, n = 1, color = "#ff453a", r = 14 },
-    { t = "text", at = { .1, .82 }, text = "Rekor hafta", color = "#ff453a", fs = 26 },
+    { t = "rect", a = rel(cx - 8, wy + 102), b = rel(cx + kw + 8, wy + 214), color = "#ff3b30", w = 4 },
+    { t = "num", at = rel(cx - 8, wy + 102), n = 1, color = "#ff3b30", r = 14 },
+    { t = "rect", a = rel(x6 - 12, top6 - 14), b = rel(x6 + slot * .56 + 12, by + bh - 24), color = "#ff3b30", w = 4 },
+    { t = "num", at = rel(x6 - 12, top6 - 14), n = 2, color = "#ff3b30", r = 14 },
+    { t = "text", at = rel(bx + 60, by + 64), text = "Rekor gün: Cumartesi", color = "#ff3b30", fs = 24 },
+    { t = "arrow", a = rel(bx + 330, by + 82), b = rel(x6 - 20, top6 + 30), color = "#ff3b30", w = 4 },
   }
   Shot.webview:evaluateJavaScript("Shot.test(" .. hs.json.encode(r) .. ",{objs:" .. hs.json.encode(objs) .. "})")
   M_shotRect = r
 end)
 add(0.6, function()
   local f = hs.screen.mainScreen():fullFrame()
-  local pad = 90
-  local r = M_shotRect
-  local x, y = math.max(0, r.x - pad), math.max(0, r.y - pad)
-  local w, h = math.min(f.w - x, r.w + pad * 2 + 60), math.min(f.h - y, r.h + pad * 2 + 70)
-  if not Shot.visible then print("readme-shots: overlay not open, screenshot skipped"); return end
+  -- capture the whole demo window plus a margin of wallpaper, so the context is complete
+  local x, y = math.floor(f.w * .17 - 40), math.floor(f.h * .12 - 40)
+  local w, h = math.floor(f.w * .66 + 80 + 60), math.floor(f.h * .72 + 80 + 40)
+  if not (Shot.visible and M_demo) then print("readme-shots: overlay or demo desktop missing, screenshot skipped"); return end
   hs.execute(string.format("/usr/sbin/screencapture -x -R %d,%d,%d,%d '%s'", x, y, w, h, OUT .. "screenshot-dark.png"))
 end)
 add(0.1, function() Shot.webview:evaluateJavaScript("document.documentElement.dataset.theme='light'") end)
 add(0.5, function()
-  if not Shot.visible then return end
+  if not (Shot.visible and M_demo) then return end
   local f = hs.screen.mainScreen():fullFrame()
-  local r, pad = M_shotRect, 90
-  local x, y = math.max(0, r.x - pad), math.max(0, r.y - pad)
-  local w, h = math.min(f.w - x, r.w + pad * 2 + 60), math.min(f.h - y, r.h + pad * 2 + 70)
+  local x, y = math.floor(f.w * .17 - 40), math.floor(f.h * .12 - 40)
+  local w, h = math.floor(f.w * .66 + 80 + 60), math.floor(f.h * .72 + 80 + 40)
   hs.execute(string.format("/usr/sbin/screencapture -x -R %d,%d,%d,%d '%s'", x, y, w, h, OUT .. "screenshot-light.png"))
 end)
-add(0.2, function() Shot.close(true); hs.settings.set("shot.hintCount", nil); os.remove(DEMO_BG) end)
+add(0.2, function()
+  Shot.close(true); hs.settings.set("shot.hintCount", nil)
+  if M_demo then M_demo:delete(); M_demo = nil end
+end)
 add(0.3, function() Panel.setTheme("auto") end)
 add(0.5, function() hs.reload() end)
 

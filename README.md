@@ -1,106 +1,152 @@
 <p align="center">
-  <img src="assets/logo.svg" width="128" height="128" alt="Nimbstia logo">
+  <img src="assets/logo.svg" width="112" height="112" alt="Nimbstia logo">
 </p>
 
 <h1 align="center">Nimbstia</h1>
 
 <p align="center">
-  A keyboard-first workbench for macOS: clipboard history, window layouts, a Lightshot-style screenshot tool,<br>
-  a project opener and a calm status popover — all in one Hammerspoon config, native on Apple Silicon.
+  <b>A calm, keyboard-first workbench for macOS.</b><br>
+  Clipboard history, Lightshot-style screenshots, window layouts, a project opener and a status hub —<br>
+  one Hammerspoon config, native on Apple Silicon, private by default.
 </p>
 
 <p align="center">
-  <img alt="macOS 13+" src="https://img.shields.io/badge/macOS-13%2B-111?logo=apple&logoColor=white">
-  <img alt="Apple Silicon native" src="https://img.shields.io/badge/Apple%20Silicon-native-0a6cff">
-  <img alt="Hammerspoon 1.0+" src="https://img.shields.io/badge/Hammerspoon-1.0%2B-f5a623">
-  <img alt="MIT license" src="https://img.shields.io/badge/license-MIT-2ea44f">
-  <a href="README.tr.md"><img alt="Türkçe" src="https://img.shields.io/badge/README-T%C3%BCrk%C3%A7e-e30a17"></a>
+  <img alt="macOS 13+" src="https://img.shields.io/badge/macOS-13%2B-0f1222?logo=apple&logoColor=white">
+  <img alt="Apple Silicon native" src="https://img.shields.io/badge/Apple%20Silicon-native-2563ff">
+  <img alt="Hammerspoon 1.0+" src="https://img.shields.io/badge/Hammerspoon-1.0%2B-d97706">
+  <img alt="MIT license" src="https://img.shields.io/badge/license-MIT-16a34a">
+  <a href="README.tr.md"><img alt="Türkçe" src="https://img.shields.io/badge/README-T%C3%BCrk%C3%A7e-e11d48"></a>
 </p>
 
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/screens/clipboard-dark.png">
-    <img src="assets/screens/clipboard-light.png" width="880" alt="Clipboard history panel">
-  </picture>
+  <img src="assets/hero-dark.png" width="960" alt="Nimbstia: status hub and panels">
 </p>
 
-> The interface speaks Turkish today (the author's daily language). Every string lives next to the code that uses it, so a translation is a small, focused change — PRs welcome.
+<p align="center">
+  <a href="#install">Install</a> ·
+  <a href="#with-an-ai-agent-easiest">Install With AI</a> ·
+  <a href="#the-tools">Tools</a> ·
+  <a href="#all-shortcuts">Shortcuts</a> ·
+  <a href="#configure">Configure</a> ·
+  <a href="#privacy">Privacy</a>
+</p>
 
-## Why
+---
 
-macOS is great, but a few everyday moves cost too many clicks: finding something you copied an hour ago, putting two windows side by side, grabbing a marked-up screenshot, jumping into the right repository. Nimbstia turns each of those into one shortcut and a panel that gets out of your way.
+**Why.** A few everyday moves cost too many clicks on macOS: finding what you copied an hour ago, putting two windows side by side, grabbing a marked-up screenshot, jumping into the right repository. Nimbstia turns each one into a single shortcut and a panel that gets out of your way.
 
-- **Native and light.** No Electron, no background app of its own — it is plain Lua + small HTML panels running inside [Hammerspoon](https://www.hammerspoon.org). Idle CPU is ~0 %.
-- **Private by default.** Everything stays on your Mac. No network calls except the optional VPN/host check you configure. Password-manager copies are never recorded.
-- **Calm UI.** One accent colour, real light and dark themes, only the hints you need, everything reachable from the keyboard.
+- **Native and light** — plain Lua and small HTML panels inside [Hammerspoon](https://www.hammerspoon.org). No Electron, idle CPU ~0 %, memory stays flat (≈ 140 MB after ten screenshots).
+- **Private by default** — everything stays on your Mac. Password-manager copies are never recorded.
+- **Calm by design** — one accent colour, real light and dark themes with a one-click switch, only the hints you need.
 
-## Features
+> The interface speaks Turkish today (the author's daily language). Strings live next to the code that uses them, so a translation is a small, focused change — PRs welcome.
 
-| | Shortcut | What it does |
+## Nimbstia — the hub
+
+Click the mark in the menu bar. Everything about your day sits in one popover: whether the VPN and your dev host are reachable, how much of your Claude plan is left and which Claude Code sessions are running, every tool one click away, and the quick switches you reach for most.
+
+<p align="center">
+  <img src="assets/screens/popover-dark.png" width="360" alt="Nimbstia status popover">
+</p>
+
+- **Connection** — VPN + TCP check to your host every 30 s and right after wake or a network change; a single green dot when all is well.
+- **Claude usage** — plan limits with reset times and open sessions (opens the session on claude.ai), read from the files Claude Code keeps locally.
+- **Quick switches** — keep the Mac awake <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>K</kbd>, mute the microphone <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>M</kbd>, opt-in meeting alerts from macOS Calendar.
+
+## The tools
+
+### Pastia · clipboard history — <kbd>Ctrl</kbd> <kbd>V</kbd>
+
+<img src="assets/screens/clipboard-dark.png" width="880" alt="Pastia clipboard history">
+
+Text, links, colours, copied images and your screenshots folder — always newest first, grouped by day. Filter by kind and time, search, pin, edit in place, copy without closing (<kbd>Cmd</kbd> <kbd>C</kbd>) or paste (<kbd>↩</kbd>).
+
+### Clipstia · screenshots — <kbd>Ctrl</kbd> <kbd>.</kbd>
+
+<img src="assets/screens/screenshot-dark.png" width="720" alt="Clipstia screenshot editor">
+
+Freezes the screen — even with a menu open — then you drag the region and mark it up: pen, line, arrow, box, ellipse, marker, text, blur, numbered steps. <kbd>Ctrl</kbd> <kbd>C</kbd> saves **and** copies, <kbd>Cmd</kbd> <kbd>S</kbd> only saves.
+
+### Panestia · window layouts — <kbd>Ctrl</kbd> <kbd>Space</kbd>
+
+<img src="assets/screens/layouts-dark.png" width="880" alt="Panestia window layouts">
+
+Multi-app layouts in one key, "last two windows side by side", adjustable splits and undo. Snap the focused window with <kbd>Ctrl</kbd> <kbd>Opt</kbd> + arrows — press again for ⅓ → ⅔.
+
+### Repostia · projects — <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>P</kbd>
+
+<img src="assets/screens/projects-dark.png" width="880" alt="Repostia project opener">
+
+Every repository in `~/Projects` with branch, changes, ahead/behind and recent commits. Opens in VS Code, Terminal, GitHub Desktop or Finder.
+
+### And the small ones
+
+| Tool | Shortcut | What it does |
 |---|---|---|
-| **Pastia** · clipboard | <kbd>⌃</kbd> <kbd>V</kbd> | Text, links, colours, copied images and your screenshots folder, newest first, grouped by day. Filters by kind and time, fuzzy search, pin, edit, copy without closing (<kbd>⌘</kbd> <kbd>C</kbd>), paste (<kbd>↩</kbd>). |
-| **Clipstia** · screenshots | <kbd>⌘</kbd> <kbd>.</kbd> | Freezes the screen. Drag a region or click a window, then annotate: pen, line, arrow, box, ellipse, marker, text, blur, numbered steps. <kbd>⌃</kbd> <kbd>C</kbd> / <kbd>⌘</kbd> <kbd>C</kbd> / <kbd>↩</kbd> saves **and** copies, <kbd>⌘</kbd> <kbd>S</kbd> saves only. |
-| **Panestia** · layouts | <kbd>⌃</kbd> <kbd>Space</kbd> | One-key multi-app layouts (code + browser, meeting, focus…), "last two windows side by side", adjustable split, undo. |
-| **Snapping** | <kbd>⌃</kbd> <kbd>⌥</kbd> <kbd>←</kbd> <kbd>→</kbd> | Halves; press again for ⅓ → ⅔. <kbd>↑</kbd> <kbd>↓</kbd> top/bottom, <kbd>↩</kbd> full, <kbd>C</kbd> centre, <kbd>Z</kbd> undo, <kbd>⌘</kbd> + arrows: other display. |
-| **Repostia** · projects | <kbd>⌃</kbd> <kbd>⌥</kbd> <kbd>P</kbd> | Every repo in `~/Projects` with branch, dirty files, ahead/behind and recent commits. Opens in VS Code, Terminal, GitHub Desktop or Finder. |
-| **Inkstia** · text from screen | <kbd>⌃</kbd> <kbd>⌥</kbd> <kbd>O</kbd> | Select an area, its text (Turkish + English) lands on the clipboard. |
-| **Twistia** · transform text | <kbd>⌃</kbd> <kbd>⌥</kbd> <kbd>T</kbd> | JSON pretty/minify, JWT decode, Base64, URL, timestamps ↔ dates, case, sort/unique lines, SQL `IN` list, UUID… replaces the selection. |
-| **Snipstia** · snippets | `;key` · <kbd>⌃</kbd> <kbd>⌥</kbd> <kbd>S</kbd> | Type `;tarih`, `;daily`, `;pr`… and it expands. Edit them in `snippets.lua`. |
-| **Hopstia** · app switching | <kbd>⌃</kbd> <kbd>⌥</kbd> <kbd>⌘</kbd> + letter | V VS Code · C Chrome · A Claude · T Teams · X Terminal · O Outlook · W WhatsApp · G GitHub Desktop · F Finder. Press again to cycle its windows. |
-| **Pulstia** · status popover | menu bar icon | VPN + host reachability (green dot when all is well), Claude plan usage and open sessions, keep awake (<kbd>⌃</kbd> <kbd>⌥</kbd> <kbd>K</kbd>), microphone mute (<kbd>⌃</kbd> <kbd>⌥</kbd> <kbd>M</kbd>), opt-in meeting alerts, theme, every shortcut. |
-| **Jira** | <kbd>⌃</kbd> <kbd>⌥</kbd> <kbd>J</kbd> | Opens the issue key found in the selection or clipboard (`ABC-123`). |
+| **Lexstia** · text from screen | <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>O</kbd> | Select an area; its text (Turkish + English) lands on the clipboard. |
+| **Twistia** · transform text | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>T</kbd> | JSON pretty/minify, JWT decode, Base64, URL, timestamps ↔ dates, case, sort/unique lines, SQL `IN` list, UUID — replaces the selection. |
+| **Snipstia** · snippets | `;key` · <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>S</kbd> | Type `;tarih`, `;daily`, `;pr`… and it expands. Edit them in `snippets.lua`. |
+| **Hopstia** · app keys | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>Cmd</kbd> + letter | V VS Code · C Chrome · A Claude · T Teams · X Terminal · O Outlook · W WhatsApp · G GitHub Desktop · F Finder. Press again to cycle windows. |
+| **Jira** | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>J</kbd> | Opens the issue key found in the selection or clipboard (`ABC-123`). |
 
-<table>
-  <tr>
-    <td width="50%">
-      <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="assets/screens/layouts-dark.png">
-        <img src="assets/screens/layouts-light.png" alt="Window layouts panel">
-      </picture>
-    </td>
-    <td width="50%">
-      <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="assets/screens/projects-dark.png">
-        <img src="assets/screens/projects-light.png" alt="Project opener panel">
-      </picture>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%" align="center">
-      <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="assets/screens/screenshot-dark.png">
-        <img src="assets/screens/screenshot-light.png" alt="Clipstia screenshot tool with annotations">
-      </picture>
-    </td>
-    <td width="50%" align="center">
-      <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="assets/screens/popover-dark.png">
-        <img src="assets/screens/popover-light.png" width="300" alt="Pulstia status popover">
-      </picture>
-    </td>
-  </tr>
-</table>
+<div align="center">
+<details>
+<summary><b>Light theme</b>: every panel also comes in light, one click on the sun/moon button</summary>
+<br>
+<img src="assets/hero-light.png" width="880" alt="Nimbstia, light theme"><br><br>
+<img src="assets/screens/popover-light.png" width="420" alt="Hub, light theme"><br><br>
+<img src="assets/screens/clipboard-light.png" width="880" alt="Pastia, light theme"><br><br>
+<img src="assets/screens/screenshot-light.png" width="720" alt="Clipstia, light theme"><br><br>
+<img src="assets/screens/layouts-light.png" width="880" alt="Panestia, light theme"><br><br>
+<img src="assets/screens/projects-light.png" width="880" alt="Repostia, light theme"><br><br>
+</details>
+</div>
+
+## All shortcuts
+
+| Keys | Action | Keys | Action |
+|---|---|---|---|
+| <kbd>Ctrl</kbd> <kbd>V</kbd> | Pastia | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>←</kbd> <kbd>→</kbd> | Snap left / right (again: ⅓ · ⅔) |
+| <kbd>Ctrl</kbd> <kbd>.</kbd> | Clipstia | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>↑</kbd> <kbd>↓</kbd> <kbd>↩</kbd> | Top / bottom / full |
+| <kbd>Ctrl</kbd> <kbd>Space</kbd> | Panestia | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>C</kbd> · <kbd>Z</kbd> | Centre · undo placement |
+| <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>P</kbd> | Repostia | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>Cmd</kbd> <kbd>←</kbd> <kbd>→</kbd> | Move to the other display |
+| <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>O</kbd> | Lexstia | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>K</kbd> | Keep awake |
+| <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>T</kbd> | Twistia | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>M</kbd> | Microphone mute |
+| <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>S</kbd> | Snipstia | <kbd>Ctrl</kbd> <kbd>Cmd</kbd> <kbd>L</kbd> | Lock screen |
 
 ## Install
 
+### With an AI agent (easiest)
+
+Paste this into Claude Code, Codex, Cursor or any coding agent that can run shell commands:
+
+```text
+Install Nimbstia on this Mac by following https://github.com/ahmetakyapi/Nimbstia/blob/main/AGENTS.md
+step by step. Ask me before backing up my current Hammerspoon config and before filling in any
+personal settings, then walk me through the macOS permissions and verify that everything loaded.
+```
+
+[`AGENTS.md`](AGENTS.md) is a short runbook written for agents: prerequisite checks, the installer, which
+optional settings to ask you about, the two permissions you switch on yourself, a verification step and
+fixes for common problems.
+
+### With one command
+
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ahmetakyapi/nimbstia/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ahmetakyapi/Nimbstia/main/install.sh | bash
 ```
 
 The script installs Hammerspoon with Homebrew if it is missing, backs up an existing `~/.hammerspoon` (to `~/.hammerspoon.backup-<date>`), clones Nimbstia there and starts it. Prefer to look first? Clone it yourself:
 
 ```bash
-git clone https://github.com/ahmetakyapi/nimbstia.git ~/.hammerspoon
+git clone https://github.com/ahmetakyapi/Nimbstia.git ~/.hammerspoon
 cp ~/.hammerspoon/config.example.lua ~/.hammerspoon/config.local.lua
 open -a Hammerspoon
 ```
 
-Then give Hammerspoon two permissions in **System Settings › Privacy & Security**:
+It also builds **Nimbstia.app** in Applications — keep it in the Dock and one click opens the hub (`scripts/build-app.sh` rebuilds it).
 
-- **Accessibility** — hotkeys, moving windows, snippets.
-- **Screen Recording** — the screenshot tool and text recognition.
-
-Nimbstia starts with your Mac (`hs.autoLaunch`). Click the Nimbstia mark in the menu bar for the status popover; everything else is one shortcut away.
+Then give Hammerspoon two permissions in **System Settings › Privacy & Security**: **Accessibility** (hotkeys, windows, snippets) and **Screen Recording** (screenshots, text recognition). Nimbstia starts with your Mac.
 
 ## Configure
 
@@ -108,23 +154,23 @@ Personal values live in `config.local.lua` (git-ignored). Every key is optional 
 
 ```lua
 return {
-  jiraBase = "https://your-company.atlassian.net/browse/",          -- ⌃⌥J
-  devCheck = { name = "DEV", host = "10.0.0.10", port = 22 },          -- popover connection card
+  jiraBase = "https://your-company.atlassian.net/browse/",          -- Ctrl Opt J
+  jiraProjects = { "ABC", "OPS" },                                    -- only these key prefixes
+  devCheck = { name = "DEV", host = "10.0.0.10", port = 22 },          -- connection card
   launcher = { title = "Start dev stack", path = os.getenv("HOME") .. "/Desktop/start.command" },
   screenshotDir = os.getenv("HOME") .. "/Documents/Screenshots",
 }
 ```
 
 - **Snippets:** `snippets.lua` — a plain list of `{ key, label, text }`; `text` may be a function (dates).
-- **Layouts and apps:** the tables at the top of `layouts.lua` and `tools.lua`.
-- **Theme:** the switch at the bottom of the popover (system, light, dark).
-- **Shortcut clashes:** <kbd>⌃</kbd> <kbd>V</kbd> replaces Vim's visual-block key and <kbd>⌃</kbd> <kbd>Space</kbd> replaces macOS "previous input source" (System Settings › Keyboard › Keyboard Shortcuts › Input Sources). Change the bindings in `init.lua` if you rely on them.
-- **Jira prefixes:** add `jiraProjects = { "ABC", "OPS" }` to only match your projects' keys.
+- **Layouts and app keys:** the tables at the top of `layouts.lua` and `tools.lua`.
+- **Theme:** the sun/moon button in the header of every panel and of the hub.
+- **Shortcut clashes:** <kbd>Ctrl</kbd> <kbd>V</kbd> replaces Vim's visual-block key and <kbd>Ctrl</kbd> <kbd>Space</kbd> replaces macOS "previous input source". Change the bindings in `init.lua` if you rely on them.
 
 ## Privacy
 
 - Clipboard history is stored locally in Hammerspoon's settings; copied images and thumbnails in `clipdata/` (git-ignored).
-- Items marked by password managers (`org.nspasteboard.ConcealedType`, 1Password…) are never stored.
+- Items marked by password managers (`org.nspasteboard.ConcealedType`, 1Password, Bitwarden, KeePassXC…) are never stored, and the tools that briefly borrow the clipboard restore it without re-publishing secrets.
 - Claude usage and sessions are read from the files Claude Code keeps on your Mac (`~/.claude.json`, `~/.claude/sessions`); nothing is sent anywhere.
 - The only network traffic is the optional TCP check to the host you configure. Meeting alerts read the macOS Calendar locally and only after you turn them on.
 
@@ -133,18 +179,20 @@ return {
 ```
 init.lua            entry point: loads every module safely and binds the global shortcuts
 config.lua          defaults + config.local.lua override
-panel.lua           shared floating webview panel (focus, theme)
+panel.lua           shared floating webview panel (focus, theme switch for every panel)
+ui.lua              shared style for toasts and pickers
 keep.lua            keeps fire-and-forget timers/tasks alive until they finish
 pb.lua              pasteboard helpers: secret detection, safe save/restore
+status.lua          Nimbstia hub: menu bar icon + status popover (pulstia.html)
+claude.lua          Claude plan usage and open Claude Code sessions (read-only)
 clipboard.lua/.html Pastia: clipboard history
 shot.lua/.html      Clipstia: screenshot overlay and annotation editor
 layouts.lua/.html   Panestia: window layouts
 projects.lua/.html  Repostia: project opener (+ bin/projects-scan.py)
-tools.lua           Hopstia app keys, Inkstia OCR, Twistia transforms, Snipstia snippets, Jira
-status.lua          Pulstia: menu bar icon + status popover (pulstia.html)
-claude.lua          Claude plan usage and open Claude Code sessions (read-only)
+tools.lua           Hopstia app keys, Lexstia OCR, Twistia transforms, Snipstia snippets, Jira
 bin/                small helpers (OCR and Calendar via JavaScript for Automation, transforms)
-scripts/            maintenance (README screenshots with demo data)
+scripts/            maintenance (README screenshots and hero image, demo data only)
+AGENTS.md           install runbook for AI coding agents
 ```
 
 ## Uninstall

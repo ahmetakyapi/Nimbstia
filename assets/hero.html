@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- README hero: crops the demo-data panel screenshots to their exact edges and lays them out on a
+     soft colour field with one clean shadow each. Rendered by scripts/readme-hero.lua. -->
+<style>
+  html, body { margin: 0; width: 1600px; height: 860px; overflow: hidden; background: transparent; }
+  .stage { position: relative; width: 1600px; height: 860px; overflow: hidden; border-radius: 28px; }
+  .light .stage { background:
+      radial-gradient(820px 520px at 8% 0%, #dbe6ff 0%, transparent 62%),
+      radial-gradient(760px 560px at 100% 10%, #ece2ff 0%, transparent 62%),
+      radial-gradient(900px 520px at 55% 115%, #dcf3ec 0%, transparent 62%),
+      linear-gradient(160deg, #f7f8fd, #edf0f9); }
+  .dark .stage { background:
+      radial-gradient(820px 520px at 8% 0%, rgba(54,96,255,.42) 0%, transparent 62%),
+      radial-gradient(760px 560px at 100% 10%, rgba(140,70,255,.34) 0%, transparent 62%),
+      radial-gradient(900px 520px at 55% 115%, rgba(20,170,140,.22) 0%, transparent 62%),
+      linear-gradient(160deg, #0d1020, #090b16); }
+  canvas { position: absolute; display: block; border-radius: 16px; }
+  .light canvas { box-shadow: 0 40px 80px -20px rgba(20,28,70,.35), 0 10px 24px rgba(20,28,70,.12), 0 0 0 1px rgba(20,28,70,.08); }
+  .dark canvas  { box-shadow: 0 40px 90px -20px rgba(0,0,0,.75), 0 10px 24px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.08); }
+  #mid   { left: 56px;  width: 1040px; }
+  #front { right: 64px; width: 420px; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <canvas id="mid"></canvas>
+  <canvas id="front"></canvas>
+</div>
+<script>
+  // ?theme=light|dark. Each layer: screenshot name, its window width in points and the transparent inset
+  // around the panel inside that window (the panel's own shadow lives there and is cropped away).
+  const theme = new URLSearchParams(location.search).get('theme') || 'light';
+  document.documentElement.className = theme;
+  const LAYERS = [
+    { id: 'mid', name: 'clipboard', winW: 1060, inset: 16 },
+    { id: 'front', name: 'popover', winW: 470, inset: 10 },
+  ];
+  const load = src => new Promise(res => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = src; });
+  Promise.all(LAYERS.map(async L => {
+    const img = await load(`screens/${L.name}-${theme}.png?${Date.now()}`);
+    if (!img) return;
+    const k = img.naturalWidth / L.winW, cut = Math.round(L.inset * k);
+    const w = img.naturalWidth - 2 * cut, h = img.naturalHeight - 2 * cut;
+    const c = document.getElementById(L.id);
+    c.width = w; c.height = h;
+    c.getContext('2d').drawImage(img, cut, cut, w, h, 0, 0, w, h);
+    const ch = parseFloat(getComputedStyle(c).width) * h / w;
+    c.style.height = ch + 'px';
+    c.style.top = ((860 - ch) / 2) + 'px'; // both panels share one vertical centre
+  })).then(() => { document.title = 'ready'; });
+</script>
+</body>
+</html>
