@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <title>Shot</title>
 <link rel="stylesheet" href="theme.css">
+<script src="i18n.js"></script>
 <style>
   /* Clipstia chrome. Light is the default; dark mirrors the other panels' token structure.
      Only on-screen chrome lives here: drawn annotations and the export use their own colours and fonts in JS. */
@@ -19,25 +20,25 @@
     --sep: rgba(12, 12, 16, .09);
     --btn-hover: rgba(12, 12, 16, .055);
     --btn-press: rgba(12, 12, 16, .10);
-    --primary-bg: #0b0b0f;   /* ink chip: the one primary action */
-    --primary-fg: #ffffff;
-    --primary-hover: #26262b;
-    --tool-on-bg: #0b0b0f;   /* active tool: ink fill */
-    --tool-on-fg: #ffffff;
-    --chip-bg: rgba(14, 14, 18, .84); /* dimension pill: dark in both themes, reads on any screen */
+    --primary-bg: var(--primary);   /* blue chip: the one primary action */
+    --primary-fg: var(--on-primary);
+    --tool-on-bg: color-mix(in srgb, var(--accent) 13%, transparent);   /* active tool: soft accent fill */
+    --tool-on-fg: #1a5fd8;
+    --tool-on-ring: color-mix(in srgb, var(--accent) 34%, transparent);
+    --chip-bg: rgba(30, 32, 40, .86); /* dimension pill: graphite in both themes, reads on any screen */
     --chip-fg: #f4f4f5;
     --chip-dim: rgba(244, 244, 245, .5);
     --tip-bg: rgba(251, 251, 249, .94);
     --tip-shadow: 0 0 0 .5px rgba(12, 12, 16, .14), 0 6px 18px -4px rgba(12, 12, 16, .24);
     --sw-ring: rgba(12, 12, 16, .16);
-    --sw-active: #0b0b0f;
+    --sw-active: var(--accent);
     --sz-dim: rgba(12, 12, 16, .38);
     --key-bg: rgba(12, 12, 16, .06);
     --key-fg: #4f4f58;
   }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
     --dim: rgba(6, 6, 8, .58);
-    --bar-bg: rgba(26, 26, 30, .76);
+    --bar-bg: rgba(44, 45, 52, .8);
     --bar-border: rgba(255, 255, 255, .11);
     --bar-shadow: inset 0 1px 0 rgba(255, 255, 255, .07), 0 1px 2px rgba(0, 0, 0, .3), 0 10px 24px -8px rgba(0, 0, 0, .55), 0 28px 56px -18px rgba(0, 0, 0, .7);
     --accent: #4c9dff;
@@ -46,23 +47,21 @@
     --sep: rgba(255, 255, 255, .09);
     --btn-hover: rgba(255, 255, 255, .07);
     --btn-press: rgba(255, 255, 255, .13);
-    --primary-bg: #f4f4f5;
-    --primary-fg: #0b0b0f;
-    --primary-hover: #ffffff;
-    --tool-on-bg: #f4f4f5;
-    --tool-on-fg: #0b0b0f;
-    --chip-bg: rgba(10, 10, 12, .86);
-    --tip-bg: rgba(30, 30, 34, .94);
+    --tool-on-bg: color-mix(in srgb, var(--accent) 22%, transparent);
+    --tool-on-fg: #9cc6ff;
+    --tool-on-ring: color-mix(in srgb, var(--accent) 45%, transparent);
+    --chip-bg: rgba(30, 32, 40, .88);
+    --tip-bg: rgba(48, 49, 56, .95);
     --tip-shadow: 0 0 0 .5px rgba(255, 255, 255, .14), 0 8px 22px -6px rgba(0, 0, 0, .6);
     --sw-ring: rgba(255, 255, 255, .22);
-    --sw-active: #f4f4f5;
+    --sw-active: var(--accent);
     --sz-dim: rgba(244, 244, 245, .38);
     --key-bg: rgba(255, 255, 255, .08);
     --key-fg: #a8a8b2;
   } }
   :root[data-theme="dark"] {
     --dim: rgba(6, 6, 8, .58);
-    --bar-bg: rgba(26, 26, 30, .76);
+    --bar-bg: rgba(44, 45, 52, .8);
     --bar-border: rgba(255, 255, 255, .11);
     --bar-shadow: inset 0 1px 0 rgba(255, 255, 255, .07), 0 1px 2px rgba(0, 0, 0, .3), 0 10px 24px -8px rgba(0, 0, 0, .55), 0 28px 56px -18px rgba(0, 0, 0, .7);
     --accent: #4c9dff;
@@ -71,16 +70,14 @@
     --sep: rgba(255, 255, 255, .09);
     --btn-hover: rgba(255, 255, 255, .07);
     --btn-press: rgba(255, 255, 255, .13);
-    --primary-bg: #f4f4f5;
-    --primary-fg: #0b0b0f;
-    --primary-hover: #ffffff;
-    --tool-on-bg: #f4f4f5;
-    --tool-on-fg: #0b0b0f;
-    --chip-bg: rgba(10, 10, 12, .86);
-    --tip-bg: rgba(30, 30, 34, .94);
+    --tool-on-bg: color-mix(in srgb, var(--accent) 22%, transparent);
+    --tool-on-fg: #9cc6ff;
+    --tool-on-ring: color-mix(in srgb, var(--accent) 45%, transparent);
+    --chip-bg: rgba(30, 32, 40, .88);
+    --tip-bg: rgba(48, 49, 56, .95);
     --tip-shadow: 0 0 0 .5px rgba(255, 255, 255, .14), 0 8px 22px -6px rgba(0, 0, 0, .6);
     --sw-ring: rgba(255, 255, 255, .22);
-    --sw-active: #f4f4f5;
+    --sw-active: var(--accent);
     --sz-dim: rgba(244, 244, 245, .38);
     --key-bg: rgba(255, 255, 255, .08);
     --key-fg: #a8a8b2;
@@ -119,9 +116,9 @@
   .h[data-h=w]  { left: 0; top: 50%; cursor: ew-resize; }
   #sel.drawing .h { display: none; }
 
-  /* dimension readout: dark mono pill, tabular numerals */
-  #pill { position: absolute; display: none; height: 20px; padding: 0 8px; border-radius: 6px;
-    font: 500 10.5px/20px var(--font-mono); letter-spacing: .02em; font-variant-numeric: tabular-nums; color: var(--chip-fg);
+  /* dimension readout: graphite pill, tabular numerals */
+  #pill { position: absolute; display: none; height: 22px; padding: 0 9px; border-radius: 7px;
+    font: 600 11.5px/22px var(--font-ui); letter-spacing: 0; font-variant-numeric: tabular-nums; color: var(--chip-fg);
     background: var(--chip-bg); box-shadow: 0 0 0 .5px rgba(255, 255, 255, .12), 0 4px 12px -4px rgba(0, 0, 0, .45);
     -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); pointer-events: none; white-space: nowrap; }
 
@@ -145,13 +142,15 @@
   .btn:hover { background: var(--btn-hover); }
   .btn:active { background: var(--btn-press); transform: scale(.94); }
   .btn.active, .btn.active:hover { background: var(--tool-on-bg); color: var(--tool-on-fg);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .14), 0 1px 2px rgba(0, 0, 0, .22), 0 3px 8px -2px rgba(0, 0, 0, .25); }
+    box-shadow: inset 0 0 0 1px var(--tool-on-ring); }
+  .btn.active svg { stroke-width: 1.8; }
   .btn.disabled { opacity: .3; pointer-events: none; }
-  /* copy: ink chip with a label */
-  #actions .btn.primary { width: auto; display: flex; gap: 7px; padding: 0 12px 0 10px; margin-left: 2px; border-radius: 9px;
-    background: var(--primary-bg); color: var(--primary-fg); font: 550 12.5px/1 var(--font-ui); letter-spacing: -.005em;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .14), 0 1px 2px rgba(0, 0, 0, .22), 0 4px 10px -3px rgba(0, 0, 0, .3); }
-  #actions .btn.primary:hover { background: var(--primary-hover); color: var(--primary-fg); }
+  /* copy: blue chip with a label */
+  #actions .btn.primary { width: auto; display: flex; gap: 7px; padding: 0 13px 0 11px; margin-left: 2px; border-radius: 9px;
+    background: var(--primary-bg); color: var(--primary-fg); font: 600 12.5px/1 var(--font-ui); letter-spacing: -.005em;
+    box-shadow: var(--primary-shadow); transition: filter var(--dur-1), transform var(--dur-1) var(--ease-out); }
+  #actions .btn.primary:hover { background: var(--primary-bg); color: var(--primary-fg); filter: brightness(1.07); }
+  #actions .btn.primary:active { background: var(--primary-bg); filter: brightness(.95); transform: scale(.96); }
   .btn.primary svg { width: 15px; height: 15px; stroke-width: 1.7; }
   .btn .lbl { pointer-events: none; }
 
@@ -163,9 +162,9 @@
   #sizes { display: flex; gap: 0; padding: 2px; border-radius: 999px; background: var(--btn-hover); }
   .sz { width: 10px; height: 20px; display: grid; place-items: center; border: 0; padding: 0; background: transparent; cursor: default; border-radius: 999px; }
   .sz i { display: block; border-radius: 50%; background: var(--sz-dim); transition: background var(--dur-1), transform var(--dur-1) var(--ease-out); }
-  .sz.active i { background: var(--fg); }
+  .sz.active i { background: var(--accent); }
   .sz:hover i { background: var(--fg); transform: scale(1.15); }
-  .sz.active:hover i { background: var(--fg); }
+  .sz.active:hover i { background: var(--accent); }
   #sizes .sz:nth-child(1) i { width: 3px; height: 3px; }
   #sizes .sz:nth-child(2) i { width: 5px; height: 5px; }
   #sizes .sz:nth-child(3) i { width: 8px; height: 8px; }
@@ -190,9 +189,9 @@
   #tip.plain { padding-right: 9px; }
   @keyframes tip-in { from { opacity: 0; } to { opacity: 1; } }
   #tip .ks { display: inline-flex; align-items: center; gap: 3px; }
-  #tip .ks i { font-style: normal; color: var(--fg-dim); font: 500 10px/1 var(--font-mono); }
+  #tip .ks i { font-style: normal; color: var(--fg-dim); font: 500 11px/1 var(--font-ui); }
   .k { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 5px;
-    font: 500 10.5px/1 var(--font-mono); letter-spacing: .02em; color: var(--key-fg); background: var(--key-bg);
+    font: 600 11px/1 var(--font-ui); letter-spacing: .01em; color: var(--key-fg); background: var(--key-bg);
     box-shadow: inset 0 0 0 .5px var(--sep), 0 1px 0 var(--sep); }
   #editor { position: absolute; display: none; z-index: 3; min-width: 4px; white-space: pre; outline: 1px dashed var(--accent-sel);
     outline-offset: 2px; box-shadow: 0 0 0 3px rgba(255, 255, 255, .22); -webkit-user-select: text; user-select: text; cursor: text; font-family: -apple-system, "SF Pro Text", sans-serif;

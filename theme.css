@@ -2,22 +2,22 @@
    Panels link it with <link rel="stylesheet" href="theme.css">. Webview panels get it inlined by
    panel.lua (fonts as data URIs); file:// pages (shot.html, assets/*.html) load it as a file.
 
-   Direction: quiet paper-and-ink. Warm zinc neutrals, hairline rules, one blue for focus and
-   selection, ink (black in light, white in dark) for the primary action. Geist for words,
-   Geist Mono for labels, numbers and keys. Arrows and the ⌘⌥⌃⇧ block are left to the system font
-   (unicode-range), whose key symbols read better. */
+   Direction: bright, friendly and glanceable, like good macOS widgets. Soft neutral surfaces, white
+   cards in light and graphite (not black) in dark, one vivid blue for focus and the primary action,
+   colour where it carries meaning (status, app identity). Inter for everything people read (built for
+   screens, has Turkish and the ⌘⌥⌃⇧ key glyphs); Geist Mono only for code, hashes and hosts. */
 
-@font-face{font-family:"Geist";src:url("assets/fonts/Geist-Variable.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block;unicode-range:U+0000-218F,U+2200-22FF,U+2400-FFFF}
+@font-face{font-family:"Inter";src:url("assets/fonts/InterVariable.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block}
 @font-face{font-family:"Geist Mono";src:url("assets/fonts/GeistMono-Variable.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block;unicode-range:U+0000-218F,U+2200-22FF,U+2400-FFFF}
 
 :root{
   /* type */
-  --font-ui:"Geist",-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",sans-serif;
-  --font-display:"Geist",-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",sans-serif;
+  --font-ui:"Inter",-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",sans-serif;
+  --font-display:"Inter",-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",sans-serif;
   --font-mono:"Geist Mono","SF Mono",ui-monospace,Menlo,monospace;
-  --track-display:-.035em;  /* big numbers and titles */
-  --track-title:-.018em;    /* card and row titles */
-  --track-label:.12em;      /* uppercase mono eyebrows */
+  --track-display:-.03em;   /* big numbers and titles */
+  --track-title:-.014em;    /* card and row titles */
+  --track-label:0;          /* section labels are sentence case now */
 
   /* motion */
   --ease-out:cubic-bezier(.16,1,.3,1);
@@ -28,102 +28,105 @@
   /* radii */
   --r-xs:6px; --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:22px; --r-pill:999px;
 
-  /* surfaces (light) */
-  --bg:#f6f6f4; --bg2:#efefec; --top:#fbfbfa; --pane:#ffffff; --ctl:#ffffff; --card:#ffffff;
-  --group-bg:#f8f8f6; --pv-bg:#f3f3f0; --pv-card:#ffffff;
-  --line:rgba(12,12,16,.075); --line2:rgba(12,12,16,.13);
-  --text:#0b0b0f; --muted:#4f4f58; --faint:#71717a;
-  --hover:rgba(12,12,16,.04); --chip:rgba(12,12,16,.055); --seg-on:#ffffff; --mark:rgba(255,200,0,.42);
+  /* surfaces (light): cool, bright, white cards */
+  --bg:#f4f5f8; --bg2:#eceef3; --top:#fafbfc; --pane:#ffffff; --ctl:#ffffff; --card:#ffffff;
+  --group-bg:#f7f8fa; --pv-bg:#f2f3f7; --pv-card:#ffffff;
+  --line:rgba(20,24,40,.08); --line2:rgba(20,24,40,.14);
+  --text:#111320; --muted:#4b5065; --faint:#6b7085;
+  --hover:rgba(20,24,40,.045); --chip:rgba(20,24,40,.055); --seg-on:#ffffff; --mark:rgba(255,200,0,.42);
 
-  /* ink: the primary action (Shoji-style black pill in light, white in dark) */
-  --ink:#0b0b0f; --on-ink:#ffffff; --ink-hover:#26262b; --ink-shadow:0 1px 0 rgba(255,255,255,.12) inset,0 1px 2px rgba(12,12,16,.22),0 4px 12px -2px rgba(12,12,16,.24);
+  /* ink: tooltips and toasts only (graphite, never pure black) */
+  --ink:#24262f; --on-ink:#ffffff; --ink-hover:#30333d; --ink-shadow:0 1px 0 rgba(255,255,255,.1) inset,0 4px 12px -2px rgba(20,24,40,.25);
 
-  /* accent: focus, selection, links, numbering */
-  --accent:#0a72ef; --accent-fill:#0a72ef; --accent-hover:#0864d6; --accent-press:#0757bc; --accent-ink:#0860d0;
-  --accent-soft:rgba(10,114,239,.075); --accent-line:rgba(10,114,239,.32); --accent-ring:rgba(10,114,239,.42); --on-accent:#ffffff;
-  --accent-grad:linear-gradient(180deg,#2b86f5,#0a72ef); --accent-shadow:0 1px 0 rgba(255,255,255,.2) inset,0 2px 8px -1px rgba(10,114,239,.36);
+  /* accent: focus, selection, links AND the primary action */
+  --accent:#2563ff; --accent-fill:#2563ff; --accent-hover:#1d55f0; --accent-press:#1846d4; --accent-ink:#1d4fe0;
+  --accent-soft:rgba(37,99,255,.085); --accent-line:rgba(37,99,255,.32); --accent-ring:rgba(37,99,255,.42); --on-accent:#ffffff;
+  --accent-grad:linear-gradient(180deg,#3d7bff 0%,#2563ff 100%); --accent-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 1px 2px rgba(37,99,255,.3),0 6px 14px -4px rgba(37,99,255,.45);
+  --primary:var(--accent-grad); --on-primary:#ffffff; --primary-shadow:var(--accent-shadow);
 
   /* status */
-  --ok:#15803d; --danger:#c8102e; --warn:#9a4a00; --warn-soft:rgba(245,158,11,.13);
-  --ok-bar:#22a55a; --warn-bar:#f09a0b; --bad-bar:#e5383b;
+  --ok:#15803d; --danger:#d0193a; --warn:#a14a00; --warn-soft:rgba(245,158,11,.13);
+  --ok-bar:#22c55e; --warn-bar:#f59e0b; --bad-bar:#f43f5e;
 
-  /* content kinds (clipboard, projects) */
-  --k-text:#5b5b66; --k-code:#7448e6; --k-link:#0a72ef; --k-mail:#d6336c; --k-path:#d97706; --k-number:#0f9488; --k-image:#e5383b; --k-shot:#22a55a; --k-pin:#ea580c;
-  --ink-code:#6233d6;
-  --tile-mix:10%; --tile-ring:24%; --glyph:88%;
+  /* content kinds and app identity */
+  --k-text:#5b6075; --k-code:#7c3aed; --k-link:#2563ff; --k-mail:#db2777; --k-path:#d97706; --k-number:#0d9488; --k-image:#e11d48; --k-shot:#16a34a; --k-pin:#ea580c;
+  --ink-code:#6d28d9;
+  --tile-mix:11%; --tile-ring:26%; --glyph:90%;
 
   /* depth */
-  --card-lift:0 0 0 1px var(--line),0 1px 2px rgba(12,12,16,.04);
-  --card-shadow:0 1px 2px rgba(12,12,16,.04);
-  --ctl-shadow:0 1px 1px rgba(12,12,16,.04);
-  --shadow:0 0 0 .5px rgba(12,12,16,.16),0 1px 1px rgba(12,12,16,.04),0 10px 20px -6px rgba(12,12,16,.10),0 36px 72px -16px rgba(12,12,16,.26);
-  --pop-shadow:0 0 0 .5px rgba(12,12,16,.14),0 12px 32px -6px rgba(12,12,16,.22);
+  --card-lift:0 0 0 1px var(--line),0 1px 2px rgba(20,24,40,.04),0 2px 8px -2px rgba(20,24,40,.05);
+  --card-shadow:0 1px 2px rgba(20,24,40,.05);
+  --ctl-shadow:0 1px 1px rgba(20,24,40,.05);
+  --shadow:0 0 0 .5px rgba(20,24,40,.18),0 1px 1px rgba(20,24,40,.04),0 12px 24px -8px rgba(20,24,40,.14),0 36px 72px -18px rgba(20,24,40,.28);
+  --pop-shadow:0 0 0 .5px rgba(20,24,40,.14),0 12px 32px -6px rgba(20,24,40,.22);
   --rim:inset 0 1px 0 rgba(255,255,255,.9);
 
-  /* window canvas: barely-there warm wash, no candy gradients */
-  --app-bg:radial-gradient(120% 70% at 0% 0%,#ffffff 0%,transparent 55%),linear-gradient(180deg,#fafaf8 0,#f3f3f0 100%);
-  --wash:radial-gradient(60% 80% at 15% 0%,rgba(10,114,239,.07),transparent 70%),radial-gradient(50% 70% at 100% 0%,rgba(214,51,108,.05),transparent 70%);
+  /* window canvas */
+  --app-bg:linear-gradient(180deg,#fbfbfd 0,#f2f3f7 100%);
+  --wash:radial-gradient(60% 80% at 10% 0%,rgba(37,99,255,.08),transparent 70%),radial-gradient(50% 70% at 100% 0%,rgba(168,85,247,.06),transparent 70%);
 
   /* film grain, used at a few percent */
   --grain:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-  --grain-op:.035;
+  --grain-op:.025;
   color-scheme:light;
 }
 
 /* surfaces (dark): near-black zinc, light from above */
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#121214; --bg2:#0d0d0f; --top:#19191c; --pane:#0f0f11; --ctl:rgba(255,255,255,.05); --card:rgba(255,255,255,.028);
-  --group-bg:#141416; --pv-bg:#0f0f11; --pv-card:#161619;
-  --line:rgba(255,255,255,.07); --line2:rgba(255,255,255,.12);
-  --text:#f4f4f5; --muted:#a8a8b2; --faint:#80808b;
-  --hover:rgba(255,255,255,.045); --chip:rgba(255,255,255,.07); --seg-on:rgba(255,255,255,.12); --mark:rgba(255,196,0,.3);
-  --ink:#f4f4f5; --on-ink:#0b0b0f; --ink-hover:#ffffff; --ink-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 4px 16px -4px rgba(255,255,255,.18);
-  --accent:#4c9dff; --accent-fill:#1f7cf0; --accent-hover:#3a8cf7; --accent-press:#166bd6; --accent-ink:#80bbff;
-  --accent-soft:rgba(76,157,255,.12); --accent-line:rgba(76,157,255,.42); --accent-ring:rgba(76,157,255,.5); --on-accent:#ffffff;
-  --accent-grad:linear-gradient(180deg,#3a8cf7,#1f7cf0); --accent-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 2px 10px -2px rgba(31,124,240,.5);
-  --ok:#4ade80; --danger:#ff7a7a; --warn:#fbbf24; --warn-soft:rgba(251,191,36,.14);
-  --ok-bar:#34d399; --warn-bar:#fbbf24; --bad-bar:#ff6b6b;
-  --k-text:#a1a1aa; --k-code:#a78bfa; --k-link:#60a5fa; --k-mail:#f472b6; --k-path:#fbbf24; --k-number:#2dd4bf; --k-image:#fb7185; --k-shot:#4ade80; --k-pin:#fb923c;
+  --bg:#1f2024; --bg2:#1a1b1f; --top:#26272c; --pane:#1b1c20; --ctl:rgba(255,255,255,.07); --card:#26272c;
+  --group-bg:#222327; --pv-bg:#1b1c20; --pv-card:#26272c;
+  --line:rgba(255,255,255,.075); --line2:rgba(255,255,255,.13);
+  --text:#f3f4f7; --muted:#b9bcc8; --faint:#9094a3;
+  --hover:rgba(255,255,255,.055); --chip:rgba(255,255,255,.075); --seg-on:rgba(255,255,255,.14); --mark:rgba(255,196,0,.3);
+  --ink:#3a3c45; --on-ink:#ffffff; --ink-hover:#454852; --ink-shadow:0 1px 0 rgba(255,255,255,.12) inset,0 6px 16px -4px rgba(0,0,0,.5);
+  --accent:#5b9dff; --accent-fill:#2f6fec; --accent-hover:#3b7cf5; --accent-press:#255fd6; --accent-ink:#8bb8ff;
+  --accent-soft:rgba(91,157,255,.14); --accent-line:rgba(91,157,255,.45); --accent-ring:rgba(91,157,255,.55); --on-accent:#ffffff;
+  --accent-grad:linear-gradient(180deg,#4a86ff 0%,#2f6fec 100%); --accent-shadow:0 1px 0 rgba(255,255,255,.2) inset,0 6px 16px -4px rgba(47,111,236,.55);
+  --primary:var(--accent-grad); --on-primary:#ffffff; --primary-shadow:var(--accent-shadow);
+  --ok:#4ade80; --danger:#ff7a8a; --warn:#fbbf24; --warn-soft:rgba(251,191,36,.14);
+  --ok-bar:#34d399; --warn-bar:#fbbf24; --bad-bar:#fb7185;
+  --k-text:#a7abb8; --k-code:#a78bfa; --k-link:#60a5fa; --k-mail:#f472b6; --k-path:#fbbf24; --k-number:#2dd4bf; --k-image:#fb7185; --k-shot:#4ade80; --k-pin:#fb923c;
   --ink-code:#c4b5fd;
-  --tile-mix:15%; --tile-ring:28%; --glyph:100%;
-  --card-lift:0 0 0 1px var(--line),inset 0 1px 0 rgba(255,255,255,.03);
+  --tile-mix:18%; --tile-ring:30%; --glyph:100%;
+  --card-lift:0 0 0 1px var(--line),inset 0 1px 0 rgba(255,255,255,.04);
   --card-shadow:none; --ctl-shadow:none;
-  --shadow:0 0 0 .5px rgba(255,255,255,.14),inset 0 1px 0 rgba(255,255,255,.06),0 24px 64px -12px rgba(0,0,0,.75),0 8px 20px -8px rgba(0,0,0,.5);
-  --pop-shadow:0 0 0 .5px rgba(255,255,255,.14),0 16px 40px -8px rgba(0,0,0,.7);
-  --rim:inset 0 1px 0 rgba(255,255,255,.05);
-  --app-bg:radial-gradient(120% 70% at 0% 0%,#1b1b1f 0%,transparent 55%),linear-gradient(180deg,#141416 0,#0f0f11 100%);
-  --wash:radial-gradient(60% 80% at 15% 0%,rgba(76,157,255,.10),transparent 70%),radial-gradient(50% 70% at 100% 0%,rgba(244,114,182,.06),transparent 70%);
-  --grain-op:.05;
+  --shadow:0 0 0 .5px rgba(255,255,255,.16),inset 0 1px 0 rgba(255,255,255,.07),0 24px 60px -12px rgba(0,0,0,.6),0 8px 20px -8px rgba(0,0,0,.4);
+  --pop-shadow:0 0 0 .5px rgba(255,255,255,.16),0 16px 40px -8px rgba(0,0,0,.55);
+  --rim:inset 0 1px 0 rgba(255,255,255,.06);
+  --app-bg:linear-gradient(180deg,#25262b 0,#1d1e22 100%);
+  --wash:radial-gradient(60% 80% at 10% 0%,rgba(91,157,255,.12),transparent 70%),radial-gradient(50% 70% at 100% 0%,rgba(168,85,247,.08),transparent 70%);
+  --grain-op:.035;
   color-scheme:dark;
 }}
 :root[data-theme="dark"]{
-  --bg:#121214; --bg2:#0d0d0f; --top:#19191c; --pane:#0f0f11; --ctl:rgba(255,255,255,.05); --card:rgba(255,255,255,.028);
-  --group-bg:#141416; --pv-bg:#0f0f11; --pv-card:#161619;
-  --line:rgba(255,255,255,.07); --line2:rgba(255,255,255,.12);
-  --text:#f4f4f5; --muted:#a8a8b2; --faint:#80808b;
-  --hover:rgba(255,255,255,.045); --chip:rgba(255,255,255,.07); --seg-on:rgba(255,255,255,.12); --mark:rgba(255,196,0,.3);
-  --ink:#f4f4f5; --on-ink:#0b0b0f; --ink-hover:#ffffff; --ink-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 4px 16px -4px rgba(255,255,255,.18);
-  --accent:#4c9dff; --accent-fill:#1f7cf0; --accent-hover:#3a8cf7; --accent-press:#166bd6; --accent-ink:#80bbff;
-  --accent-soft:rgba(76,157,255,.12); --accent-line:rgba(76,157,255,.42); --accent-ring:rgba(76,157,255,.5); --on-accent:#ffffff;
-  --accent-grad:linear-gradient(180deg,#3a8cf7,#1f7cf0); --accent-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 2px 10px -2px rgba(31,124,240,.5);
-  --ok:#4ade80; --danger:#ff7a7a; --warn:#fbbf24; --warn-soft:rgba(251,191,36,.14);
-  --ok-bar:#34d399; --warn-bar:#fbbf24; --bad-bar:#ff6b6b;
-  --k-text:#a1a1aa; --k-code:#a78bfa; --k-link:#60a5fa; --k-mail:#f472b6; --k-path:#fbbf24; --k-number:#2dd4bf; --k-image:#fb7185; --k-shot:#4ade80; --k-pin:#fb923c;
+  --bg:#1f2024; --bg2:#1a1b1f; --top:#26272c; --pane:#1b1c20; --ctl:rgba(255,255,255,.07); --card:#26272c;
+  --group-bg:#222327; --pv-bg:#1b1c20; --pv-card:#26272c;
+  --line:rgba(255,255,255,.075); --line2:rgba(255,255,255,.13);
+  --text:#f3f4f7; --muted:#b9bcc8; --faint:#9094a3;
+  --hover:rgba(255,255,255,.055); --chip:rgba(255,255,255,.075); --seg-on:rgba(255,255,255,.14); --mark:rgba(255,196,0,.3);
+  --ink:#3a3c45; --on-ink:#ffffff; --ink-hover:#454852; --ink-shadow:0 1px 0 rgba(255,255,255,.12) inset,0 6px 16px -4px rgba(0,0,0,.5);
+  --accent:#5b9dff; --accent-fill:#2f6fec; --accent-hover:#3b7cf5; --accent-press:#255fd6; --accent-ink:#8bb8ff;
+  --accent-soft:rgba(91,157,255,.14); --accent-line:rgba(91,157,255,.45); --accent-ring:rgba(91,157,255,.55); --on-accent:#ffffff;
+  --accent-grad:linear-gradient(180deg,#4a86ff 0%,#2f6fec 100%); --accent-shadow:0 1px 0 rgba(255,255,255,.2) inset,0 6px 16px -4px rgba(47,111,236,.55);
+  --primary:var(--accent-grad); --on-primary:#ffffff; --primary-shadow:var(--accent-shadow);
+  --ok:#4ade80; --danger:#ff7a8a; --warn:#fbbf24; --warn-soft:rgba(251,191,36,.14);
+  --ok-bar:#34d399; --warn-bar:#fbbf24; --bad-bar:#fb7185;
+  --k-text:#a7abb8; --k-code:#a78bfa; --k-link:#60a5fa; --k-mail:#f472b6; --k-path:#fbbf24; --k-number:#2dd4bf; --k-image:#fb7185; --k-shot:#4ade80; --k-pin:#fb923c;
   --ink-code:#c4b5fd;
-  --tile-mix:15%; --tile-ring:28%; --glyph:100%;
-  --card-lift:0 0 0 1px var(--line),inset 0 1px 0 rgba(255,255,255,.03);
+  --tile-mix:18%; --tile-ring:30%; --glyph:100%;
+  --card-lift:0 0 0 1px var(--line),inset 0 1px 0 rgba(255,255,255,.04);
   --card-shadow:none; --ctl-shadow:none;
-  --shadow:0 0 0 .5px rgba(255,255,255,.14),inset 0 1px 0 rgba(255,255,255,.06),0 24px 64px -12px rgba(0,0,0,.75),0 8px 20px -8px rgba(0,0,0,.5);
-  --pop-shadow:0 0 0 .5px rgba(255,255,255,.14),0 16px 40px -8px rgba(0,0,0,.7);
-  --rim:inset 0 1px 0 rgba(255,255,255,.05);
-  --app-bg:radial-gradient(120% 70% at 0% 0%,#1b1b1f 0%,transparent 55%),linear-gradient(180deg,#141416 0,#0f0f11 100%);
-  --wash:radial-gradient(60% 80% at 15% 0%,rgba(76,157,255,.10),transparent 70%),radial-gradient(50% 70% at 100% 0%,rgba(244,114,182,.06),transparent 70%);
-  --grain-op:.05;
+  --shadow:0 0 0 .5px rgba(255,255,255,.16),inset 0 1px 0 rgba(255,255,255,.07),0 24px 60px -12px rgba(0,0,0,.6),0 8px 20px -8px rgba(0,0,0,.4);
+  --pop-shadow:0 0 0 .5px rgba(255,255,255,.16),0 16px 40px -8px rgba(0,0,0,.55);
+  --rim:inset 0 1px 0 rgba(255,255,255,.06);
+  --app-bg:linear-gradient(180deg,#25262b 0,#1d1e22 100%);
+  --wash:radial-gradient(60% 80% at 10% 0%,rgba(91,157,255,.12),transparent 70%),radial-gradient(50% 70% at 100% 0%,rgba(168,85,247,.08),transparent 70%);
+  --grain-op:.035;
   color-scheme:dark;
 }
 
 /* Smooth theme switch: the colour tokens are typed so they interpolate. */
-@property --bg{syntax:"<color>";inherits:true;initial-value:#f6f6f4}
+@property --bg{syntax:"<color>";inherits:true;initial-value:#f4f5f8}
 @property --bg2{syntax:"<color>";inherits:true;initial-value:#efefec}
 @property --top{syntax:"<color>";inherits:true;initial-value:#fbfbfa}
 @property --pane{syntax:"<color>";inherits:true;initial-value:#ffffff}
@@ -147,8 +150,8 @@
 @media (prefers-reduced-motion:reduce){:root{transition:none}}
 
 /* base */
-html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;font-feature-settings:"ss01" 0,"cv11" 1}
-body{font-family:var(--font-ui);letter-spacing:-.003em}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;font-optical-sizing:auto;font-feature-settings:"cv05" 1,"cv08" 1,"calt" 1}
+body{font-family:var(--font-ui);letter-spacing:-.006em}
 ::selection{background:color-mix(in srgb,var(--accent) 26%,transparent)}
 input::placeholder,textarea::placeholder{color:var(--faint);opacity:.85}
 ::-webkit-scrollbar{width:11px;height:11px}
@@ -159,16 +162,16 @@ input::placeholder,textarea::placeholder{color:var(--faint);opacity:.85}
 /* shared pieces ------------------------------------------------------------------------ */
 
 /* Uppercase mono label above a section (Shoji's "HOW IT WORKS"). */
-.eyebrow{font:500 10.5px/1 var(--font-mono);letter-spacing:var(--track-label);text-transform:uppercase;color:var(--faint)}
+.eyebrow{font:600 11.5px/1.2 var(--font-ui);letter-spacing:0;text-transform:none;color:var(--faint)}
 /* Zero-padded index, mono, in the accent: 01 02 03 */
-.idx{font:500 11px/1 var(--font-mono);color:var(--accent);font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.idx{font:600 11px/1 var(--font-ui);color:var(--accent);font-variant-numeric:tabular-nums}
 /* Two-tone title: strong first clause, quiet second. <h1 class="duo">Pano. <span>Her şey burada.</span></h1> */
-.duo{letter-spacing:var(--track-display);font-weight:650}
+.duo{letter-spacing:var(--track-display);font-weight:680}
 .duo span{color:var(--faint)}
 
 /* Keycap: a little physical depth, mono legend. */
 kbd,.kbd{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:6px;
-  font:500 10.5px/1 var(--font-mono);letter-spacing:.02em;color:var(--muted);white-space:nowrap;
+  font:600 11px/1 var(--font-ui);letter-spacing:.01em;color:var(--muted);white-space:nowrap;
   background:linear-gradient(180deg,var(--pane),color-mix(in srgb,var(--pane) 92%,var(--text)));
   box-shadow:0 0 0 1px var(--line2),0 1.5px 0 color-mix(in srgb,var(--text) 14%,transparent)}
 
@@ -182,11 +185,11 @@ kbd,.kbd{display:inline-flex;align-items:center;justify-content:center;min-width
 .spot:hover::before{opacity:1}
 
 /* Ink pill: the one primary action. */
-.ink-btn{display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 6px 0 14px;border-radius:var(--r-pill);background:var(--ink);color:var(--on-ink);
-  font:550 12.5px/1 var(--font-ui);letter-spacing:-.005em;box-shadow:var(--ink-shadow);transition:transform var(--dur-1) var(--ease-out),background var(--dur-1)}
-.ink-btn:hover{background:var(--ink-hover)}
+.ink-btn{display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 6px 0 14px;border-radius:var(--r-pill);background:var(--primary);color:var(--on-primary);
+  font:600 12.5px/1 var(--font-ui);letter-spacing:-.005em;box-shadow:var(--primary-shadow);transition:transform var(--dur-1) var(--ease-out),background var(--dur-1)}
+.ink-btn:hover{filter:brightness(1.06)}
 .ink-btn:active{transform:scale(.97)}
-.ink-btn .go{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--on-ink);color:var(--ink)}
+.ink-btn .go{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.22);color:#fff}
 .ink-btn .go svg{width:11px;height:11px}
 
 /* Panel entrance: rise, unblur, settle. */

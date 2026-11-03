@@ -13,22 +13,25 @@
       radial-gradient(700px 420px at 12% 112%, rgba(10,114,239,.16), transparent 70%),
       radial-gradient(720px 440px at 92% 108%, rgba(214,51,108,.13), transparent 70%),
       radial-gradient(900px 400px at 50% 0%, #ffffff, transparent 70%),
-      #f4f4f1; }
+      #f4f5f8; }
   .dark .stage { color: #f4f4f5; background:
       radial-gradient(700px 420px at 12% 112%, rgba(76,157,255,.22), transparent 70%),
       radial-gradient(720px 440px at 92% 108%, rgba(244,114,182,.14), transparent 70%),
-      radial-gradient(900px 400px at 50% 0%, #1d1d21, transparent 70%),
-      #0d0d0f; }
+      radial-gradient(900px 400px at 50% 0%, #2a2b31, transparent 70%),
+      #1b1c20; }
   .stage::after { content: ""; position: absolute; inset: 0; background-image: var(--grain); background-size: 160px; opacity: .05; mix-blend-mode: overlay; pointer-events: none; }
   /* faint grid, like a drafting table */
   .grid { position: absolute; inset: 0; background-image: linear-gradient(var(--gl) 1px, transparent 1px), linear-gradient(90deg, var(--gl) 1px, transparent 1px); background-size: 80px 80px; background-position: -1px -1px;
     -webkit-mask-image: radial-gradient(1000px 520px at 50% 30%, #000 20%, transparent 75%); mask-image: radial-gradient(1000px 520px at 50% 30%, #000 20%, transparent 75%); }
   .light .grid { --gl: rgba(12,12,16,.045); } .dark .grid { --gl: rgba(255,255,255,.04); }
   .copy { position: absolute; left: 0; right: 0; top: 70px; text-align: center; }
-  .eyebrow { display: inline-flex; align-items: center; gap: 12px; font: 500 14px/1 var(--font-mono); letter-spacing: .16em; text-transform: uppercase; opacity: .62; }
-  .eyebrow img { width: 30px; height: 30px; }
-  h1 { margin: 26px 0 0; font: 650 76px/1.02 var(--font-display); letter-spacing: -.045em; }
-  h1 span { opacity: .42; }
+  .eyebrow { display: inline-flex; align-items: center; gap: 12px; height: 46px; padding: 0 20px 0 8px; border-radius: 999px; font: 600 17px/1 var(--font-ui); letter-spacing: -.01em; }
+  .light .eyebrow { background: #fff; box-shadow: 0 0 0 1px rgba(20,24,40,.08), 0 6px 18px -8px rgba(20,24,40,.25); }
+  .dark .eyebrow { background: #26272c; box-shadow: 0 0 0 1px rgba(255,255,255,.1); }
+  .eyebrow span { opacity: .55; font-weight: 500; }
+  .eyebrow img { width: 32px; height: 32px; }
+  h1 { margin: 28px 0 0; font: 750 78px/1.02 var(--font-display); letter-spacing: -.045em; }
+  h1 span { background: linear-gradient(90deg,#3d7bff,#8b5cf6 60%,#ec4899); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .keys { display: inline-flex; gap: 10px; margin-top: 30px; }
   .keys kbd { height: 34px; min-width: 34px; padding: 0 12px; font-size: 15px; border-radius: 9px; color: inherit; }
   .light .keys kbd { background: #fff; box-shadow: 0 0 0 1px rgba(12,12,16,.12), 0 2px 0 rgba(12,12,16,.14); }
@@ -44,7 +47,7 @@
 <div class="stage">
   <div class="grid"></div>
   <div class="copy">
-    <div class="eyebrow"><img src="logo.svg" alt="">Nimbstia · a workbench for macOS</div>
+    <div class="eyebrow"><img src="logo.svg" alt="">Nimbstia <span>· a workbench for macOS</span></div>
     <h1>Every move, one key.<br><span>Calm panels for the rest.</span></h1>
     <div class="keys"><kbd>⌃ V</kbd><kbd>⌃ .</kbd><kbd>⌃ Space</kbd><kbd>⌃ ⇧ P</kbd></div>
   </div>
