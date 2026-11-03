@@ -5,6 +5,10 @@
 <link rel="stylesheet" href="theme.css">
 <script src="i18n.js"></script>
 <style>
+/* tooltips and toasts: a white card in light, graphite ink in dark (no near-black fills in light) */
+:root{--tt-bg:#ffffff;--tt-fg:var(--text);--tt-shadow:0 0 0 .5px rgba(20,24,40,.14),0 8px 24px -6px rgba(20,24,40,.22)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--tt-bg:var(--ink);--tt-fg:var(--on-ink);--tt-shadow:var(--ink-shadow),0 16px 36px -10px rgba(0,0,0,.45)}}
+:root[data-theme="dark"]{--tt-bg:var(--ink);--tt-fg:var(--on-ink);--tt-shadow:var(--ink-shadow),0 16px 36px -10px rgba(0,0,0,.45)}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:transparent;overflow:hidden}
 body{font:13px/1.45 var(--font-ui);color:var(--text);-webkit-user-select:none;cursor:default}
@@ -30,7 +34,7 @@ header:focus-within>svg{color:var(--text)}
 .tb{position:relative;width:30px;height:30px;flex:none;border:0;padding:0;font:inherit;background:none;border-radius:var(--r-pill);display:grid;place-items:center;color:var(--muted);transition:background var(--dur-1),color var(--dur-1)}
 .tb svg{width:16px;height:16px}
 .tb:hover{background:var(--hover);color:var(--text)}
-.tb[data-tip]:hover::after{content:attr(data-tip);position:absolute;top:calc(100% + 6px);right:0;white-space:nowrap;background:var(--ink);color:var(--on-ink);font:500 11.5px/1 var(--font-ui);padding:6px 9px;border-radius:var(--r-pill);pointer-events:none;z-index:60;box-shadow:var(--pop-shadow)}
+.tb[data-tip]:hover::after{content:attr(data-tip);position:absolute;top:calc(100% + 6px);right:0;white-space:nowrap;background:var(--tt-bg);color:var(--tt-fg);font:500 11.5px/1 var(--font-ui);padding:6px 9px;border-radius:var(--r-pill);pointer-events:none;z-index:60;box-shadow:var(--tt-shadow)}
 #closeBtn{color:#e5484d}
 #closeBtn:hover{color:#fff;background:#e5484d}
 
@@ -130,8 +134,8 @@ footer .cnt b{font-weight:650;color:var(--text);margin-right:4px}
 .empty .btn{margin:18px auto 0;display:inline-flex}
 
 /* toast: ink pill */
-.toast{position:absolute;left:50%;bottom:58px;z-index:40;transform:translate(-50%,10px) scale(.96);background:var(--ink);color:var(--on-ink);font:550 12.5px/1 var(--font-ui);letter-spacing:-.005em;padding:0 16px 0 6px;height:34px;border-radius:var(--r-pill);opacity:0;
-  transition:opacity var(--dur-1),transform var(--dur-2) var(--ease-spring);pointer-events:none;display:flex;gap:9px;align-items:center;box-shadow:var(--ink-shadow),0 16px 36px -10px rgba(0,0,0,.35);white-space:nowrap}
+.toast{position:absolute;left:50%;bottom:58px;z-index:40;transform:translate(-50%,10px) scale(.96);background:var(--tt-bg);color:var(--tt-fg);font:550 12.5px/1 var(--font-ui);letter-spacing:-.005em;padding:0 16px 0 6px;height:34px;border-radius:var(--r-pill);opacity:0;
+  transition:opacity var(--dur-1),transform var(--dur-2) var(--ease-spring);pointer-events:none;display:flex;gap:9px;align-items:center;box-shadow:var(--tt-shadow);white-space:nowrap}
 .toast svg{width:22px;height:22px;padding:5px;border-radius:50%;color:#fff;background:var(--ok-bar)}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 
@@ -216,9 +220,11 @@ body{-webkit-font-smoothing:auto}
 .pv-path .full{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font:12.5px/1.6 var(--font-mono);color:var(--muted);word-break:break-all;-webkit-user-select:text;cursor:text}
 /* image: framed, with a dimension badge */
 .pv-body.has-img{position:relative;overflow:hidden}
-.pv-img{position:absolute;inset:22px 24px 18px;display:flex;align-items:center;justify-content:center;border-radius:16px;
+.pv-img{position:absolute;inset:22px 24px 18px;container-type:size;display:flex;align-items:center;justify-content:center;border-radius:16px;
   background:radial-gradient(80% 80% at 50% 40%,color-mix(in srgb,var(--k-image) 5%,transparent),transparent 70%)}
 .pv-img img{max-width:100%;max-height:100%;object-fit:contain;border-radius:12px;box-shadow:0 0 0 5px var(--pv-card),0 0 0 6px var(--line2),0 18px 40px -14px rgba(20,24,40,.35);background:conic-gradient(var(--chip) 25%,transparent 0 50%,var(--chip) 0 75%,transparent 0) 0 0/16px 16px}
+.pv-img .fr{position:relative;display:block;aspect-ratio:var(--ar);width:min(100%,calc(100cqh * var(--ar)));max-height:100%}
+.pv-img .fr img{display:block;width:100%;height:100%;object-fit:cover}
 .pv-dim{position:absolute;right:10px;bottom:10px;height:24px;padding:0 10px;border-radius:var(--r-pill);display:flex;align-items:center;font:600 11.5px/1 var(--font-ui);font-variant-numeric:tabular-nums;color:var(--text);
   background:color-mix(in srgb,var(--pv-card) 88%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);box-shadow:0 0 0 1px var(--line2),0 4px 12px -4px rgba(20,24,40,.2)}
 textarea{width:100%;height:100%;resize:none;border:0;outline:0;border-radius:16px;padding:18px 20px;background:var(--pv-card);box-shadow:0 0 0 1px var(--accent-line),0 0 0 4px var(--accent-soft);color:var(--text);font:14px/1.65 var(--font-ui);caret-color:var(--accent)}
@@ -573,7 +579,7 @@ function renderPreview() {
   if (c === 'image' || c === 'shot') {
     const th = thumbs[it.id];
     const w = it.w || th?.w, h = it.h || th?.h;
-    body = `<div class="pv-img">${th ? `<img src="${th.u}">` : '<div class="ico shimmer" style="width:60%;height:60%"></div>'}${w ? `<span class="pv-dim">${num(w)} × ${num(h)}</span>` : ''}</div>`;
+    body = `<div class="pv-img">${!th ? '<div class="ico shimmer" style="width:60%;height:60%"></div>' : w && h ? `<span class="fr" style="--ar:${w / h}"><img src="${th.u}"><span class="pv-dim">${num(w)} × ${num(h)}</span></span>` : `<img src="${th.u}">`}</div>`;
     if (w) meta.push(['Boyut', `${num(w)} × ${num(h)} piksel`]);
     meta.push(['Dosya', bytes(it.size)]);
     if (it.name) meta.push(['Ad', it.name]);
@@ -592,7 +598,8 @@ function renderPreview() {
   }
   if (it.app) meta.push(['Kaynak', it.app]);
   meta.push([c === 'shot' ? 'Çekildi' : (it.edited ? 'Güncellendi' : 'Kopyalandı'), fullTime(it)]);
-  pvEl.innerHTML = `<div class="pv-actions">${acts}</div><div class="pv-body${c === 'image' || c === 'shot' ? ' has-img' : ''}">${body}</div><dl class="pv-meta" style="--cols:${meta.length <= 3 ? meta.length : meta.length === 4 ? 2 : 3}">${meta.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd title="${esc(v)}">${esc(v)}</dd></div>`).join('')}</dl>`;
+  const cols = meta.length <= 3 ? meta.length : meta.length === 4 ? 2 : 3;
+  pvEl.innerHTML = `<div class="pv-actions">${acts}</div><div class="pv-body${c === 'image' || c === 'shot' ? ' has-img' : ''}">${body}</div><dl class="pv-meta" style="--cols:${cols}">${meta.map(([k, v], i) => `<div${i === meta.length - 1 && meta.length % cols ? ` style="grid-column:span ${cols - meta.length % cols + 1}"` : ''}><dt>${esc(k)}</dt><dd title="${esc(v)}">${esc(v)}</dd></div>`).join('')}</dl>`;
 }
 
 function renderFooter() {

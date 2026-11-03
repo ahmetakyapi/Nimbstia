@@ -25,9 +25,10 @@
     --tool-on-bg: color-mix(in srgb, var(--accent) 15%, transparent);   /* active tool: soft accent fill */
     --tool-on-fg: #1a5fd8;
     --tool-on-ring: color-mix(in srgb, var(--accent) 34%, transparent);
-    --chip-bg: rgba(30, 32, 40, .86); /* dimension pill: graphite in both themes, reads on any screen */
-    --chip-fg: #f4f4f5;
-    --chip-dim: rgba(244, 244, 245, .5);
+    --chip-bg: rgba(255, 255, 255, .92); /* dimension pill: frosted white in light, graphite in dark */
+    --chip-fg: #111320;
+    --chip-dim: rgba(17, 19, 32, .5);
+    --chip-ring: 0 0 0 .5px rgba(20, 24, 40, .16);
     --tip-bg: rgba(251, 251, 249, .94);
     --tip-shadow: 0 0 0 .5px rgba(12, 12, 16, .14), 0 6px 18px -4px rgba(12, 12, 16, .24);
     --sw-ring: rgba(12, 12, 16, .16);
@@ -50,7 +51,7 @@
     --tool-on-bg: color-mix(in srgb, var(--accent) 22%, transparent);
     --tool-on-fg: #9cc6ff;
     --tool-on-ring: color-mix(in srgb, var(--accent) 45%, transparent);
-    --chip-bg: rgba(30, 32, 40, .88);
+    --chip-bg: rgba(30, 32, 40, .88); --chip-fg: #f4f4f5; --chip-dim: rgba(244, 244, 245, .5); --chip-ring: 0 0 0 .5px rgba(255, 255, 255, .12);
     --tip-bg: rgba(48, 49, 56, .95);
     --tip-shadow: 0 0 0 .5px rgba(255, 255, 255, .14), 0 8px 22px -6px rgba(0, 0, 0, .6);
     --sw-ring: rgba(255, 255, 255, .22);
@@ -73,7 +74,7 @@
     --tool-on-bg: color-mix(in srgb, var(--accent) 22%, transparent);
     --tool-on-fg: #9cc6ff;
     --tool-on-ring: color-mix(in srgb, var(--accent) 45%, transparent);
-    --chip-bg: rgba(30, 32, 40, .88);
+    --chip-bg: rgba(30, 32, 40, .88); --chip-fg: #f4f4f5; --chip-dim: rgba(244, 244, 245, .5); --chip-ring: 0 0 0 .5px rgba(255, 255, 255, .12);
     --tip-bg: rgba(48, 49, 56, .95);
     --tip-shadow: 0 0 0 .5px rgba(255, 255, 255, .14), 0 8px 22px -6px rgba(0, 0, 0, .6);
     --sw-ring: rgba(255, 255, 255, .22);
@@ -119,7 +120,7 @@
   /* dimension readout: graphite pill, tabular numerals */
   #pill { position: absolute; display: none; height: 22px; padding: 0 9px; border-radius: 7px;
     font: 600 11.5px/22px var(--font-ui); letter-spacing: 0; font-variant-numeric: tabular-nums; color: var(--chip-fg);
-    background: var(--chip-bg); box-shadow: 0 0 0 .5px rgba(255, 255, 255, .12), 0 4px 12px -4px rgba(0, 0, 0, .45);
+    background: var(--chip-bg); box-shadow: var(--chip-ring), 0 4px 12px -4px rgba(0, 0, 0, .35);
     -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); pointer-events: none; white-space: nowrap; }
 
   /* floating glass pills */

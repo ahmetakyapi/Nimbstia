@@ -5,6 +5,10 @@
 <link rel="stylesheet" href="theme.css">
 <script src="i18n.js"></script>
 <style>
+/* tooltips and toasts: a white card in light, graphite ink in dark (no near-black fills in light) */
+:root{--tt-bg:#ffffff;--tt-fg:var(--text);--tt-shadow:0 0 0 .5px rgba(20,24,40,.14),0 8px 24px -6px rgba(20,24,40,.22)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--tt-bg:var(--ink);--tt-fg:var(--on-ink);--tt-shadow:var(--ink-shadow),0 16px 36px -10px rgba(0,0,0,.45)}}
+:root[data-theme="dark"]{--tt-bg:var(--ink);--tt-fg:var(--on-ink);--tt-shadow:var(--ink-shadow),0 16px 36px -10px rgba(0,0,0,.45)}
 /* Panestia tokens: the miniature Mac screen (pastel wallpaper, glass menubar, little windows). */
 :root{
   --screen:radial-gradient(90% 120% at 0% 0%,#dfe7fb 0%,transparent 62%),radial-gradient(80% 110% at 100% 100%,#fbe4d8 0%,transparent 60%),radial-gradient(70% 90% at 85% 0%,#ece2f8 0%,transparent 70%),linear-gradient(140deg,#e6e8f8 0%,#efe6f4 50%,#f7e9e6 100%);
@@ -163,7 +167,7 @@ mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
 .tb{position:relative;width:28px;height:28px;flex:none;border:0;padding:0;font:inherit;background:none;border-radius:var(--r-pill);display:grid;place-items:center;color:var(--muted);transition:background var(--dur-1),color var(--dur-1)}
 .tb svg{width:16px;height:16px}
 .tb:hover{background:var(--hover);color:var(--text)}
-.tb[data-tip]:hover::after{content:attr(data-tip);position:absolute;top:calc(100% + 6px);right:0;white-space:nowrap;background:var(--ink);color:var(--on-ink);font:500 11.5px/1 var(--font-ui);padding:6px 9px;border-radius:var(--r-pill);pointer-events:none;z-index:9;box-shadow:var(--pop-shadow)}
+.tb[data-tip]:hover::after{content:attr(data-tip);position:absolute;top:calc(100% + 6px);right:0;white-space:nowrap;background:var(--tt-bg);color:var(--tt-fg);font:500 11.5px/1 var(--font-ui);padding:6px 9px;border-radius:var(--r-pill);pointer-events:none;z-index:9;box-shadow:var(--tt-shadow)}
 #closeBtn{color:var(--muted)}
 #closeBtn:hover{color:#fff;background:#e5484d}
 </style>

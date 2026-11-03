@@ -79,6 +79,7 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .vh{margin-top:3px;font:450 11.5px/1 var(--font-mono);color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .vs{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px}
 .vchip{display:inline-flex;align-items:center;gap:7px;height:26px;padding:0 11px 0 9px;border-radius:var(--r-pill);font-size:12px;font-weight:650;color:color-mix(in srgb,var(--vc) 70%,var(--text));background:color-mix(in srgb,var(--vc) 13%,transparent)}
+.vchip em{font-style:normal;font-weight:550;opacity:.75;margin-left:2px;font-variant-numeric:tabular-nums}
 .vchip i{position:relative;width:7px;height:7px;border-radius:50%;background:var(--vc)}
 .w.vpn.ok .vchip i::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:1.5px solid var(--vc);animation:ping 2.4s var(--ease-out) infinite}
 @keyframes ping{0%{transform:scale(.5);opacity:.8}80%,100%{transform:scale(1.7);opacity:0}}
@@ -86,7 +87,7 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .sig{display:inline-flex;align-items:flex-end;gap:2px;height:12px}
 .sig i{width:3px;border-radius:1.5px;background:var(--line2)}
 .sig i.on{background:var(--vc)}
-.vbtn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;height:34px;margin-top:14px;border-radius:12px;font-size:12.5px;font-weight:600;color:var(--text);background:var(--chip);transition:background var(--dur-1),color var(--dur-1),transform var(--dur-1) var(--ease-out)}
+.vbtn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;height:34px;margin-top:14px;border-radius:12px;font-size:12.5px;font-weight:600;color:var(--text);background:color-mix(in srgb,var(--text) 6%,var(--card));transition:background var(--dur-1),color var(--dur-1),transform var(--dur-1) var(--ease-out)}
 .vbtn:hover{background:color-mix(in srgb,var(--bad-bar) 12%,transparent);color:var(--danger)}
 .vbtn:active{transform:scale(.97)}
 .vbtn svg{width:13px;height:13px}
@@ -235,6 +236,47 @@ button.ss:hover .go{color:var(--text);transform:translate(2px,-2px)}
 .pb i{display:block;height:100%;border-radius:3px;background:var(--accent);transform-origin:left;animation:grow .6s var(--ease-out) both}
 .pm{font-size:12.5px;font-weight:650;font-variant-numeric:tabular-nums;text-align:right}
 .pc2{font-size:11.5px;color:var(--faint);text-align:right;font-variant-numeric:tabular-nums}
+
+/* ---- premium pass: material, rings, ripple */
+.app{background:radial-gradient(70% 45% at 0% 0%,color-mix(in srgb,#5b8cff 14%,transparent),transparent 70%),radial-gradient(60% 40% at 100% 0%,color-mix(in srgb,#f472b6 10%,transparent),transparent 70%),radial-gradient(80% 40% at 50% 100%,color-mix(in srgb,#a78bfa 9%,transparent),transparent 70%),var(--app-bg)}
+.app::before{display:none}
+.app::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background-image:var(--grain);background-size:160px;opacity:var(--grain-op);mix-blend-mode:overlay}
+.w{border-radius:22px;box-shadow:0 0 0 1px var(--line),inset 0 1px 0 rgba(255,255,255,.85),0 1px 2px rgba(20,24,40,.04),0 10px 28px -14px rgba(20,24,40,.22);transition:box-shadow var(--dur-2),transform var(--dur-2) var(--ease-out)}
+:root[data-theme="dark"] .w{box-shadow:0 0 0 1px var(--line),inset 0 1px 0 rgba(255,255,255,.06),0 12px 30px -14px rgba(0,0,0,.6)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .w{box-shadow:0 0 0 1px var(--line),inset 0 1px 0 rgba(255,255,255,.06),0 12px 30px -14px rgba(0,0,0,.6)}}
+.w > *{position:relative;z-index:1}
+/* connection ripple: a quiet radar that says "live" */
+.w.vpn .ripple{position:absolute;z-index:0;right:-44px;top:58px;width:140px;height:140px;pointer-events:none;opacity:.9}
+.ripple i{position:absolute;inset:0;border-radius:50%;border:1.5px solid color-mix(in srgb,var(--vc) 32%,transparent);background:radial-gradient(circle,color-mix(in srgb,var(--vc) 7%,transparent),transparent 70%)}
+.ripple i:nth-child(2){inset:20px;border-color:color-mix(in srgb,var(--vc) 40%,transparent)}
+.ripple i:nth-child(3){inset:40px;border-color:color-mix(in srgb,var(--vc) 50%,transparent);background:color-mix(in srgb,var(--vc) 10%,transparent)}
+.ripple b{position:absolute;inset:40px;padding-right:0;display:grid;place-items:center;color:var(--vc)}
+.ripple b svg{width:24px;height:24px}
+.w.vpn.ok .ripple i{animation:radar 3.6s var(--ease-out) infinite}
+.w.vpn.ok .ripple i:nth-child(2){animation-delay:.25s}.w.vpn.ok .ripple i:nth-child(3){animation-delay:.5s}
+@keyframes radar{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.06);opacity:.55}}
+/* Claude rings */
+.ring2{display:flex;align-items:center;gap:12px;margin-top:2px}
+.rgw{position:relative;flex:none;width:88px;height:88px}
+.rg{width:88px;height:88px;transform:rotate(-90deg)}
+.rg circle{fill:none;stroke-width:10;stroke-linecap:round}
+.rg .t1{stroke:color-mix(in srgb,#d9623f 14%,transparent)} .rg .t2{stroke:color-mix(in srgb,#ef9a1a 14%,transparent)}
+.rg .v1{stroke:url(#r1);animation:dash 1s var(--ease-out) both .1s} .rg .v2{stroke:url(#r2);animation:dash 1s var(--ease-out) both .22s}
+.rv{position:absolute;inset:0;display:grid;place-items:center;color:#d9623f}
+.rv svg{width:20px;height:20px}
+.rv small{font-size:11px;font-weight:650;color:var(--faint);margin-left:1px;letter-spacing:0}
+.rv.warn b{color:var(--warn)} .rv.bad b{color:var(--danger)}
+.lg{display:flex;flex-direction:column;gap:9px;min-width:0;flex:1}
+.lg div{display:grid;grid-template-columns:8px 1fr;column-gap:7px;row-gap:1px;align-items:center}
+.lg i{width:8px;height:8px;border-radius:50%}
+.lg i.c1{background:linear-gradient(145deg,#f7b195,#d9623f)} .lg i.c2{background:linear-gradient(145deg,#fcd581,#ef9a1a)}
+.lg span{font-size:11.5px;font-weight:550;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lg b{grid-column:2;font:700 15px/1.1 var(--font-display);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.w.claude .rs{margin-top:10px}
+/* glassier app tiles */
+.ti .ico{background:linear-gradient(180deg,color-mix(in srgb,var(--k) 7%,#fff),color-mix(in srgb,var(--k) 17%,#fff));box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 0 0 1px color-mix(in srgb,var(--k) 20%,transparent),0 5px 12px -6px color-mix(in srgb,var(--k) 55%,transparent)}
+:root[data-theme="dark"] .ti .ico{background:linear-gradient(180deg,color-mix(in srgb,var(--k) 22%,#2a2b30),color-mix(in srgb,var(--k) 12%,#26272c));box-shadow:inset 0 1px 0 rgba(255,255,255,.1),inset 0 0 0 1px color-mix(in srgb,var(--k) 30%,transparent),0 6px 14px -6px color-mix(in srgb,var(--k) 40%,transparent)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .ti .ico{background:linear-gradient(180deg,color-mix(in srgb,var(--k) 22%,#2a2b30),color-mix(in srgb,var(--k) 12%,#26272c));box-shadow:inset 0 1px 0 rgba(255,255,255,.1),inset 0 0 0 1px color-mix(in srgb,var(--k) 30%,transparent),0 6px 14px -6px color-mix(in srgb,var(--k) 40%,transparent)}}
 </style>
 </head>
 <body>
@@ -360,9 +402,10 @@ function renderMain() {
         : `<button class="vbtn solid" data-act="vpn" data-v="connect" type="button">${power}Bağlan</button>`;
     const tip = 'Yeniden Kontrol Et' + (dev.checkedAgo ? ' · ' + dev.checkedAgo : '');
     row1.push(`<section class="w vpn ${tone}">
+      <span class="ripple" aria-hidden="true"><i></i><i></i><i></i><b>${ICONS.shield}</b></span>
       ${wh(ICONS.shield, 'Bağlantı', `<button class="ib" data-act="check" type="button" data-tip="${esc(tip)}" aria-label="Yeniden Kontrol Et">${ICONS.refresh}</button>`)}
       <div class="vt">${esc(dev.title || 'VPN Bağlantısı')}</div>${dev.host ? `<div class="vh">${esc(dev.host)}</div>` : ''}
-      <div class="vs"><span class="vchip"><i></i>${esc(label)}</span>${tone === 'ok' ? `<span class="lat">${sig}${ms != null ? ms + ' ms' : ''}</span>` : ''}</div>
+      <div class="vs"><span class="vchip"><i></i>${esc(label)}${tone === 'ok' && ms != null ? `<em>${ms} ms</em>` : ''}</span></div>
       ${dev.checkedAgo ? `<div class="vago"><span>Son kontrol</span> <span>${esc(dev.checkedAgo)}</span></div>` : ''}
       <span style="flex:1"></span>${action}</section>`);
   }
@@ -370,16 +413,21 @@ function renderMain() {
     const c = d.claude, lims = Array.isArray(c.limits) ? c.limits : [], lim = lims[0], sess = Array.isArray(c.sessions) ? c.sessions : [];
     const p = lim && typeof lim.percent === 'number' ? Math.max(0, Math.min(100, Math.round(lim.percent))) : null;
     const tone = p == null ? '' : limTone(p);
-    const second = lims[1] && typeof lims[1].percent === 'number'
-      ? `<div class="lim2"><span>${esc(lims[1].label)}</span><span class="mini"><i style="width:${Math.max(2, Math.min(100, lims[1].percent))}%"></i></span><b>%${Math.round(lims[1].percent)}</b></div>` : '';
     const busy = sess.filter(x => x.busy).length;
+    // Activity-style concentric rings: outer = first limit (weekly), inner = second (session).
+    const short = l => String(l.label || '').replace(/ Limiti?$/, '');
+    const pct = l => l && typeof l.percent === 'number' ? Math.max(0, Math.min(100, Math.round(l.percent))) : null;
+    const p2 = pct(lims[1]);
+    const arc = (r, v) => { const C = 2 * Math.PI * r; return `${(C * Math.max(v || 0, .5) / 100).toFixed(1)} ${C.toFixed(1)}`; };
+    const rings = `<svg class="rg" viewBox="0 0 88 88"><defs><linearGradient id="r1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7b195"/><stop offset="1" stop-color="#d9623f"/></linearGradient><linearGradient id="r2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fcd581"/><stop offset="1" stop-color="#ef9a1a"/></linearGradient></defs>
+      <circle class="t1" cx="44" cy="44" r="38"/><circle class="v1" cx="44" cy="44" r="38" stroke-dasharray="${arc(38, p)}"/>
+      ${p2 != null ? `<circle class="t2" cx="44" cy="44" r="27"/><circle class="v2" cx="44" cy="44" r="27" stroke-dasharray="${arc(27, p2)}"/>` : ''}</svg>`;
+    const fmtP = v => v == null ? '–' : (pctAfter() ? v + '%' : '%' + v);
     row1.push(`<section class="w claude">
       ${wh(W_ICON.spark, 'Claude', c.plan ? `<span class="plan">${esc(c.plan)}</span>` : '')}
-      <div class="big">${p == null ? '–' : (pctAfter() ? `${p}<small>%</small>` : `<small>%</small>${p}`)}</div>
-      <div class="bl">${esc(lim ? lim.label : 'Kullanım')}</div>
-      <div class="meter ${tone}"><i style="width:${p == null ? 0 : Math.max(3, p)}%"></i></div>
+      <div class="ring2"><div class="rgw">${rings}<div class="rv">${W_ICON.spark}</div></div>
+        <div class="lg"><div><i class="c1"></i><span>${esc(lim ? short(lim) : 'Kullanım')}</span><b>${fmtP(p)}</b></div>${p2 != null ? `<div><i class="c2"></i><span>${esc(short(lims[1]))}</span><b>${fmtP(p2)}</b></div>` : ''}</div></div>
       ${lim && lim.resets ? `<div class="rs"><span>Sıfırlanma</span> <span>${esc(lim.resets)}</span></div>` : ''}
-      ${second}
       ${lim && typeof lim.today === 'number' ? `<div class="today">Bugün +%${lim.today}</div>` : ''}
       ${sess.length ? `<button class="slink" data-act="sessions" type="button"><span class="sdot${busy ? ' b' : ''}"></span><span>${sess.length} oturum</span>${busy ? `<small>${busy} aktif</small>` : ''}<span class="sp"></span>${CHEV}</button>` : ''}
       </section>`);
