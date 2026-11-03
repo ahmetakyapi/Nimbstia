@@ -5,17 +5,18 @@ local UI = {}
 
 local FONT = ".AppleSystemUIFont"
 
--- One calm HUD style for every toast: rounded, SF, translucent, quick fades, no border.
+-- One calm HUD style for every toast, matching the panels' ink pill (theme.css --ink): near-black,
+-- hairline rim, fully rounded, quick fades.
 function UI.start()
   hs.alert.defaultStyle = {
-    strokeWidth = 0,
-    strokeColor = { white = 1, alpha = 0 },
-    fillColor = { red = 0.07, green = 0.08, blue = 0.11, alpha = 0.92 },
+    strokeWidth = 1,
+    strokeColor = { white = 1, alpha = 0.12 },
+    fillColor = { red = 0.043, green = 0.043, blue = 0.059, alpha = 0.94 },
     textColor = { white = 1, alpha = 0.96 },
     textFont = FONT,
-    textSize = 15,
-    radius = 14,
-    padding = 16,
+    textSize = 14,
+    radius = 22,
+    padding = 14,
     atScreenEdge = 0,
     fadeInDuration = 0.12,
     fadeOutDuration = 0.22,
@@ -34,8 +35,8 @@ function UI.styleChooser(ch)
   if not ch then return ch end
   local dark = isDark()
   ch:bgDark(dark)
-  ch:fgColor(dark and { white = 0.96 } or { red = 0.06, green = 0.07, blue = 0.13 })
-  ch:subTextColor(dark and { white = 0.62 } or { red = 0.29, green = 0.31, blue = 0.41 })
+  ch:fgColor(dark and { white = 0.96 } or { red = 0.043, green = 0.043, blue = 0.059 })
+  ch:subTextColor(dark and { red = 0.66, green = 0.66, blue = 0.70 } or { red = 0.31, green = 0.31, blue = 0.35 })
   return ch
 end
 

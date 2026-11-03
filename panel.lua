@@ -32,6 +32,28 @@ local function readFile(p)
   return d
 end
 
+-- The shared design system (theme.css + Geist fonts). Panels load their HTML as a string, which has
+-- no base URL, so the <link> to theme.css is replaced with the stylesheet itself and the fonts it
+-- references become data URIs. Built once per load and reused by every panel.
+local BASE = os.getenv("HOME") .. "/.hammerspoon/"
+local themeCSS
+function Panel.themeCSS()
+  if themeCSS then return themeCSS end
+  local css = readFile(BASE .. "theme.css") or ""
+  css = css:gsub('url%("(assets/fonts/[^"]+%.woff2)"%)', function(rel)
+    local data = readFile(BASE .. rel)
+    if not data then return 'url("' .. rel .. '")' end
+    return 'url("data:font/woff2;base64,' .. hs.base64.encode(data) .. '")'
+  end)
+  themeCSS = css
+  return css
+end
+function Panel.inline(html)
+  return (html:gsub('<link rel="stylesheet" href="theme%.css">', function()
+    return "<style>" .. Panel.themeCSS() .. "</style>"
+  end, 1))
+end
+
 -- opts: name (JS message handler), html (file path), w, h, onMessage(panel, body), onShow(panel),
 --       position(panel, w, h) -> frame (optional; default: centred on the focused window's screen)
 function Panel.new(opts)
@@ -63,7 +85,8 @@ function Panel.new(opts)
     :windowCallback(function(action, _, state)
       if action == "focusChange" and state == false and self.visible then self:hide(false) end
     end)
-  self.wv:html(readFile(opts.html) or ("<body>" .. opts.html .. " missing</body>"))
+  local page = readFile(opts.html)
+  self.wv:html(page and Panel.inline(page) or ("<body>" .. opts.html .. " missing</body>"))
   table.insert(all, self)
   return self
 end

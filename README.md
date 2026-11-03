@@ -37,7 +37,7 @@
 
 - **Native and light** — plain Lua and small HTML panels inside [Hammerspoon](https://www.hammerspoon.org). No Electron, idle CPU ~0 %, memory stays flat (≈ 140 MB after ten screenshots).
 - **Private by default** — everything stays on your Mac. Password-manager copies are never recorded.
-- **Calm by design** — one accent colour, real light and dark themes with a one-click switch, only the hints you need.
+- **Calm by design** — one shared design system (`theme.css`): paper-and-ink neutrals, one accent blue, Geist and Geist Mono bundled offline, real light and dark themes with a one-click switch, only the hints you need.
 
 > The interface speaks Turkish today (the author's daily language). Strings live next to the code that uses them, so a translation is a small, focused change — PRs welcome.
 
@@ -180,6 +180,7 @@ return {
 init.lua            entry point: loads every module safely and binds the global shortcuts
 config.lua          defaults + config.local.lua override
 panel.lua           shared floating webview panel (focus, theme switch for every panel)
+theme.css           design system shared by every panel: tokens, Geist type, keycaps, motion
 ui.lua              shared style for toasts and pickers
 keep.lua            keeps fire-and-forget timers/tasks alive until they finish
 pb.lua              pasteboard helpers: secret detection, safe save/restore
@@ -192,7 +193,23 @@ projects.lua/.html  Repostia: project opener (+ bin/projects-scan.py)
 tools.lua           Hopstia app keys, Lexstia OCR, Twistia transforms, Snipstia snippets, Jira
 bin/                small helpers (OCR and Calendar via JavaScript for Automation, transforms)
 scripts/            maintenance (README screenshots and hero image, demo data only)
+scripts/preview/    browser preview of every panel with demo data (no Mac needed)
+assets/fonts/       Geist + Geist Mono (SIL Open Font License)
 AGENTS.md           install runbook for AI coding agents
+```
+
+## Design and previews
+
+Every panel links one stylesheet, [`theme.css`](theme.css): colour tokens for light and dark, Geist for words
+and Geist Mono for labels, numbers and keys (bundled in `assets/fonts`, never fetched), keycaps, eyebrow
+labels and the motion curves. `panel.lua` inlines it, fonts included, so the panels stay fully offline.
+
+To work on the UI without a Mac, open the panels in a browser with demo data:
+
+```bash
+npm i -D playwright && npx playwright install chromium   # once
+node scripts/preview/shoot.js out clipboard pulstia      # out/<panel>-light.png and -dark.png
+node scripts/preview/shoot.js --readme                   # regenerate every README image
 ```
 
 ## Uninstall

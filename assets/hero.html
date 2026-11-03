@@ -2,30 +2,52 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<!-- README hero: crops the demo-data panel screenshots to their exact edges and lays them out on a
-     soft colour field with one clean shadow each. Rendered by scripts/readme-hero.lua. -->
+<!-- README hero: a quiet paper stage with a two-tone headline and the demo-data panel screenshots
+     (assets/screens/*) cropped to their exact edges. Rendered by scripts/preview/shoot.js --readme
+     (or scripts/readme-hero.lua on a Mac). -->
+<link rel="stylesheet" href="../theme.css">
 <style>
-  html, body { margin: 0; width: 1600px; height: 860px; overflow: hidden; background: transparent; }
-  .stage { position: relative; width: 1600px; height: 860px; overflow: hidden; border-radius: 28px; }
-  .light .stage { background:
-      radial-gradient(820px 520px at 8% 0%, #dbe6ff 0%, transparent 62%),
-      radial-gradient(760px 560px at 100% 10%, #ece2ff 0%, transparent 62%),
-      radial-gradient(900px 520px at 55% 115%, #dcf3ec 0%, transparent 62%),
-      linear-gradient(160deg, #f7f8fd, #edf0f9); }
-  .dark .stage { background:
-      radial-gradient(820px 520px at 8% 0%, rgba(54,96,255,.42) 0%, transparent 62%),
-      radial-gradient(760px 560px at 100% 10%, rgba(140,70,255,.34) 0%, transparent 62%),
-      radial-gradient(900px 520px at 55% 115%, rgba(20,170,140,.22) 0%, transparent 62%),
-      linear-gradient(160deg, #0d1020, #090b16); }
-  canvas { position: absolute; display: block; border-radius: 16px; }
-  .light canvas { box-shadow: 0 40px 80px -20px rgba(20,28,70,.35), 0 10px 24px rgba(20,28,70,.12), 0 0 0 1px rgba(20,28,70,.08); }
-  .dark canvas  { box-shadow: 0 40px 90px -20px rgba(0,0,0,.75), 0 10px 24px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.08); }
-  #mid   { left: 56px;  width: 1040px; }
-  #front { right: 64px; width: 420px; }
+  html, body { margin: 0; width: 1600px; height: 980px; overflow: hidden; background: transparent; }
+  .stage { position: relative; width: 1600px; height: 980px; overflow: hidden; border-radius: 28px; font-family: var(--font-ui); }
+  .light .stage { color: #0b0b0f; background:
+      radial-gradient(700px 420px at 12% 112%, rgba(10,114,239,.16), transparent 70%),
+      radial-gradient(720px 440px at 92% 108%, rgba(214,51,108,.13), transparent 70%),
+      radial-gradient(900px 400px at 50% 0%, #ffffff, transparent 70%),
+      #f4f4f1; }
+  .dark .stage { color: #f4f4f5; background:
+      radial-gradient(700px 420px at 12% 112%, rgba(76,157,255,.22), transparent 70%),
+      radial-gradient(720px 440px at 92% 108%, rgba(244,114,182,.14), transparent 70%),
+      radial-gradient(900px 400px at 50% 0%, #1d1d21, transparent 70%),
+      #0d0d0f; }
+  .stage::after { content: ""; position: absolute; inset: 0; background-image: var(--grain); background-size: 160px; opacity: .05; mix-blend-mode: overlay; pointer-events: none; }
+  /* faint grid, like a drafting table */
+  .grid { position: absolute; inset: 0; background-image: linear-gradient(var(--gl) 1px, transparent 1px), linear-gradient(90deg, var(--gl) 1px, transparent 1px); background-size: 80px 80px; background-position: -1px -1px;
+    -webkit-mask-image: radial-gradient(1000px 520px at 50% 30%, #000 20%, transparent 75%); mask-image: radial-gradient(1000px 520px at 50% 30%, #000 20%, transparent 75%); }
+  .light .grid { --gl: rgba(12,12,16,.045); } .dark .grid { --gl: rgba(255,255,255,.04); }
+  .copy { position: absolute; left: 0; right: 0; top: 70px; text-align: center; }
+  .eyebrow { display: inline-flex; align-items: center; gap: 12px; font: 500 14px/1 var(--font-mono); letter-spacing: .16em; text-transform: uppercase; opacity: .62; }
+  .eyebrow img { width: 30px; height: 30px; }
+  h1 { margin: 26px 0 0; font: 650 76px/1.02 var(--font-display); letter-spacing: -.045em; }
+  h1 span { opacity: .42; }
+  .keys { display: inline-flex; gap: 10px; margin-top: 30px; }
+  .keys kbd { height: 34px; min-width: 34px; padding: 0 12px; font-size: 15px; border-radius: 9px; color: inherit; }
+  .light .keys kbd { background: #fff; box-shadow: 0 0 0 1px rgba(12,12,16,.12), 0 2px 0 rgba(12,12,16,.14); }
+  .dark .keys kbd { background: #1a1a1e; box-shadow: 0 0 0 1px rgba(255,255,255,.12), 0 2px 0 rgba(255,255,255,.1); }
+  canvas { position: absolute; display: block; border-radius: 20px; }
+  .light canvas { box-shadow: 0 50px 100px -24px rgba(20,20,40,.35), 0 12px 28px -8px rgba(20,20,40,.14), 0 0 0 1px rgba(12,12,16,.08); }
+  .dark canvas  { box-shadow: 0 50px 110px -20px rgba(0,0,0,.8), 0 12px 28px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.09); }
+  #mid   { left: 110px; top: 420px; width: 1000px; }
+  #front { right: 110px; top: 360px; width: 400px; }
 </style>
 </head>
 <body>
 <div class="stage">
+  <div class="grid"></div>
+  <div class="copy">
+    <div class="eyebrow"><img src="logo.svg" alt="">Nimbstia · a workbench for macOS</div>
+    <h1>Every move, one key.<br><span>Calm panels for the rest.</span></h1>
+    <div class="keys"><kbd>⌃ V</kbd><kbd>⌃ .</kbd><kbd>⌃ Space</kbd><kbd>⌃ ⇧ P</kbd></div>
+  </div>
   <canvas id="mid"></canvas>
   <canvas id="front"></canvas>
 </div>
@@ -47,10 +69,8 @@
     const c = document.getElementById(L.id);
     c.width = w; c.height = h;
     c.getContext('2d').drawImage(img, cut, cut, w, h, 0, 0, w, h);
-    const ch = parseFloat(getComputedStyle(c).width) * h / w;
-    c.style.height = ch + 'px';
-    c.style.top = ((860 - ch) / 2) + 'px'; // both panels share one vertical centre
-  })).then(() => { document.title = 'ready'; });
+    c.style.height = (parseFloat(getComputedStyle(c).width) * h / w) + 'px'; // bottoms bleed off the stage
+  })).then(() => document.fonts.ready).then(() => { document.title = 'ready'; });
 </script>
 </body>
 </html>

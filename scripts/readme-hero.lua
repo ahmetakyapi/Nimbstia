@@ -5,7 +5,7 @@ local Keep = require("keep")
 local HOME = os.getenv("HOME")
 local PAGE = HOME .. "/.hammerspoon/assets/hero.html"
 local OUT = HOME .. "/.hammerspoon/assets/"
-local W, H = 1600, 860
+local W, H = 1600, 980
 
 local screen = hs.screen.mainScreen():frame()
 local wv = hs.webview.new({ x = screen.x + 20, y = screen.y + 20, w = W, h = H })

@@ -8,3 +8,8 @@ config.local.lua
 bin/__pycache__/
 Spoons/
 .DS_Store
+
+# Preview output
+scripts/preview/out/
+node_modules/
+package-lock.json

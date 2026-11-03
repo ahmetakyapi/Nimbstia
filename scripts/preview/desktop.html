@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<!-- Demo desktop for the Clipstia README shot: a soft wallpaper and a made-up report window.
+     Rendered to desktop.png by shoot.js; nothing real ever ends up in the picture. -->
+<link rel="stylesheet" href="../../theme.css">
+<style>
+  html,body{margin:0;width:1440px;height:900px;overflow:hidden}
+  body{font-family:var(--font-ui);color:#0b0b0f;
+    background:radial-gradient(900px 600px at 10% 10%,#cfe0ff 0%,transparent 60%),radial-gradient(800px 700px at 95% 20%,#f6d6e8 0%,transparent 60%),radial-gradient(900px 700px at 60% 110%,#ffe2c7 0%,transparent 60%),#eee9f4}
+  .menubar{height:28px;display:flex;align-items:center;gap:20px;padding:0 18px;font-size:13px;font-weight:500;background:rgba(255,255,255,.45);backdrop-filter:blur(20px)}
+  .menubar b{font-weight:650}.menubar .sp{flex:1}.menubar span{opacity:.85}
+  .win{position:absolute;left:245px;top:108px;width:950px;height:648px;border-radius:14px;background:#fff;box-shadow:0 0 0 .5px rgba(0,0,0,.2),0 30px 70px -12px rgba(30,20,60,.35);display:flex;overflow:hidden}
+  .side{width:210px;background:#f6f6f4;border-right:1px solid rgba(0,0,0,.06);padding:16px 12px}
+  .tl{display:flex;gap:8px;margin:0 0 26px 6px}.tl i{width:12px;height:12px;border-radius:50%}
+  .nav{display:flex;align-items:center;gap:10px;height:32px;padding:0 10px;border-radius:8px;font-size:13.5px;color:#3f3f46}
+  .nav.on{background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.06);color:#0b0b0f;font-weight:600}
+  .nav i{width:12px;height:12px;border-radius:3px}
+  .main{flex:1;padding:30px 36px}
+  .eb{font:500 10.5px/1 var(--font-mono);letter-spacing:.14em;color:#71717a;text-transform:uppercase}
+  h1{margin:10px 0 4px;font-size:28px;font-weight:650;letter-spacing:-.035em}
+  h1 span{color:#a1a1aa}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
+  .k{padding:16px 18px;border-radius:12px;box-shadow:0 0 0 1px rgba(0,0,0,.07)}
+  .k small{font-size:12.5px;color:#71717a}.k b{display:block;margin-top:8px;font-size:26px;font-weight:650;letter-spacing:-.04em}
+  .k em{font:500 11px var(--font-mono);font-style:normal}
+  .chart{margin-top:16px;height:330px;border-radius:12px;box-shadow:0 0 0 1px rgba(0,0,0,.07);padding:18px 20px;display:flex;flex-direction:column}
+  .chart h3{margin:0;font-size:14px;font-weight:600}
+  .bars{flex:1;display:flex;align-items:flex-end;gap:22px;padding:20px 10px 0}
+  .bar{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%;justify-content:flex-end}
+  .bar i{width:100%;border-radius:8px 8px 4px 4px;background:#e4e4e7}
+  .bar.hi i{background:linear-gradient(180deg,#4c9dff,#0a72ef)}
+  .bar span{font:500 11px var(--font-mono);color:#71717a}
+</style>
+</head>
+<body>
+<div class="menubar"><b>Rapor</b><span>Dosya</span><span>Düzen</span><span>Görüntü</span><span>Pencere</span><span class="sp"></span><span>Salı 3 Kas 14:20</span></div>
+<div class="win">
+  <div class="side">
+    <div class="tl"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div>
+    <div class="nav on"><i style="background:#0a72ef"></i>Genel Bakış</div>
+    <div class="nav"><i style="background:#7448e6"></i>Satışlar</div>
+    <div class="nav"><i style="background:#22a55a"></i>Müşteriler</div>
+    <div class="nav"><i style="background:#f09a0b"></i>Raporlar</div>
+    <div class="nav"><i style="background:#a1a1aa"></i>Ayarlar</div>
+  </div>
+  <div class="main">
+    <div class="eb">27 Ekim – 2 Kasım</div>
+    <h1>Haftalık rapor. <span>Her şey yolunda.</span></h1>
+    <div class="kpis">
+      <div class="k"><small>Gelir</small><b>₺184.320</b><em style="color:#15803d">+12,4%</em></div>
+      <div class="k"><small>Yeni Müşteri</small><b>1.248</b><em style="color:#0a72ef">+8,1%</em></div>
+      <div class="k"><small>Dönüşüm</small><b>%3,9</b><em style="color:#c8102e">−0,3%</em></div>
+    </div>
+    <div class="chart"><h3>Günlük Gelir</h3>
+      <div class="bars">
+        <div class="bar"><i style="height:42%"></i><span>Pzt</span></div><div class="bar"><i style="height:58%"></i><span>Sal</span></div>
+        <div class="bar"><i style="height:36%"></i><span>Çar</span></div><div class="bar"><i style="height:74%"></i><span>Per</span></div>
+        <div class="bar"><i style="height:52%"></i><span>Cum</span></div><div class="bar hi"><i style="height:96%"></i><span>Cmt</span></div>
+        <div class="bar"><i style="height:66%"></i><span>Paz</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

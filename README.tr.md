@@ -32,7 +32,7 @@
 
 - **Yerel ve hafif** — [Hammerspoon](https://www.hammerspoon.org) içinde çalışan Lua ve küçük HTML panelleri. Electron yok, boştayken işlemci ~%0, bellek sabit (on ekran görüntüsünden sonra ≈ 140 MB).
 - **Varsayılan olarak gizli** — her şey Mac'inde kalır. Parola yöneticisinden kopyalananlar hiç kaydedilmez.
-- **Sakin tasarım** — tek vurgu rengi, tek tıkla geçilen gerçek açık ve koyu tema, yalnız gereken ipuçları.
+- **Sakin tasarım** — tek bir ortak tasarım sistemi (`theme.css`): kâğıt-mürekkep nötrleri, tek vurgu mavisi, çevrimdışı gömülü Geist ve Geist Mono, tek tıkla geçilen gerçek açık ve koyu tema, yalnız gereken ipuçları.
 
 ## Nimbstia — merkez
 
@@ -165,6 +165,20 @@ return {
 - Parola yöneticilerinin işaretlediği kopyalar (`org.nspasteboard.ConcealedType`, 1Password, Bitwarden, KeePassXC…) hiç kaydedilmez; panoyu kısa süre ödünç alan araçlar da sırları yeniden yayınlamadan geri yükler.
 - Claude kullanımı ve oturumlar, Claude Code'un Mac'inde tuttuğu dosyalardan okunur (`~/.claude.json`, `~/.claude/sessions`); hiçbir yere gönderilmez.
 - Tek ağ trafiği, ayarladığın sunucuya yapılan isteğe bağlı TCP denetimidir. Toplantı uyarısı macOS Takvim'i yerelde ve yalnız sen açtıktan sonra okur.
+
+## Tasarım ve önizleme
+
+Tüm paneller tek bir stil dosyasını kullanır: [`theme.css`](theme.css). Açık/koyu renk değişkenleri, metin için Geist,
+etiket, sayı ve tuşlar için Geist Mono (`assets/fonts` içinde gömülü, internetten indirilmez), tuş kapakları ve
+hareket eğrileri burada. `panel.lua` dosyayı fontlarıyla birlikte panele gömer; paneller tamamen çevrimdışı kalır.
+
+Arayüz üzerinde Mac olmadan çalışmak için panelleri demo veriyle tarayıcıda açabilirsin:
+
+```bash
+npm i -D playwright && npx playwright install chromium   # bir kez
+node scripts/preview/shoot.js out clipboard pulstia      # out/<panel>-light.png ve -dark.png
+node scripts/preview/shoot.js --readme                   # README görsellerini yeniden üret
+```
 
 ## Kaldırma
 
