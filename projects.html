@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<style>
+:root{
+  --bg:#f3f3f6; --bg2:#eeeef2; --pane:#ffffff; --ctl:#ffffff;
+  --line:rgba(17,17,20,.10); --line2:rgba(17,17,20,.16);
+  --text:#111114; --muted:#4d4d57; --faint:#6b6b76;
+  --accent:#0a6cff; --accent-fill:#0a6cff; --accent-hover:#0860e0; --accent-press:#0a52c2; --accent-ink:#0857cf;
+  --accent-soft:#e9f1ff; --accent-ring:rgba(10,108,255,.45); --on-accent:#ffffff;
+  --hover:rgba(17,17,20,.045); --chip:rgba(17,17,20,.06); --mark:rgba(255,190,0,.42);
+  --ok:#12703c; --danger:#c8281d; --warn:#9a5b00; --warn-soft:rgba(199,119,0,.14);
+  --tile-mix:10%; --tile-ring:26%;
+  --k-text:#5b6170; --k-code:#7a4cf0; --k-link:#0a6cff; --k-mail:#d23f7a; --k-path:#b86900; --k-number:#0b8a7f; --k-image:#d93a74; --k-shot:#17874a; --k-pin:#d9530a;
+  --shadow:0 30px 70px rgba(0,0,0,.28),0 0 0 .5px rgba(0,0,0,.22);
+  --ctl-shadow:0 1px 1px rgba(0,0,0,.04); --top:#f9f9fb; --seg-on:#ffffff; --ink-code:#6a38e0; --group-bg:#fafafc;
+  --font-ui:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",sans-serif;
+  --font-display:"SF Pro Display",-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;
+  --font-mono:"SF Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1e1e22; --bg2:#1a1a1e; --pane:#17171a; --ctl:rgba(255,255,255,.06);
+  --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.16);
+  --text:#f2f2f5; --muted:#bcbcc6; --faint:#92929d;
+  --accent:#5b9dff; --accent-fill:#2a6de0; --accent-hover:#2563d4; --accent-press:#1f55b8; --accent-ink:#8bb8ff;
+  --accent-soft:rgba(91,157,255,.16); --accent-ring:rgba(91,157,255,.5); --on-accent:#ffffff;
+  --hover:rgba(255,255,255,.055); --chip:rgba(255,255,255,.08); --mark:rgba(255,190,0,.32);
+  --ok:#3ccf7a; --danger:#ff7468; --warn:#ffb340; --warn-soft:rgba(255,179,64,.16);
+  --tile-mix:16%; --tile-ring:30%;
+  --k-text:#9aa1b2; --k-code:#a98bff; --k-link:#5b9dff; --k-mail:#ff7aa8; --k-path:#f0a63a; --k-number:#2fc2b5; --k-image:#ff7aa6; --k-shot:#3ccf7a; --k-pin:#ff8a47;
+  --shadow:0 30px 70px rgba(0,0,0,.6),0 0 0 .5px rgba(255,255,255,.13);
+  --ctl-shadow:none; --top:#26262c; --seg-on:rgba(255,255,255,.15); --ink-code:#b9a0ff; --group-bg:#1b1b1f;
+}}
+:root[data-theme="dark"]{
+  --bg:#1e1e22; --bg2:#1a1a1e; --pane:#17171a; --ctl:rgba(255,255,255,.06);
+  --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.16);
+  --text:#f2f2f5; --muted:#bcbcc6; --faint:#92929d;
+  --accent:#5b9dff; --accent-fill:#2a6de0; --accent-hover:#2563d4; --accent-press:#1f55b8; --accent-ink:#8bb8ff;
+  --accent-soft:rgba(91,157,255,.16); --accent-ring:rgba(91,157,255,.5); --on-accent:#ffffff;
+  --hover:rgba(255,255,255,.055); --chip:rgba(255,255,255,.08); --mark:rgba(255,190,0,.32);
+  --ok:#3ccf7a; --danger:#ff7468; --warn:#ffb340; --warn-soft:rgba(255,179,64,.16);
+  --tile-mix:16%; --tile-ring:30%;
+  --k-text:#9aa1b2; --k-code:#a98bff; --k-link:#5b9dff; --k-mail:#ff7aa8; --k-path:#f0a63a; --k-number:#2fc2b5; --k-image:#ff7aa6; --k-shot:#3ccf7a; --k-pin:#ff8a47;
+  --shadow:0 30px 70px rgba(0,0,0,.6),0 0 0 .5px rgba(255,255,255,.13);
+  --ctl-shadow:none; --top:#26262c; --seg-on:rgba(255,255,255,.15); --ink-code:#b9a0ff; --group-bg:#1b1b1f;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:transparent;overflow:hidden}
+body{font:13px/1.45 var(--font-ui);color:var(--text);-webkit-user-select:none;cursor:default;-webkit-font-smoothing:antialiased}
+.app{position:absolute;inset:16px;border-radius:16px;background:linear-gradient(180deg,var(--top) 0,var(--bg) 110px,var(--bg2) 100%);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;opacity:0;transform:scale(.985) translateY(-6px);transition:opacity .12s ease,transform .16s cubic-bezier(.2,.8,.2,1)}
+.app.show{opacity:1;transform:none}
+svg{display:block}
+
+/* header: search */
+header{display:flex;align-items:center;gap:10px;padding:14px 18px 12px}
+header>svg{width:18px;height:18px;color:var(--muted);flex:none}
+#q{flex:1;min-width:0;border:0;outline:0;background:transparent;font:400 17px/1.3 var(--font-display);letter-spacing:-.012em;color:var(--text);padding:3px 0;caret-color:var(--accent)}
+#q::placeholder{color:var(--faint)}
+.reset{font-size:12px;font-weight:500;color:var(--accent-ink);padding:0 10px;line-height:24px;border-radius:7px;background:var(--accent-soft);display:none;white-space:nowrap;transition:background .1s}
+.reset.on{display:block}
+.reset:hover{background:color-mix(in srgb,var(--accent-soft) 80%,var(--accent))}
+
+/* filter bar */
+.bar{display:flex;align-items:center;gap:10px;padding:0 16px 12px;border-bottom:1px solid var(--line)}
+.seg{display:flex;gap:6px;flex-wrap:nowrap}
+.seg.time{margin-left:auto;background:var(--chip);padding:2px;border-radius:9px;gap:2px}
+.f{display:flex;align-items:center;gap:6px;height:28px;padding:0 8px 0 9px;border-radius:8px;font-size:12.5px;font-weight:500;color:var(--text);background:var(--ctl);box-shadow:0 0 0 1px var(--line2),var(--ctl-shadow);white-space:nowrap;transition:background .1s,color .1s,box-shadow .1s}
+.f svg{width:15px;height:15px;color:var(--muted)}
+.f b{font-size:11px;font-weight:600;min-width:18px;text-align:center;padding:0 5px;border-radius:9px;background:var(--chip);color:var(--muted);font-variant-numeric:tabular-nums;line-height:17px}
+.f:hover:not(.on){background:color-mix(in srgb,var(--ctl) 90%,var(--text))}
+.f.on{background:var(--accent-fill);color:var(--on-accent);box-shadow:0 0 0 1px rgba(0,0,0,.08),0 1px 2px rgba(10,60,160,.28),inset 0 1px 0 rgba(255,255,255,.24)}
+.f.on:hover{background:var(--accent-hover)}
+.f.on svg{color:var(--on-accent)}
+.f.on b{background:rgba(255,255,255,.24);color:var(--on-accent)}
+.f.zero:not(.on){color:var(--muted)}
+.f.zero:not(.on) svg{opacity:.6}
+.t{height:24px;padding:0 11px;border-radius:7px;font-size:12px;font-weight:500;color:var(--muted);display:flex;align-items:center;white-space:nowrap;transition:background .1s,color .1s}
+.t:hover:not(.on){color:var(--text)}
+.t.on{background:var(--seg-on);color:var(--text);box-shadow:0 0 0 .5px var(--line2),0 1px 2px rgba(0,0,0,.10)}
+
+/* list */
+#list{overflow-y:auto;padding:0 8px 10px;background:var(--pane);scroll-padding:34px 0 8px}
+.group{position:sticky;top:0;z-index:1;background:var(--group-bg);box-shadow:0 1px 0 var(--line);margin:0 -8px 4px;padding:9px 18px 7px;display:flex;align-items:baseline;gap:7px;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.005em}
+.group span{font-weight:500;color:var(--faint);text-transform:none;letter-spacing:0;font-variant-numeric:tabular-nums}
+.row{position:relative;display:flex;align-items:center;gap:12px;padding:0 8px 0 12px;border-radius:10px;height:52px;transition:background .1s,box-shadow .1s}
+.row:hover{background:var(--hover)}
+.row.sel{background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent-ring)}
+.row.sel::before{content:"";position:absolute;left:0;top:11px;bottom:11px;width:3px;border-radius:0 3px 3px 0;background:var(--accent)}
+.ico{width:36px;height:36px;border-radius:10px;background:color-mix(in srgb,var(--k,var(--k-text)) var(--tile-mix),transparent);display:grid;place-items:center;flex:none;overflow:hidden;color:var(--k,var(--k-text));box-shadow:inset 0 0 0 .5px color-mix(in srgb,var(--k,var(--k-text)) var(--tile-ring),transparent)}
+.ico svg{width:18px;height:18px}
+.meta{min-width:0;flex:1}
+.ti{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13.5px;font-weight:500;letter-spacing:-.005em}
+.su{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px;color:var(--muted);margin-top:1px;font-variant-numeric:tabular-nums}
+.end{display:flex;align-items:center;gap:7px;color:var(--faint);font-size:11px;flex:none}
+.end .pin svg{width:13px;height:13px;color:var(--k-pin)}
+.end .n{font-variant-numeric:tabular-nums;min-width:20px;text-align:right}
+.cp{display:none;width:26px;height:26px;border-radius:7px;place-items:center;color:var(--muted);background:var(--ctl);box-shadow:0 0 0 1px var(--line2),var(--ctl-shadow);transition:color .1s,background .1s}
+.cp svg{width:14px;height:14px}
+.cp:hover{color:var(--accent-ink)}
+.row:hover .cp,.row.sel .cp{display:grid}
+.row:hover .n,.row.sel .n{display:none}
+.row.flash .cp{color:var(--ok)}
+mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
+
+/* buttons */
+.btn{display:flex;align-items:center;gap:6px;height:28px;padding:0 11px 0 9px;border-radius:8px;font-size:12px;font-weight:500;color:var(--text);background:var(--ctl);box-shadow:0 0 0 1px var(--line2),var(--ctl-shadow);white-space:nowrap;transition:background .1s,color .1s}
+.btn svg{width:15px;height:15px;color:var(--muted)}
+.btn:hover{background:color-mix(in srgb,var(--ctl) 90%,var(--text))}
+.btn.primary{background:var(--accent-fill);color:var(--on-accent);box-shadow:0 0 0 1px rgba(0,0,0,.08),0 1px 2px rgba(10,60,160,.28),inset 0 1px 0 rgba(255,255,255,.24)}
+.btn.primary:hover{background:var(--accent-hover)}
+.btn.primary:active{background:var(--accent-press)}
+.btn.primary svg{color:var(--on-accent)}
+.btn.danger:hover,.btn.danger:hover svg{color:var(--danger)}
+
+footer{background:var(--bg2);display:flex;align-items:center;gap:16px;padding:9px 18px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+footer>span{display:flex;align-items:center}
+footer .sp{flex:1}
+kbd{font:500 11px/1 var(--font-ui);display:inline-grid;place-items:center;min-width:19px;height:18px;padding:0 5px;margin-right:6px;border-radius:5px;background:var(--ctl);color:var(--muted);box-shadow:0 0 0 1px var(--line2),0 1.5px 0 var(--line2)}
+.btn kbd{margin:0 0 0 2px;background:transparent;color:inherit;opacity:.7;padding:0;min-width:0;height:auto;box-shadow:none}
+.empty{height:100%;display:grid;place-items:center;text-align:center;color:var(--muted);padding:40px 24px;font-size:13px}
+.empty svg{width:32px;height:32px;margin:0 auto 12px;color:var(--faint)}
+.empty svg+div{font-size:13.5px;font-weight:500;color:var(--text)}
+.empty .hint{color:var(--muted);font-size:12px;font-weight:400;margin-top:3px}
+.empty .btn{margin:16px auto 0;display:inline-flex}
+.toast{position:absolute;left:50%;bottom:54px;transform:translate(-50%,8px);background:var(--text);color:var(--pane);font-size:12.5px;font-weight:500;padding:7px 14px 7px 12px;border-radius:9px;opacity:0;transition:opacity .15s,transform .15s;pointer-events:none;display:flex;gap:7px;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.toast svg{width:14px;height:14px;color:var(--ok)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+::-webkit-scrollbar{width:9px}
+::-webkit-scrollbar-thumb{background:var(--line2);border-radius:5px;border:2px solid transparent;background-clip:content-box}
+
+/* projects: list + preview */
+main{flex:1;display:grid;grid-template-columns:380px 1fr;min-height:0}
+#list{border-right:1px solid var(--line)}
+.sync{display:none;align-items:center;gap:6px;font-size:12px;color:var(--muted);white-space:nowrap}
+.sync.on{display:flex}
+.sync i{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.1)}}
+.f[data-k=dirty]:not(.on) svg{color:var(--k-path)}.f[data-k=main]:not(.on) svg{color:var(--k-link)}.f[data-k=copy]:not(.on) svg{color:var(--k-code)}
+.ico.k-main{--k:var(--k-link)}.ico.k-copy{--k:var(--k-code)}
+.dirty{font-size:11px;font-weight:600;color:var(--warn);background:var(--warn-soft);padding:0 7px;border-radius:9px;line-height:18px;font-variant-numeric:tabular-nums}
+.sy{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+#preview{display:flex;flex-direction:column;min-width:0;min-height:0;background:var(--pane)}
+.pv-actions{display:flex;gap:6px;padding:12px 16px;border-bottom:1px solid var(--line);align-items:center}
+.pv-actions .sp{flex:1}
+.pv-body{flex:1;min-height:0;overflow:auto;padding:20px 24px}
+.pv-name{font:600 22px/1.25 var(--font-display);letter-spacing:-.02em;word-break:break-all;-webkit-user-select:text}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.tag{font-size:11.5px;font-weight:600;padding:0 9px;border-radius:9px;line-height:19px;background:var(--chip);color:var(--muted)}
+.tag.main{background:var(--accent-soft);color:var(--accent-ink)}
+.tag.copy{background:color-mix(in srgb,var(--k-code) 13%,transparent);color:var(--ink-code)}
+.tag.warn{background:var(--warn-soft);color:var(--warn)}
+.tag.stale{background:color-mix(in srgb,var(--ok) 14%,transparent);color:var(--ok)}
+.pv-path{display:flex;align-items:center;gap:8px;margin-top:16px;padding:9px 10px 9px 14px;border-radius:12px;background:var(--bg);box-shadow:inset 0 0 0 1px var(--line)}
+.pv-path code{flex:1;min-width:0;font:12.5px/1.5 var(--font-mono);word-break:break-all;-webkit-user-select:text;cursor:text}
+.pv-path .cp{display:grid;flex:none}
+.sec{margin:22px 0 6px;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.005em}
+.commit{display:flex;align-items:baseline;gap:12px;padding:8px 0;border-bottom:1px solid var(--line)}
+.commit:last-child{border-bottom:0}
+.commit code{font:11.5px var(--font-mono);color:var(--accent-ink);flex:none}
+.commit .s{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;-webkit-user-select:text}
+.commit .w{flex:none;font-size:11px;color:var(--faint);white-space:nowrap;font-variant-numeric:tabular-nums}
+.pv-note{font-size:12px;color:var(--muted);padding:6px 0}
+.pv-meta{margin:0;border-top:1px solid var(--line);padding:12px 24px 14px;display:grid;grid-template-columns:auto minmax(0,1fr) auto minmax(0,1fr);gap:5px 16px;font-size:12px;background:var(--group-bg)}
+.pv-meta dt{color:var(--muted)}
+.pv-meta dd{margin:0;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
+.pv-meta dd.warn{color:var(--warn)}.pv-meta dd.ok{color:var(--ok)}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <header>
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5.5" fill="currentColor" fill-opacity=".14" stroke="none"/><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4 4"/></svg>
+    <input id="q" placeholder="Projelerde ara: ad, dal, son commit…" autocomplete="off" spellcheck="false">
+    <div class="sync" id="sync"><i></i>yenileniyor…</div>
+    <div class="reset" id="reset">Filtreleri Temizle</div>
+  </header>
+  <div class="bar">
+    <div class="seg" id="kinds"></div>
+    <div class="seg time" id="sorts"></div>
+  </div>
+  <main>
+    <div id="list"></div>
+    <div id="preview"></div>
+  </main>
+  <footer id="foot"></footer>
+  <div class="toast" id="toast"></div>
+</div>
+<script>
+const $ = s => document.querySelector(s);
+const app = $('#app'), input = $('#q'), listEl = $('#list'), pvEl = $('#preview'), kindsEl = $('#kinds'), sortsEl = $('#sorts'), footEl = $('#foot'), resetEl = $('#reset'), toastEl = $('#toast'), syncEl = $('#sync');
+let items = [], view = [], sel = 0, q = '', kind = 'all', sort = 'recent', logs = {}, scanning = false, selPath = null;
+const nowS = () => Date.now() / 1000;
+
+// Duotone set: 16px grid, 1.6px round stroke; a soft fill (same colour, 20%) sits behind part of each glyph.
+const P = (soft, line) => `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><g fill="currentColor" fill-opacity=".28" stroke="none">${soft}</g>${line}</svg>`;
+const DOT = (x, y, r) => `<circle cx="${x}" cy="${y}" r="${r}" fill="currentColor" stroke="none"/>`;
+const ICONS = {
+  all:    P('<rect x="9" y="9" width="4.8" height="4.8" rx="1.4"/>', '<rect x="2.2" y="2.2" width="4.8" height="4.8" rx="1.4"/><rect x="9" y="2.2" width="4.8" height="4.8" rx="1.4"/><rect x="2.2" y="9" width="4.8" height="4.8" rx="1.4"/><rect x="9" y="9" width="4.8" height="4.8" rx="1.4"/>'),
+  dirty:  P('<circle cx="8" cy="8" r="5.6"/>', '<circle cx="8" cy="8" r="5.6"/>' + DOT(8, 8, 1.8)),
+  main:   P('<circle cx="4.8" cy="12.2" r="1.7"/><circle cx="11.2" cy="6.2" r="1.7"/>', '<path d="M4.8 5.6v4.8M11.2 7.9c0 2.2-2.2 2.6-4.7 3.3"/><circle cx="4.8" cy="12.2" r="1.7"/><circle cx="11.2" cy="6.2" r="1.7"/>' + DOT(4.8, 3.8, 1.9)),
+  copy:   P('<circle cx="4.8" cy="12.6" r="1.7"/><circle cx="11.2" cy="12.6" r="1.7"/>', '<path d="M8 5.3v2.1M8 7.4c0 2.1-3.2 1.7-3.2 3.5M8 7.4c0 2.1 3.2 1.7 3.2 3.5"/><circle cx="4.8" cy="12.6" r="1.7"/><circle cx="11.2" cy="12.6" r="1.7"/>' + DOT(8, 3.4, 1.9)),
+  code:   P('<rect x="5" y="3" width="6" height="10" rx="1.5"/>', '<path d="M6 3H4.6c-.6 0-1.1.5-1.1 1.1v7.8c0 .6.5 1.1 1.1 1.1H6M10 3h1.4c.6 0 1.1.5 1.1 1.1v7.8c0 .6-.5 1.1-1.1 1.1H10"/>' + DOT(8, 8, 1)),
+  term:   P('<path d="M1.8 5.4V4.8c0-1.1.9-2 2-2h8.4c1.1 0 2 .9 2 2v.6z"/>', '<rect x="1.8" y="2.8" width="12.4" height="10.4" rx="2"/><path d="m4.8 7.6 1.8 1.5-1.8 1.5M8.4 10.8h2.6"/>'),
+  gh:     P('<circle cx="8" cy="8" r="2.6"/>', '<circle cx="8" cy="8" r="2.6"/><path d="M1.8 8h3.6M10.6 8h3.6"/>'),
+  folder: P('<path d="M2 4.8c0-.9.7-1.6 1.6-1.6h2.3c.4 0 .7.1.9.4l.9 1.1h4.7c.9 0 1.6.7 1.6 1.6v.7H2z"/>', '<path d="M2 4.8c0-.9.7-1.6 1.6-1.6h2.3c.4 0 .7.1.9.4l.9 1.1h4.7c.9 0 1.6.7 1.6 1.6v5.3c0 .9-.7 1.6-1.6 1.6H3.6c-.9 0-1.6-.7-1.6-1.6z"/>'),
+  copyi:  P('<rect x="5.6" y="5.6" width="8" height="8" rx="1.8"/>', '<rect x="5.6" y="5.6" width="8" height="8" rx="1.8"/><path d="M10.4 5.6V4.2c0-1-.8-1.7-1.7-1.7H4.2c-1 0-1.7.8-1.7 1.7v4.5c0 1 .8 1.7 1.7 1.7h1.4"/>'),
+  pinO:   P('<path d="M8 14.2s4.3-3.9 4.3-7.4a4.3 4.3 0 1 0-8.6 0c0 3.5 4.3 7.4 4.3 7.4z"/>', '<path d="M8 14.2s4.3-3.9 4.3-7.4a4.3 4.3 0 1 0-8.6 0c0 3.5 4.3 7.4 4.3 7.4z"/><circle cx="8" cy="6.8" r="1.5"/>'),
+  pin:    '<svg viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M8 14.2s4.3-3.9 4.3-7.4a4.3 4.3 0 1 0-8.6 0c0 3.5 4.3 7.4 4.3 7.4zM8 8.5a1.7 1.7 0 1 0 0-3.4 1.7 1.7 0 0 0 0 3.4z"/></svg>',
+  check:  P('', '<path d="m3.5 8.5 3 3 6-7"/>'),
+  x:      P('', '<path d="M4 4l8 8M12 4l-8 8"/>'),
+};
+
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const lower = s => String(s || '').toLocaleLowerCase('tr');
+const post = m => window.webkit.messageHandlers.projects.postMessage(m);
+const num = n => Number(n).toLocaleString('tr-TR');
+const DAY = 864e2;
+function day0(t) { const d = new Date(t * 1000); d.setHours(0, 0, 0, 0); return d.getTime() / 1000; }
+
+// ---- derived fields -------------------------------------------------------
+// A "copy" is any worktree, or a clone whose name carries a PR / round / scratch marker.
+const COPY_NAME = /-(pr)?\d+[a-z]*(-|$)|-(r\d+|codex|tmp|scratch|review|wt|fix)(-|$)/i;
+function isCopy(p) { return p.worktree || COPY_NAME.test(p.name); }
+const activity = p => Math.max(p.ct || 0, p.mtime || 0);
+const lastUsed = p => Math.max(p.opened || 0, activity(p));
+function isStale(p) { return isCopy(p) && p.dirty === 0 && nowS() - activity(p) > 7 * DAY && !(p.opened && nowS() - p.opened < 7 * DAY); }
+
+function rel(t) {
+  if (!t) return '—';
+  const s = Math.max(0, nowS() - t);
+  if (s < 60) return 'şimdi';
+  if (s < 3600) return Math.floor(s / 60) + ' dk önce';
+  if (s < 86400) return Math.floor(s / 3600) + ' sa önce';
+  const d = Math.round((day0(nowS()) - day0(t)) / DAY);
+  if (d <= 1) return 'dün';
+  if (d < 7) return d + ' gün önce';
+  if (d < 30) return Math.floor(d / 7) + ' hf önce';
+  if (d < 365) return Math.floor(d / 30) + ' ay önce';
+  return Math.floor(d / 365) + ' yıl önce';
+}
+function fullTime(t) {
+  if (!t) return '—';
+  return new Date(t * 1000).toLocaleString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+function groupOf(p) {
+  if (p.pinned) return 'Sabitlenenler';
+  if (sort === 'name') return 'Tüm Projeler';
+  const t = lastUsed(p), diff = Math.round((day0(nowS()) - day0(t)) / DAY);
+  if (diff <= 0) return 'Bugün';
+  if (diff === 1) return 'Dün';
+  if (diff < 7) return 'Bu Hafta';
+  return 'Daha Eski';
+}
+const branchOf = p => p.branch || (p.sha ? `${p.sha} (detached)` : '—');
+
+// ---- filters / sorting / search -------------------------------------------
+const KINDS = [
+  { key: 'all',   label: 'Tümü',                   icon: 'all',   test: () => true },
+  { key: 'dirty', label: 'Değişiklik Var',          icon: 'dirty', test: p => p.dirty > 0 },
+  { key: 'main',  label: 'Ana Kopyalar',            icon: 'main',  test: p => !isCopy(p) },
+  { key: 'copy',  label: 'PR/Çalışma Kopyaları',    icon: 'copy',  test: p => isCopy(p) },
+];
+const SORTS = [{ key: 'recent', label: 'Son Kullanılan' }, { key: 'name', label: 'Ad' }];
+const isDefault = () => kind === 'all';
+
+function tokens(s) { return lower(s).split(/\s+/).filter(Boolean); }
+function subseq(tk, s) { let i = 0; for (const c of s) { if (c === tk[i] && ++i === tk.length) return true; } return false; }
+function hay(p) { return p._h || (p._h = { n: lower(p.name), b: lower(p.branch || p.sha), s: lower(p.subject) }); }
+// Score of one token: 0 = no match; larger = better.
+function tokScore(tk, h) {
+  if (h.n.startsWith(tk)) return 6;
+  if (h.n.includes(tk)) return 5;
+  if (h.b.includes(tk)) return 4;
+  if (h.s.includes(tk)) return 3;
+  if (tk.length >= 2 && subseq(tk, h.n)) return 2;
+  return 0;
+}
+function score(p, toks) {
+  const h = hay(p); let sum = 0;
+  for (const tk of toks) { const s = tokScore(tk, h); if (!s) return 0; sum += s; }
+  return sum;
+}
+function highlight(str, toks) {
+  str = String(str ?? '');
+  if (!toks.length) return esc(str);
+  const l = lower(str), marks = new Array(str.length).fill(false);
+  for (const tk of toks) { let i = l.indexOf(tk); while (i >= 0) { for (let j = i; j < i + tk.length; j++) marks[j] = true; i = l.indexOf(tk, i + tk.length); } }
+  let out = '', on = false;
+  for (let i = 0; i < str.length; i++) {
+    if (marks[i] !== on) { out += marks[i] ? '<mark>' : '</mark>'; on = marks[i]; }
+    out += esc(str[i]);
+  }
+  return out + (on ? '</mark>' : '');
+}
+const byName = (a, b) => a.name.localeCompare(b.name, 'tr', { numeric: true });
+function order(a, b) {
+  if (!!a.pinned !== !!b.pinned) return a.pinned ? -1 : 1;
+  if (sort === 'name') return byName(a, b);
+  return (lastUsed(b) - lastUsed(a)) || byName(a, b);
+}
+
+function refresh(keepPath) {
+  const toks = tokens(q), K = KINDS.find(x => x.key === kind);
+  const scored = [];
+  for (const p of items) { if (!K.test(p)) continue; const s = toks.length ? score(p, toks) : 1; if (s) scored.push([p, s]); }
+  if (toks.length) scored.sort((a, b) => (b[1] - a[1]) || order(a[0], b[0]));
+  else scored.sort((a, b) => order(a[0], b[0]));
+  view = scored.map(x => x[0]);
+  const want = keepPath ?? null;
+  if (want) { const i = view.findIndex(p => p.path === want); sel = i >= 0 ? i : Math.min(sel, view.length - 1); }
+  else sel = 0;
+  sel = Math.max(0, Math.min(sel, view.length - 1));
+  renderFilters(toks); renderList(toks); renderPreview(); renderFooter();
+}
+
+function renderFilters(toks) {
+  kindsEl.innerHTML = KINDS.map(f => {
+    const n = items.filter(p => f.test(p) && (!toks.length || score(p, toks))).length;
+    return `<div class="f${f.key === kind ? ' on' : ''}${n ? '' : ' zero'}" data-k="${f.key}">${ICONS[f.icon]}${f.label}<b>${num(n)}</b></div>`;
+  }).join('');
+  sortsEl.innerHTML = SORTS.map(s => `<div class="t${s.key === sort ? ' on' : ''}" data-s="${s.key}">${s.label}</div>`).join('');
+  resetEl.classList.toggle('on', !isDefault() || !!q);
+}
+
+function emptyHTML(toks) {
+  if (!items.length) return `<div class="empty"><div>${ICONS.folder}<div>${scanning ? 'Projeler taranıyor…' : 'Proje bulunamadı'}</div><div class="hint">~/Projects altındaki git kopyaları burada listelenir.</div></div></div>`;
+  const all = items.filter(p => !toks.length || score(p, toks)).length;
+  if (!isDefault() && all) {
+    const K = KINDS.find(x => x.key === kind);
+    return `<div class="empty"><div>${ICONS[K.icon]}<div>“${K.label}” filtresinde ${q ? 'eşleşen ' : ''}proje yok</div><div class="hint">Filtre kaldırılınca ${num(all)} proje var.</div><div class="btn" data-act="clear">${ICONS.x}Filtreyi kaldır</div></div></div>`;
+  }
+  return `<div class="empty"><div>${ICONS.folder}<div>“${esc(q)}” için sonuç yok</div><div class="hint">Farklı bir kelime dene ya da Esc ile aramayı temizle.</div></div></div>`;
+}
+
+function subOf(p, toks) {
+  return `${highlight(branchOf(p), toks)} · ${esc(rel(activity(p)))}`;
+}
+function syncOf(p) {
+  if (p.ahead == null) return '';
+  const s = [];
+  if (p.ahead) s.push('↑' + p.ahead);
+  if (p.behind) s.push('↓' + p.behind);
+  return s.join(' ');
+}
+
+function renderList(toks) {
+  if (!view.length) { listEl.innerHTML = emptyHTML(toks); return; }
+  const flat = toks.length > 0;
+  const counts = {};
+  if (!flat) for (const p of view) { const g = groupOf(p); counts[g] = (counts[g] || 0) + 1; }
+  let html = flat ? `<div class="group">Sonuçlar<span>${num(view.length)}</span></div>` : '', last = null;
+  view.forEach((p, i) => {
+    if (!flat) {
+      const g = groupOf(p);
+      if (g !== last) { html += `<div class="group">${esc(g)}<span>${num(counts[g])}</span></div>`; last = g; }
+    }
+    const quick = i < 9 ? `<span class="n">⌘${i + 1}</span>` : '';
+    const sy = syncOf(p);
+    html += `<div class="row${i === sel ? ' sel' : ''}" data-i="${i}"><div class="ico ${isCopy(p) ? 'k-copy' : 'k-main'}">${isCopy(p) ? ICONS.copy : ICONS.main}</div>` +
+      `<div class="meta"><div class="ti">${highlight(p.name, toks)}</div><div class="su">${subOf(p, toks)}</div></div>` +
+      `<div class="end">${p.dirty > 0 ? `<span class="dirty" title="Değişiklik">${num(p.dirty)}</span>` : ''}${sy ? `<span class="sy">${sy}</span>` : ''}${p.pinned ? `<span class="pin">${ICONS.pin}</span>` : ''}${quick}<div class="cp" data-act="copy" title="Yolu Kopyala">${ICONS.copyi}</div></div></div>`;
+  });
+  listEl.innerHTML = html;
+}
+
+function btn(act, icon, label, key, cls = '') {
+  return `<div class="btn ${cls}" data-act="${act}"${key ? ` title="${label} (${key})"` : ''}>${ICONS[icon]}${label}</div>`;
+}
+
+function statusText(p) {
+  if (p.dirty == null) return ['Bilinmiyor', ''];
+  if (p.dirty === 0) return ['Temiz', 'ok'];
+  return [`${num(p.dirty)} Değişiklik`, 'warn'];
+}
+function syncText(p) {
+  if (p.ahead == null) return p.branch ? 'Yukarı Akış Yok' : 'Detached HEAD';
+  if (!p.ahead && !p.behind) return 'Güncel';
+  return [p.ahead ? `${num(p.ahead)} ileride` : '', p.behind ? `${num(p.behind)} geride` : ''].filter(Boolean).join(' · ');
+}
+
+function renderPreview() {
+  const p = view[sel];
+  if (!p) { pvEl.innerHTML = ''; return; }
+  selPath = p.path;
+  const acts = btn('vscode', 'code', 'VS Code\'da Aç', '↩', 'primary') + btn('terminal', 'term', 'Terminal', '') + btn('github', 'gh', 'GitHub Desktop', '') + btn('reveal', 'folder', 'Finder', '') +
+    '<span class="sp"></span>' + btn('pin', p.pinned ? 'pin' : 'pinO', p.pinned ? 'Sabitli' : 'Sabitle', '');
+  const tags = [`<span class="tag ${isCopy(p) ? 'copy' : 'main'}">${isCopy(p) ? (p.worktree ? 'Çalışma Kopyası · Worktree' : 'Çalışma Kopyası · Klon') : 'Ana Kopya'}</span>`];
+  if (p.dirty > 0) tags.push(`<span class="tag warn">${num(p.dirty)} Değişiklik</span>`);
+  if (isStale(p)) tags.push('<span class="tag stale" title="Yalnız bilgi: 7+ gündür hareketsiz, temiz bir çalışma kopyası. Hiçbir şey silinmez.">Temizlenebilir</span>');
+
+  const lg = logs[p.path];
+  let commits = '';
+  if (!lg) commits = '<div class="pv-note">Yükleniyor…</div>';
+  else if (!lg.commits.length) commits = '<div class="pv-note">Commit bulunamadı.</div>';
+  else commits = lg.commits.map(c => `<div class="commit"><code>${esc(c.sha)}</code><span class="s">${esc(c.subject)}</span><span class="w">${esc(c.author)} · ${esc(rel(c.t))}</span></div>`).join('');
+
+  const [st, stCls] = statusText(p);
+  const meta = [
+    ['Dal', branchOf(p), ''], ['Durum', st, stCls], ['Yukarı Akış', syncText(p), ''],
+    ['Son Commit', fullTime(p.ct), ''],
+    ['Dizin Değişimi', fullTime(p.mtime), ''],
+    ['Panelden Açılış', p.opened ? rel(p.opened) : 'Hiç Açılmadı', ''],
+  ];
+  pvEl.innerHTML = `<div class="pv-actions">${acts}</div>` +
+    `<div class="pv-body"><div class="pv-name">${esc(p.name)}</div><div class="tags">${tags.join('')}</div>` +
+    `<div class="pv-path"><code>${esc(p.path)}</code><div class="cp" data-act="copy" title="Yolu Kopyala">${ICONS.copyi}</div></div>` +
+    `<div class="sec">Son Commit’ler</div>${commits}</div>` +
+    `<dl class="pv-meta">${meta.map(([k, v, c]) => `<dt>${esc(k)}</dt><dd class="${c}">${esc(v)}</dd>`).join('')}</dl>`;
+  wantLog(p);
+}
+
+let logTimer;
+function wantLog(p) {
+  if (logs[p.path] && logs[p.path].sha === p.sha) return;
+  clearTimeout(logTimer);
+  logTimer = setTimeout(() => post({ action: 'log', path: p.path, sha: p.sha || '' }), 90);
+}
+
+function renderFooter() {
+  const h = ['<span><kbd>↩</kbd>VS Code</span>', '<span><kbd>⌘↩</kbd>Terminal</span>', '<span><kbd>⌘C</kbd>Yolu Kopyala</span>'];
+  footEl.innerHTML = h.join('') + `<span class="sp"></span><span>${num(view.length)} proje</span>`;
+}
+
+function select(i, scroll = true) {
+  if (!view.length) return;
+  sel = Math.max(0, Math.min(i, view.length - 1));
+  listEl.querySelector('.row.sel')?.classList.remove('sel');
+  const row = listEl.querySelector(`.row[data-i="${sel}"]`);
+  if (row) { row.classList.add('sel'); if (scroll) row.scrollIntoView({ block: 'nearest' }); }
+  renderPreview();
+}
+
+let toastTimer;
+function toast(msg) {
+  toastEl.innerHTML = ICONS.check + esc(msg);
+  toastEl.classList.add('on');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => toastEl.classList.remove('on'), 1300);
+}
+
+function act(a, p = view[sel]) {
+  if (!p) return;
+  if (a === 'copy') {
+    const row = listEl.querySelector(`.row[data-i="${view.indexOf(p)}"]`);
+    if (row) { row.classList.add('flash'); setTimeout(() => row.classList.remove('flash'), 700); }
+  }
+  post({ action: a, path: p.path });
+}
+
+function setKind(k) { kind = (k === kind && k !== 'all') ? 'all' : k; refresh(selPath); listEl.scrollTop = 0; }
+function setSort(s) { sort = s; refresh(selPath); }
+function clearAll() { kind = 'all'; input.value = q = ''; refresh(); listEl.scrollTop = 0; input.focus(); }
+
+input.addEventListener('input', () => { q = input.value; refresh(); listEl.scrollTop = 0; });
+kindsEl.addEventListener('mousedown', e => { const c = e.target.closest('.f'); if (c) { e.preventDefault(); setKind(c.dataset.k); } });
+sortsEl.addEventListener('mousedown', e => { const c = e.target.closest('.t'); if (c) { e.preventDefault(); setSort(c.dataset.s); } });
+resetEl.addEventListener('mousedown', e => { e.preventDefault(); clearAll(); });
+listEl.addEventListener('mousedown', e => {
+  const b = e.target.closest('[data-act]');
+  if (b && b.dataset.act === 'clear') { e.preventDefault(); return clearAll(); }
+  const r = e.target.closest('.row'); if (!r) return;
+  e.preventDefault();
+  select(+r.dataset.i, false);
+  if (b) act(b.dataset.act);
+});
+listEl.addEventListener('dblclick', e => { if (e.target.closest('.row') && !e.target.closest('.cp')) act('vscode'); });
+pvEl.addEventListener('mousedown', e => { const b = e.target.closest('[data-act]'); if (b) { e.preventDefault(); act(b.dataset.act); } });
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('mousedown', e => { if (!e.target.closest('.pv-path code,.pv-name,.commit .s')) setTimeout(() => input.focus(), 0); });
+
+function hasTextSelection() { const s = window.getSelection(); return s && !s.isCollapsed && !input.contains(s.anchorNode); }
+
+document.addEventListener('keydown', e => {
+  const k = e.key, m = e.metaKey;
+  if (k === 'ArrowDown') select(sel + 1);
+  else if (k === 'ArrowUp') select(sel - 1);
+  else if (k === 'PageDown') select(sel + 8);
+  else if (k === 'PageUp') select(sel - 8);
+  else if (m && k === 'ArrowUp') select(0);
+  else if (k === 'Enter') act(m ? 'terminal' : 'vscode');
+  else if (k === 'Escape') {
+    if (q) { input.value = q = ''; refresh(); }
+    else if (!isDefault()) clearAll();
+    else post({ action: 'close' });
+  }
+  else if (k === 'Tab') { const i = KINDS.findIndex(f => f.key === kind); kind = KINDS[(i + (e.shiftKey ? -1 : 1) + KINDS.length) % KINDS.length].key; refresh(selPath); listEl.scrollTop = 0; }
+  else if (m && lower(k) === 't') setSort(sort === 'recent' ? 'name' : 'recent');
+  else if (m && lower(k) === 'c') { if (hasTextSelection() || input.selectionStart !== input.selectionEnd) return; act('copy'); }
+  else if (m && lower(k) === 'g') act('github');
+  else if (m && lower(k) === 'o') act('reveal');
+  else if (m && lower(k) === 'p') act('pin');
+  else if (m && lower(k) === 'r') { post({ action: 'refresh' }); }
+  else if (m && /^[1-9]$/.test(k)) act('vscode', view[+k - 1]);
+  else return;
+  e.preventDefault();
+});
+
+// Relative times and recency groups stay correct while the panel is open.
+setInterval(() => { if (app.classList.contains('show')) refresh(selPath); }, 30000);
+
+window.Projects = {
+  setItems(data) {
+    items = Array.isArray(data.items) ? data.items : [];
+    scanning = !!data.scanning;
+    syncEl.classList.toggle('on', scanning);
+    refresh(selPath);
+  },
+  setScanning(on) { scanning = !!on; syncEl.classList.toggle('on', scanning); if (!items.length) renderList(tokens(q)); },
+  log(path, sha, commits) {
+    logs[path] = { sha, commits: Array.isArray(commits) ? commits : [] };
+    if (view[sel]?.path === path) renderPreview();
+  },
+  toast,
+  open() {
+    input.value = q = ''; kind = 'all'; sort = 'recent'; selPath = null;
+    refresh();
+    listEl.scrollTop = 0;
+    app.classList.remove('show');
+    requestAnimationFrame(() => app.classList.add('show'));
+    input.focus();
+  },
+  close() { app.classList.remove('show'); },
+};
+window.Panel = window.Projects;
+post({ action: 'ready' });
+</script>
+</body>
+</html>
