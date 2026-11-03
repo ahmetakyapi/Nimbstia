@@ -24,13 +24,13 @@ const OBJS = [
   { t: 'num', at: rel(508, 208), n: 1, color: '#ff3b30', r: 14 },
   { t: 'rect', a: rel(966, 390), b: rel(1055, 682), color: '#ff3b30', w: 4 },
   { t: 'num', at: rel(966, 390), n: 2, color: '#ff3b30', r: 14 },
-  { t: 'text', at: rel(560, 420), text: 'Rekor gün: Cumartesi', color: '#ff3b30', fs: 24 },
+  { t: 'text', at: rel(560, 420), text: 'Best day: Saturday', color: '#ff3b30', fs: 24 },
   { t: 'arrow', a: rel(800, 445), b: rel(950, 470), color: '#ff3b30', w: 4 },
 ];
 
 const PANELS = {
   clipboard: { w: 1060, h: 660, run: `Clip.setItems(${JSON.stringify(D.CLIP)});Clip.open();` },
-  projects: { w: 1060, h: 660, run: `Projects.setGitHub(${JSON.stringify(D.GH)});Projects.setItems(${JSON.stringify(D.PROJECTS)});Projects.log('/Users/demo/Projects/nimbstia','4f2c9e1',${JSON.stringify(D.LOG)});Projects.open();` },
+  projects: { w: 1060, h: 660, run: `Projects.setGitHub(${JSON.stringify(D.GH)});Projects.setItems(${JSON.stringify(D.PROJECTS)});Projects.log('/Users/demo/Projects/Nimbstia','4f2c9e1',${JSON.stringify(D.LOG)});Projects.open();` },
   layouts: { w: 980, h: 680, run: `Layouts.setData(${JSON.stringify(D.LAYOUTS)});Layouts.open();` },
   pulstia: { w: 470, h: 1000, file: 'popover', run: `Pulse.set(${JSON.stringify(D.POP)});Pulse.open();`, fit: true },
   shot: { w: 1440, h: 900, file: 'screenshot', desktop: true, clip: { x: 205, y: 68, width: 1060, height: 740 },

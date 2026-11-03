@@ -32,7 +32,7 @@
 
 - **Yerel ve hafif** — [Hammerspoon](https://www.hammerspoon.org) içinde çalışan Lua ve küçük HTML panelleri. Electron yok, boştayken işlemci ~%0, bellek sabit (on ekran görüntüsünden sonra ≈ 140 MB).
 - **Varsayılan olarak gizli** — her şey Mac'inde kalır. Parola yöneticisinden kopyalananlar hiç kaydedilmez.
-- **Sakin tasarım** — tek bir ortak tasarım sistemi (`theme.css`): kâğıt-mürekkep nötrleri, tek vurgu mavisi, çevrimdışı gömülü Geist ve Geist Mono, tek tıkla geçilen gerçek açık ve koyu tema, yalnız gereken ipuçları.
+- **Sakin tasarım** — tek bir ortak tasarım sistemi (`theme.css`): aydınlık nötr yüzeyler, yalnız anlam taşıyan yerde renk, çevrimdışı gömülü Inter, tek tıkla geçilen gerçek açık ve koyu tema, yalnız gereken ipuçları.
 
 ## Nimbstia — merkez
 
@@ -42,9 +42,12 @@ Menü çubuğundaki işarete tıkla. Günün her şeyi tek bir panoda: VPN ve ge
   <img src="assets/screens/popover-dark.png" width="360" alt="Nimbstia durum panosu">
 </p>
 
-- **Bağlantı** — sunucuna her 30 sn'de ve uyanma ya da ağ değişikliğinden hemen sonra VPN + TCP denetimi; her şey yolundaysa tek bir yeşil nokta.
-- **Claude kullanımı** — sıfırlanma zamanlarıyla plan limitleri ve açık oturumlar (oturumu claude.ai'de açar); Claude Code'un yerelde tuttuğu dosyalardan okunur.
-- **Hızlı ayarlar** — Mac'i uyanık tut <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>K</kbd>, mikrofonu kapat <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>M</kbd>, macOS Takvim'den isteğe bağlı toplantı uyarısı.
+- **Bağlantı** — sunucuna her 30 sn'de ve uyanma ya da ağ değişikliğinden hemen sonra VPN + TCP denetimi; her şey yolundaysa gecikmeyle birlikte canlı yeşil bir etiket.
+- **Claude kullanımı** — haftalık ve oturum limitleri halka grafikle, sıfırlanma zamanı ve açık oturumlar (oturumu claude.ai'de açar); Claude Code'un yerelde tuttuğu dosyalardan okunur.
+- **Geliştirme sunucuları** — şu an dinleyen her yerel sunucu (`npm run dev`, Vite, Django, Ollama…) portu ve proje klasörüyle; tek tıkla tarayıcıda aç ya da durdur. Kodlama ajanlarının açık bıraktığı sunucular için birebir.
+- **Hızlı ayarlar** — Mac'i uyanık tut <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>K</kbd>, mikrofonu kapat <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>M</kbd>, macOS Takvim'den isteğe bağlı toplantı uyarısı ve macOS Koyu Görünüm.
+- **Sistem** — pil, bellek (dokununca onu kullanan uygulamalar) ve boş disk bir bakışta.
+- **Dil** — arayüz varsayılan olarak Türkçe; `config.local.lua` içinde `language = "en"` ile tamamen İngilizce.
 
 ## Araçlar
 
@@ -149,7 +152,7 @@ return {
   jiraBase = "https://sirketin.atlassian.net/browse/",              -- Ctrl Opt J
   jiraProjects = { "ABC", "OPS" },                                    -- yalnız bu önekler
   devCheck = { name = "DEV", host = "10.0.0.10", port = 22 },          -- bağlantı kartı
-  launcher = { title = "Geliştirme ortamını başlat", path = os.getenv("HOME") .. "/Desktop/start.command" },
+  language = "en",                                                    -- arayüz dili (varsayılan "tr")
   screenshotDir = os.getenv("HOME") .. "/Documents/Screenshots",
 }
 ```
@@ -168,8 +171,8 @@ return {
 
 ## Tasarım ve önizleme
 
-Tüm paneller tek bir stil dosyasını kullanır: [`theme.css`](theme.css). Açık/koyu renk değişkenleri, metin için Geist,
-etiket, sayı ve tuşlar için Geist Mono (`assets/fonts` içinde gömülü, internetten indirilmez), tuş kapakları ve
+Tüm paneller tek bir stil dosyasını kullanır: [`theme.css`](theme.css). Açık/koyu renk değişkenleri, okunan her şey için Inter,
+kod, hash ve adresler için Geist Mono (`assets/fonts` içinde gömülü, internetten indirilmez), tuş kapakları ve
 hareket eğrileri burada. `panel.lua` dosyayı fontlarıyla birlikte panele gömer; paneller tamamen çevrimdışı kalır.
 
 Arayüz üzerinde Mac olmadan çalışmak için panelleri demo veriyle tarayıcıda açabilirsin:

@@ -37,9 +37,9 @@
 
 - **Native and light** — plain Lua and small HTML panels inside [Hammerspoon](https://www.hammerspoon.org). No Electron, idle CPU ~0 %, memory stays flat (≈ 140 MB after ten screenshots).
 - **Private by default** — everything stays on your Mac. Password-manager copies are never recorded.
-- **Calm by design** — one shared design system (`theme.css`): paper-and-ink neutrals, one accent blue, Geist and Geist Mono bundled offline, real light and dark themes with a one-click switch, only the hints you need.
+- **Calm by design** — one shared design system (`theme.css`): bright neutral surfaces, colour only where it means something, Inter bundled offline, real light and dark themes with a one-click switch, only the hints you need.
 
-> The interface speaks Turkish today (the author's daily language). Strings live next to the code that uses them, so a translation is a small, focused change — PRs welcome.
+> The interface is Turkish by default (the author's daily language) and fully English with `language = "en"` in `config.local.lua`. One small layer, [`i18n.js`](i18n.js), translates every panel; adding a language is one table — PRs welcome.
 
 ## Nimbstia — the hub
 
@@ -49,9 +49,11 @@ Click the mark in the menu bar. Everything about your day sits in one popover: w
   <img src="assets/screens/popover-dark.png" width="360" alt="Nimbstia status popover">
 </p>
 
-- **Connection** — VPN + TCP check to your host every 30 s and right after wake or a network change; a single green dot when all is well.
-- **Claude usage** — plan limits with reset times and open sessions (opens the session on claude.ai), read from the files Claude Code keeps locally.
-- **Quick switches** — keep the Mac awake <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>K</kbd>, mute the microphone <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>M</kbd>, opt-in meeting alerts from macOS Calendar.
+- **Connection** — VPN + TCP check to your host every 30 s and right after wake or a network change; a live green chip with the latency when all is well.
+- **Claude usage** — weekly and session limits as activity rings, reset time and open sessions (opens the session on claude.ai), read from the files Claude Code keeps locally.
+- **Dev servers** — every local server that is listening right now (`npm run dev`, Vite, Django, Ollama…) with its port and project folder; open it in the browser or stop it in one click. Handy when coding agents leave servers running.
+- **Quick switches** — keep the Mac awake <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>K</kbd>, mute the microphone <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>M</kbd>, opt-in meeting alerts from macOS Calendar, and macOS Dark Mode.
+- **System** — battery, memory (tap for the apps using it) and free disk at a glance.
 
 ## The tools
 
@@ -157,7 +159,7 @@ return {
   jiraBase = "https://your-company.atlassian.net/browse/",          -- Ctrl Opt J
   jiraProjects = { "ABC", "OPS" },                                    -- only these key prefixes
   devCheck = { name = "DEV", host = "10.0.0.10", port = 22 },          -- connection card
-  launcher = { title = "Start dev stack", path = os.getenv("HOME") .. "/Desktop/start.command" },
+  language = "en",                                                    -- interface language ("tr" by default)
   screenshotDir = os.getenv("HOME") .. "/Documents/Screenshots",
 }
 ```
@@ -172,6 +174,7 @@ return {
 - Clipboard history is stored locally in Hammerspoon's settings; copied images and thumbnails in `clipdata/` (git-ignored).
 - Items marked by password managers (`org.nspasteboard.ConcealedType`, 1Password, Bitwarden, KeePassXC…) are never stored, and the tools that briefly borrow the clipboard restore it without re-publishing secrets.
 - Claude usage and sessions are read from the files Claude Code keeps on your Mac (`~/.claude.json`, `~/.claude/sessions`); nothing is sent anywhere.
+- The dev servers card reads listening ports locally with `lsof`; the stop button only signals a process the hub listed itself.
 - The only network traffic is the optional TCP check to the host you configure. Meeting alerts read the macOS Calendar locally and only after you turn them on.
 
 ## Project layout
@@ -179,8 +182,9 @@ return {
 ```
 init.lua            entry point: loads every module safely and binds the global shortcuts
 config.lua          defaults + config.local.lua override
-panel.lua           shared floating webview panel (focus, theme switch for every panel)
-theme.css           design system shared by every panel: tokens, Geist type, keycaps, motion
+panel.lua           shared floating webview panel (focus, theme switch, inlines theme.css + i18n.js)
+i18n.js             English interface (language = "en"): one DOM translation table for every panel
+theme.css           design system shared by every panel: tokens, Inter type, keycaps, motion
 ui.lua              shared style for toasts and pickers
 keep.lua            keeps fire-and-forget timers/tasks alive until they finish
 pb.lua              pasteboard helpers: secret detection, safe save/restore
@@ -194,15 +198,14 @@ tools.lua           Hopstia app keys, Lexstia OCR, Twistia transforms, Snipstia 
 bin/                small helpers (OCR and Calendar via JavaScript for Automation, transforms)
 scripts/            maintenance (README screenshots and hero image, demo data only)
 scripts/preview/    browser preview of every panel with demo data (no Mac needed)
-assets/fonts/       Geist + Geist Mono (SIL Open Font License)
+assets/fonts/       Inter + Geist Mono (SIL Open Font License)
 AGENTS.md           install runbook for AI coding agents
 ```
 
 ## Design and previews
 
-Every panel links one stylesheet, [`theme.css`](theme.css): colour tokens for light and dark, Geist for words
-and Geist Mono for labels, numbers and keys (bundled in `assets/fonts`, never fetched), keycaps, eyebrow
-labels and the motion curves. `panel.lua` inlines it, fonts included, so the panels stay fully offline.
+Every panel links one stylesheet, [`theme.css`](theme.css): colour tokens for light and dark, Inter for everything you read
+and Geist Mono for code, hashes and hosts (bundled in `assets/fonts`, never fetched), keycaps and the motion curves. `panel.lua` inlines it, fonts included, so the panels stay fully offline.
 
 To work on the UI without a Mac, open the panels in a browser with demo data:
 

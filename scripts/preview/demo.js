@@ -43,7 +43,7 @@ exports.POP = { health: 'ok', status: { text: 'Her Şey Yolunda', tone: 'ok' },
   ports: [{ port: 3000, cmd: 'node', folder: 'Nimbstia-site' }, { port: 5173, cmd: 'node', folder: 'design-system' }, { port: 8000, cmd: 'Python', folder: 'api-server' }],
   claude: { plan: 'Max', updatedAgo: '2 dk önce', limits: [{ label: 'Haftalık Limit', percent: 33, resets: 'Cumartesi 12:00' }, { label: 'Oturum Limiti', percent: 71, resets: '14:20' }],
     sessions: [{ name: 'Nimbstia docs', busy: true, url: 'https://claude.ai' }, { name: 'api-server', busy: true, url: 'https://claude.ai' }, { name: 'website', busy: false, url: 'https://claude.ai' }] },
-  tools: [{ id: 'clip', name: 'Pastia', what: 'Pano', keys: '⌃V' }, { id: 'shot', name: 'Clipstia', what: 'Ekran Görüntüsü', keys: '⌃.' }, { id: 'layout', name: 'Panestia', what: 'Düzen', keys: '⌃Space' }, { id: 'repo', name: 'Repostia', what: 'Projeler', keys: '⌃⇧P' }, { id: 'text', name: 'Lexstia', what: 'Metin Oku', keys: '⌃⇧O' }],
+  tools: [{ id: 'clip', name: 'Pastia', what: 'Pano', keys: '⌃V' }, { id: 'shot', name: 'Clipstia', what: 'Ekran Al', keys: '⌃.' }, { id: 'layout', name: 'Panestia', what: 'Düzen', keys: '⌃Space' }, { id: 'repo', name: 'Repostia', what: 'Projeler', keys: '⌃⇧P' }, { id: 'text', name: 'Lexstia', what: 'Metin Oku', keys: '⌃⇧O' }],
   toggles: { awake: true, mic: false, meetings: false, appearance: false },
   system: { battery: { pct: 82, charging: false }, mem: 58, disk: 412, diskUsed: 57 },
   theme: 'auto', shortcuts: [{ keys: '⌃V', label: 'Pastia · Pano Geçmişi' }, { keys: '⌃.', label: 'Clipstia · Ekran Görüntüsü' }], errors: [] };

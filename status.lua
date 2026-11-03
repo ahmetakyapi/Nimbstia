@@ -257,7 +257,7 @@ end
 
 local TOOLS = {
   { id = "clip",   name = "Pastia",   what = "Pano",      keys = "⌃V",     ok = function() return Clip end,    run = function() Clip.toggle() end },
-  { id = "shot",   name = "Clipstia", what = "Ekran Görüntüsü", keys = "⌃.",     ok = function() return Shot end,    run = function() Shot.start() end, delay = 0.3 },
+  { id = "shot",   name = "Clipstia", what = "Ekran Al",   keys = "⌃.",     ok = function() return Shot end,    run = function() Shot.start() end, delay = 0.3 },
   { id = "layout", name = "Panestia", what = "Düzen", keys = "⌃Space", ok = function() return Layouts end, run = function() Layouts.toggle() end },
   { id = "repo",   name = "Repostia", what = "Projeler",          keys = "⌃⇧P",    ok = function() return Projects end, run = function() Projects.toggle() end },
   { id = "text",   name = "Lexstia",  what = "Metin Oku",    keys = "⌃⇧O",    ok = function() return Tools and Tools.ocr end, run = function() Tools.ocr() end, delay = 0.3 },

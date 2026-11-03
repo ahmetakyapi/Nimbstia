@@ -3,7 +3,6 @@
 --   return {
 --     jiraBase = "https://your-company.atlassian.net/browse/",
 --     devCheck = { name = "DEV", host = "10.0.0.10", port = 22 },
---     launcher = { title = "Start dev stack", path = os.getenv("HOME") .. "/Desktop/start.command" },
 --   }
 --
 -- Every key is optional; features that need a missing value hide themselves.
@@ -16,8 +15,6 @@ local C = {
   jiraBase = nil,
   -- Status menu reachability check over the VPN: { name, host, port }. nil = no VPN/DEV indicator.
   devCheck = nil,
-  -- Optional launcher shown in the status menu: { title, path }.
-  launcher = nil,
   -- Where screenshots (⌃.) are saved; the clipboard panel lists this folder too.
   screenshotDir = HOME .. "/Documents/Screenshots",
 }
