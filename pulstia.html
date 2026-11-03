@@ -124,7 +124,7 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .sdots i.b{background:linear-gradient(145deg,#4ade80,#16a34a)}
 
 /* launcher: the primary action */
-.launch{display:flex;align-items:center;gap:12px;width:100%;height:50px;padding:0 8px 0 8px;border-radius:16px;color:var(--on-primary);background:var(--primary);box-shadow:var(--primary-shadow);transition:transform var(--dur-1) var(--ease-out),filter var(--dur-1)}
+.launch{display:flex;align-items:center;gap:12px;width:100%;height:48px;padding:0 8px 0 8px;border-radius:16px;color:var(--on-primary);background:var(--primary);box-shadow:var(--primary-shadow);transition:transform var(--dur-1) var(--ease-out),filter var(--dur-1)}
 .launch:hover{filter:brightness(1.05)}
 .launch:active{transform:scale(.985)}
 .launch .pi{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:rgba(255,255,255,.2)}
@@ -137,7 +137,7 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .launch:hover .go{transform:translateX(2px)}
 
 /* tools: glossy app icons */
-.tw{display:grid;grid-template-columns:repeat(var(--n,5),1fr);gap:2px;margin:0 -6px -4px}
+.tw{display:grid;grid-template-columns:repeat(var(--n,5),1fr);gap:2px;margin:-4px -6px -6px}
 .ti{position:relative;display:flex;flex-direction:column;align-items:center;min-width:0;padding:6px 2px 8px;border-radius:14px;transition:background var(--dur-1)}
 .ti:hover{background:var(--hover)}
 .ti .ico{position:relative;width:50px;height:50px;border-radius:15px;display:grid;place-items:center;margin-bottom:8px;color:#fff;overflow:hidden;
@@ -150,8 +150,7 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .ti:active .ico{transform:scale(.95)}
 .ti .nm{font-size:12.5px;font-weight:650;letter-spacing:-.01em;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ti .wt{font-size:11.5px;color:var(--faint);white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
-.ti .kc{display:flex;gap:2px;margin-top:7px}
-.ti .kc kbd{min-width:19px;height:19px;padding:0 4px;font-size:11px}
+.ti .ky{margin-top:5px;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.04em;white-space:nowrap;padding:2px 7px;border-radius:6px;background:var(--chip)}
 
 /* quick toggles: Control Center */
 .rw{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
@@ -174,7 +173,7 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 
 /* system: ring gauges */
 .sw4{display:grid;grid-template-columns:repeat(var(--n),1fr);gap:8px}
-.sc{display:flex;align-items:center;gap:10px;min-width:0;padding:8px;margin:-4px;border-radius:14px;text-align:left;transition:background var(--dur-1)}
+.sc{display:flex;align-items:center;gap:10px;min-width:0;padding:6px;margin:-4px;border-radius:14px;text-align:left;transition:background var(--dur-1)}
 .sc:hover{background:var(--hover)}
 .gauge{position:relative;flex:none;width:44px;height:44px}
 .gauge svg{width:44px;height:44px;transform:rotate(-90deg)}
@@ -335,7 +334,7 @@ const wh = (icon, label, right, color) => `<div class="wh"><span class="wi"${col
 function renderMain() {
   const d = data, out = [];
   const st = overall();
-  out.push(`<div class="head">${MARK}<div class="ht"><b>Nimbstia</b><small>${esc(today())}</small></div><span class="sp"></span><span class="pill ${st.tone}"><i></i>${esc(st.text)}</span><button class="ib flip" data-act="flip" type="button"></button><button class="ib" data-act="close" type="button" aria-label="Kapat" data-tip="Kapat · Esc"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg></button></div>`);
+  out.push(`<div class="head">${MARK}<div class="ht"><b>Nimbstia</b><small>${esc(today())}</small></div><span class="sp"></span><button class="ib flip" data-act="flip" type="button"></button><button class="ib" data-act="close" type="button" aria-label="Kapat" data-tip="Kapat · Esc"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg></button></div>`);
 
   const errs = Array.isArray(d.errors) ? d.errors : [];
   if (errs.length) out.push(`<button class="banner" data-act="console">${ICONS.warn}<span>${errs.length} modül yüklenemedi</span><span class="go">Konsol</span></button>`);
@@ -383,19 +382,19 @@ function renderMain() {
   if (row1.length) out.push(`<div class="wrow${row1.length === 1 ? ' one' : ''}">${row1.join('')}</div>`);
 
   // ---- launcher (config.local.lua → launcher): the primary action
-  if (d.launcher) out.push(`<button class="launch" data-act="launcher" type="button"><span class="pi">${W_ICON.play}</span><span class="lt"><b>${esc(d.launcher.title)}</b><small>Başlat</small></span><span class="go">${ARROW}</span></button>`);
+  if (d.launcher) out.push(`<button class="launch" data-act="launcher" type="button"><span class="pi">${W_ICON.play}</span><span class="lt"><b>${esc(d.launcher.title)}</b></span><span class="go">${ARROW}</span></button>`);
 
   // ---- tools: app icons
   const tools = Array.isArray(d.tools) ? d.tools : [];
   if (tools.length) {
-    out.push(`<section class="w tools">${wh(W_ICON.grid, 'Araçlar', '', 'linear-gradient(145deg,#60a5fa,#2563ff)')}<div class="tw" style="--n:${Math.min(tools.length, 5)}">` + tools.map(t =>
-      `<button class="ti" data-act="tool" data-id="${esc(t.id)}" style="--k:${TOOL_COLOR[t.id] || '#64748b'}" aria-label="${esc(t.name + ' · ' + t.what)}"><span class="ico">${ICONS[TOOL_ICON[t.id]] || ICONS.clip}</span><span class="nm">${esc(t.name)}</span><span class="wt">${esc(t.what)}</span><span class="kc">${keySym(t.keys)}</span></button>`).join('') + `</div></section>`);
+    out.push(`<section class="w tools"><div class="tw" style="--n:${Math.min(tools.length, 5)}">` + tools.map(t =>
+      `<button class="ti" data-act="tool" data-id="${esc(t.id)}" style="--k:${TOOL_COLOR[t.id] || '#64748b'}" aria-label="${esc(t.name + ' · ' + t.what)}"><span class="ico">${ICONS[TOOL_ICON[t.id]] || ICONS.clip}</span><span class="nm">${esc(t.name)}</span><span class="wt">${esc(t.what)}</span><span class="ky">${esc(Array.from(String(t.keys || '')).join(' ').replace('S p a c e', 'Space'))}</span></button>`).join('') + `</div></section>`);
   }
 
   // ---- quick toggles
   const tg = d.toggles || {};
   const rt = (id, label, icon, color, states) => `<button class="rt${tg[id] ? ' on' : ''}" role="switch" aria-checked="${tg[id] ? 'true' : 'false'}" data-act="toggle" data-id="${id}" style="--q:${color}"><span class="rc">${ICONS[icon]}</span><span><span class="rn">${label}</span><small>${(states || ['Açık', 'Kapalı'])[tg[id] ? 0 : 1]}</small></span></button>`;
-  let q = `<section class="w quick">${wh(W_ICON.toggle, 'Hızlı Ayarlar', '', 'linear-gradient(145deg,#fbbf24,#f59e0b)')}<div class="rw">` +
+  let q = `<section class="w quick"><div class="rw">` +
     rt('awake', 'Uyanık Tut', 'cup', '#f59e0b') + rt('mic', 'Mikrofon', 'mic', '#f43f5e', ['Sessiz', 'Açık']) + rt('meetings', 'Toplantılar', 'cal', '#8b5cf6') + `</div>`;
   const meets = Array.isArray(d.meetings) ? d.meetings : [];
   if (tg.meetings && meets.length) {
@@ -415,7 +414,7 @@ function renderMain() {
   if (sy.battery) cols.push(gauge('battery', 'bat', '#22c55e', sy.battery.pct, '%', sy.battery.charging ? 'Şarjda' : 'Pil', sy.battery.pct < 20 && !sy.battery.charging, 'Pil Ayarları', sy.battery.pct));
   if (typeof sy.mem === 'number') cols.push(gauge('mem', 'memo', '#3b82f6', sy.mem, '%', 'Bellek', sy.mem >= 85, 'Neyin ne kadar kullandığını gör', sy.mem));
   if (typeof sy.disk === 'number') cols.push(gauge('disk', 'disk', '#8b5cf6', sy.disk >= 1000 ? (sy.disk / 1000).toFixed(1).replace('.', ',') : sy.disk, sy.disk >= 1000 ? 'TB' : 'GB', 'Boş Disk', sy.disk < 20 || sy.diskUsed >= 90, 'Depolama Ayarları', sy.diskUsed));
-  if (cols.length) out.push(`<section class="w sys">${wh(W_ICON.chip, 'Sistem', '', 'linear-gradient(145deg,#a78bfa,#7c3aed)')}<div class="sw4" style="--n:${cols.length}">${cols.join('')}</div></section>`);
+  if (cols.length) out.push(`<section class="w sys"><div class="sw4" style="--n:${cols.length}">${cols.join('')}</div></section>`);
   return out.join('');
 }
 
