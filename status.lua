@@ -66,13 +66,15 @@ end
 local function render()
   if not bar then return end
   local out = text("")
+  local tip = "Nimbstia"
   if DEV then
     local h = health()
+    -- Only a coloured dot next to the N (green · amber · red); the words live in the tooltip and the hub.
     out = out .. text("●", { font = { name = FONT, size = 8 }, baselineOffset = 1.5,
       color = h == "ok" and GREEN or h == "warn" and AMBER or h == "down" and RED or GREY })
-    -- Words only when something needs attention; a healthy state is just the green dot.
-    if h == "down" then out = out .. text(" VPN Kapalı")
-    elseif h == "warn" then out = out .. text(" " .. DEV_NAME .. " Yanıt Vermiyor") end
+    if h == "down" then tip = tip .. " · VPN Kapalı"
+    elseif h == "warn" then tip = tip .. " · " .. DEV_NAME .. " Yanıt Vermiyor"
+    elseif h == "ok" then tip = tip .. " · VPN Bağlı" end
   end
   if micMuted() then out = out .. text("  ● Mikrofon Kapalı", { color = RED }) end
   -- Claude usage appears only when it needs attention (≥ 80 % of a limit).
@@ -86,7 +88,7 @@ local function render()
   end
   if hs.caffeinate.get("displayIdle") then out = out .. text("  ☕︎", { font = { name = FONT, size = 12 } }) end
   bar:setTitle(#out:getString() > 0 and out or nil)
-  bar:setTooltip("Nimbstia")
+  bar:setTooltip(tip)
   if M.pushPopover then M.pushPopover() end -- an open popover follows every state change
 end
 
