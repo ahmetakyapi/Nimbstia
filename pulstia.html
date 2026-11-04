@@ -340,6 +340,48 @@ button.ss:hover .go{color:var(--text);transform:translate(2px,-2px)}
 .lg b{grid-column:auto!important;font-size:14.5px!important}
 .lg .lrs{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}
 .lg .lrs .td{font-size:10.5px;font-weight:650;color:var(--accent-ink);background:var(--accent-soft);padding:1px 6px;border-radius:999px}
+/* top-row variants */
+.vstrip{display:flex;align-items:center;gap:10px;min-width:0;--vc:var(--faint)}
+.vstrip.ok,.w.ok .vstrip{--vc:var(--ok-bar)} .vstrip.warn{--vc:var(--warn-bar)} .vstrip.bad{--vc:var(--bad-bar)}
+.vst{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.vst .vt{font-size:14.5px}
+.vst .vh{margin:0;flex-wrap:nowrap;overflow:hidden}
+.vstrip .vchip{flex:none}
+.vbtn.sm{width:auto!important;height:30px!important;margin:0!important;padding:0 12px;flex:none;font-size:12px}
+.w.slim{padding:10px 12px}
+.cwide .cwh .wh{margin-bottom:8px}
+.cwb{display:flex;align-items:center;gap:14px}
+.cwb .ring2{flex:1;min-width:0}
+.cwb .lg{flex-direction:row!important;flex-wrap:wrap;gap:6px 18px!important;align-items:center}
+.cwb .lg > div{min-width:96px}
+.cwb .lg .lrs{flex-basis:100%}
+.cws{flex:none}
+.cws .slink{margin:0!important;padding:8px 10px;border-radius:12px;background:var(--chip);flex-direction:row}
+.w.status{padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.w.status hr{border:0;border-top:1px solid var(--line);margin:0 -14px}
+.vline3{display:flex;align-items:center;gap:8px;padding:6px 6px 2px;font-size:12.5px;color:var(--faint);min-width:0;--vc:var(--faint)}
+.vline3.ok{--vc:var(--ok-bar)} .vline3.warn{--vc:var(--warn-bar)} .vline3.bad{--vc:var(--bad-bar)}
+.vline3 > i{width:8px;height:8px;border-radius:50%;background:var(--vc);flex:none}
+.vline3 b{color:var(--text);font-weight:600;white-space:nowrap}
+.vline3 > span:not(.sp):not(.vh){color:color-mix(in srgb,var(--vc) 75%,var(--text));font-weight:600;white-space:nowrap}
+.vline3 .vh{margin:0;flex-wrap:nowrap;overflow:hidden;min-width:0}
+.vline3 .vlink{display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:600;color:var(--text);background:var(--chip);flex:none}
+.vline3 .vlink.solid{color:var(--on-primary);background:var(--primary)}
+.vline3 .vlink svg{width:12px;height:12px}
+.cwide .wh .wi{color:#d97757;background:rgba(217,119,87,.16)}
+.cwide .plan{font-size:11px;font-weight:650;color:var(--muted);padding:3px 8px;border-radius:999px;background:var(--chip)}
+.vtr .vchip{padding:0 9px 0 8px}
+/* Claude bar view */
+.cbars{flex:1;min-width:0;display:flex;flex-direction:column;gap:9px}
+.cbt{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:12px;color:var(--faint);font-weight:550}
+.cbt b{font:560 15px/1 var(--font-display);letter-spacing:-.02em;color:var(--text);font-variant-numeric:tabular-nums}
+.cbm{display:flex;height:8px;margin-top:6px;border-radius:5px;background:var(--chip);overflow:hidden}
+.cbm i{display:block;height:100%;background:linear-gradient(90deg,#f0a183,#d9623f);transform-origin:left;animation:grow .8s var(--ease-out) both}
+.cbm.b2 i{background:linear-gradient(90deg,#fcd581,#ef9a1a)}
+.cbm i.tday{background:#f7c4ae;animation-delay:.15s}
+.cbm.b2 i.tday{background:#fde3a7}
+.cbx{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;font-size:11px;color:var(--faint)}
+.cbx .td{font-size:10.5px;font-weight:650;color:var(--accent-ink);background:var(--accent-soft);padding:1px 6px;border-radius:999px}
 </style>
 </head>
 <body>
@@ -449,7 +491,7 @@ function renderMain() {
   if (errs.length) out.push(`<button class="banner" data-act="console">${ICONS.warn}<span>${errs.length} modül yüklenemedi</span><span class="go">Konsol</span></button>`);
 
   // ---- row 1: connection + Claude
-  const row1 = [];
+  const row1 = [], parts = {};
   if (d.dev) {
     const dev = d.dev, tone = TONE[d.health] || '', v = d.vpn;
     // signal bars by latency: 3 under 60 ms, 2 under 150 ms, else 1; none while down
@@ -464,6 +506,11 @@ function renderMain() {
         ? `<button class="vbtn" data-act="vpn" data-v="disconnect" type="button">${power}Bağlantıyı Kes</button>`
         : `<button class="vbtn solid" data-act="vpn" data-v="connect" type="button">${power}Bağlan</button>`;
     const tip = 'Yeniden Kontrol Et' + (dev.checkedAgo ? ' · ' + dev.checkedAgo : '');
+    const vTitle = esc(dev.title || 'VPN Bağlantısı'), vChip = `<span class="vchip"><i></i>${esc(label)}</span>`;
+    const vMeta = `${dev.host ? `<span class="mono">${esc(dev.host)}</span>` : ''}${tone === 'ok' && ms != null ? `<span>${ms} ms</span>` : ''}${dev.checkedAgo ? `<span>${esc(dev.checkedAgo)}</span>` : ''}`;
+    const vRefresh = `<button class="ib sm" data-act="check" type="button" data-tip="${esc(tip)}" aria-label="Yeniden Kontrol Et">${ICONS.refresh}</button>`;
+    const vMetaShort = `${dev.host ? `<span class="mono">${esc(dev.host)}</span>` : ''}${tone === 'ok' && ms != null ? `<span>${ms} ms</span>` : (dev.checkedAgo ? `<span>${esc(dev.checkedAgo)}</span>` : '')}`;
+    parts.vpn = { tone, title: vTitle, chip: vChip, meta: vMetaShort, refresh: vRefresh, action, connected: !!(v && v.connected), label };
     row1.push(`<section class="w vpn ${tone}">
       <div class="vtr"><span class="vic">${ICONS.shield}</span><div class="vt">${esc(dev.title || 'VPN Bağlantısı')}</div><span class="vchip"><i></i>${esc(label)}</span></div>
       <div class="vmeta"><div class="vh">${dev.host ? `<span class="mono">${esc(dev.host)}</span>` : ''}${tone === 'ok' && ms != null ? `<span>${ms} ms</span>` : ''}${dev.checkedAgo ? `<span>${esc(dev.checkedAgo)}</span>` : ''}</div><button class="ib sm" data-act="check" type="button" data-tip="${esc(tip)}" aria-label="Yeniden Kontrol Et">${ICONS.refresh}</button></div>
@@ -483,14 +530,37 @@ function renderMain() {
       <circle class="t1" cx="44" cy="44" r="38"/><circle class="v1" cx="44" cy="44" r="38" stroke-dasharray="${arc(38, p)}"/>
       ${p2 != null ? `<circle class="t2" cx="44" cy="44" r="27"/><circle class="v2" cx="44" cy="44" r="27" stroke-dasharray="${arc(27, p2)}"/>` : ''}</svg>`;
     const fmtP = v => v == null ? '–' : (pctAfter() ? v + '%' : '%' + v);
+    // Bar view: one thick meter per limit; today's share drawn as a lighter tail at the end.
+    const barRow = (l, k) => { const v = pct(l); const t = typeof l.today === 'number' ? Math.min(v, Math.max(0, Math.round(l.today))) : 0;
+      return `<div class="cbr"><div class="cbt"><span>${esc(short(l))}</span><b data-roll="b${k}">${fmtP(v)}</b></div><div class="cbm b${k}"><i style="width:${Math.max(2, v - t)}%"></i>${t ? `<i class="tday" style="width:${t}%"></i>` : ''}</div></div>`; };
+    const barBody = lim ? `<div class="cbars">${barRow(lim, 1)}${lims[1] ? barRow(lims[1], 2) : ''}<div class="cbx">${lim.resets ? `<span>↻ ${esc(lim.resets)}</span>` : ''}${typeof lim.today === 'number' ? `<span class="td">Bugün +%${lim.today}</span>` : ''}</div></div>` : '';
+    const VIS = d.claudeVis || window.NB_CVIS || 'ring';
+    parts.claude = {
+      plan: c.plan ? `<span class="plan">${esc(c.plan)}</span>` : '',
+      body: lim && VIS === 'bar' ? barBody : lim ? `<div class="ring2"><div class="rgw">${rings}<div class="rv">${W_ICON.spark}</div></div><div class="lg"><div><i class="c1"></i><span>${esc(short(lim))}</span><b data-roll="c1">${fmtP(p)}</b></div>${p2 != null ? `<div><i class="c2"></i><span>${esc(short(lims[1]))}</span><b data-roll="c2">${fmtP(p2)}</b></div>` : ''}${lim.resets || typeof lim.today === 'number' ? `<em class="lrs">${lim.resets ? `<span>↻ ${esc(lim.resets)}</span>` : ''}${typeof lim.today === 'number' ? `<span class="td">Bugün +%${lim.today}</span>` : ''}</em>` : ''}</div></div>` : `<div class="cnone"><b>Kullanım verisi yok</b><small>Claude Code açıkken güncellenir</small></div>`,
+      sess: sess.length ? `<button class="slink" data-act="sessions" type="button"><span class="sdot${busy ? ' b' : ''}"></span><span>${sess.length} oturum</span>${busy ? `<small>${busy} aktif</small>` : ''}<span class="sp"></span>${CHEV}</button>` : '',
+    };
     row1.push(`<section class="w claude">
-      ${wh(W_ICON.spark, 'Claude', c.plan ? `<span class="plan">${esc(c.plan)}</span>` : '')}
-      ${lim ? `<div class="ring2"><div class="rgw">${rings}<div class="rv">${W_ICON.spark}</div></div>
-        <div class="lg"><div><i class="c1"></i><span>${esc(lim ? short(lim) : 'Kullanım')}</span><b data-roll="c1">${fmtP(p)}</b></div>${p2 != null ? `<div><i class="c2"></i><span>${esc(short(lims[1]))}</span><b data-roll="c2">${fmtP(p2)}</b></div>` : ''}${lim.resets || typeof lim.today === 'number' ? `<em class="lrs">${lim.resets ? `<span>↻ ${esc(lim.resets)}</span>` : ''}${typeof lim.today === 'number' ? `<span class="td">Bugün +%${lim.today}</span>` : ''}</em>` : ''}</div></div>` : `<div class="cnone"><b>Kullanım verisi yok</b><small>Claude Code açıkken güncellenir</small></div>`}
-      ${sess.length ? `<button class="slink" data-act="sessions" type="button"><span class="sdot${busy ? ' b' : ''}"></span><span>${sess.length} oturum</span>${busy ? `<small>${busy} aktif</small>` : ''}<span class="sp"></span>${CHEV}</button>` : ''}
+      ${wh(W_ICON.spark, 'Claude', parts.claude.plan)}
+      ${parts.claude.body}
+      ${parts.claude.sess}
       </section>`);
   }
-  if (row1.length) out.push(`<div class="wrow${row1.length === 1 ? ' one' : ''}">${row1.join('')}</div>`);
+  // Top row layout (owner picks one): side = two cards, stack = VPN strip + wide Claude,
+  // one = both in one card, line = a frameless VPN line under the header + wide Claude.
+  const TOP = d.topLayout || window.NB_TOP || 'side';
+  const PV = parts.vpn, PC = parts.claude;
+  const vStrip = PV ? `<div class="vstrip ${PV.tone}"><span class="vic">${ICONS.shield}</span><div class="vst"><div class="vt">${PV.title}</div><div class="vh">${PV.meta}</div></div>${PV.chip}${PV.refresh}${PV.action.replace('class="vbtn', 'class="vbtn sm')}</div>` : '';
+  const cWide = PC ? `<div class="cwide"><div class="cwh">${wh(W_ICON.spark, 'Claude', PC.plan)}</div><div class="cwb">${PC.body}${PC.sess ? `<div class="cws">${PC.sess}</div>` : ''}</div></div>` : '';
+  if (TOP === 'stack') {
+    if (PV) out.push(`<section class="w vpn ${PV.tone} slim">${vStrip}</section>`);
+    if (PC) out.push(`<section class="w claude wide">${cWide}</section>`);
+  } else if (TOP === 'one') {
+    if (PV || PC) out.push(`<section class="w status${PV ? ' ' + PV.tone : ''}">${vStrip}${PV && PC ? '<hr>' : ''}${cWide}</section>`);
+  } else if (TOP === 'line') {
+    if (PV) out.push(`<div class="vline3 ${PV.tone}"><i></i><b>${PV.title}</b><span>${esc(PV.label)}</span><span class="vh">${PV.meta}</span><span class="sp"></span>${PV.refresh}${PV.action.replace('class="vbtn', 'class="vlink')}</div>`);
+    if (PC) out.push(`<section class="w claude wide">${cWide}</section>`);
+  } else if (row1.length) out.push(`<div class="wrow${row1.length === 1 ? ' one' : ''}">${row1.join('')}</div>`);
 
 
   // ---- dev servers that are listening right now (status.lua → fetchPorts); the header folds the list
