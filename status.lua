@@ -609,10 +609,18 @@ function M.start(help)
   -- git log over ~100 repos is the heaviest thing here: refresh on demand (popover / Repostia open)
   -- and only every 15 minutes in the background.
   M.statsTimer = hs.timer.doEvery(900, function() M.fetchDevStats(true) end)
-  -- Claude Code rewrites ~/.claude.json whenever it refreshes usage: follow it right away.
-  M.claudeWatch = hs.pathwatcher.new(HOME .. "/.claude.json", function()
+  -- Follow Claude usage right away instead of waiting for the next tick: older Claude Code rewrites
+  -- ~/.claude.json, newer ones go through statusline.sh → ~/.claude/cache/rate-limits.json.
+  local function claudeChanged()
     if M.claudeTimer then M.claudeTimer:stop() end
     M.claudeTimer = hs.timer.doAfter(0.5, function() render() end)
+  end
+  M.claudeWatch = hs.pathwatcher.new(HOME .. "/.claude.json", claudeChanged):start()
+  -- statusline.sh replaces the file with mv, so watch the directory and filter by name.
+  M.rateLimitWatch = hs.pathwatcher.new(HOME .. "/.claude/cache", function(paths)
+    for _, p in ipairs(paths) do
+      if p:match("/rate%-limits%.json$") then return claudeChanged() end
+    end
   end):start()
   M.fetchDevStats(true)
   M.fetchMeetings()
