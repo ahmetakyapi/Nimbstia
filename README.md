@@ -114,7 +114,7 @@ Every repository in `~/Projects` with branch, changes, ahead/behind and recent c
 | <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>P</kbd> | Repostia | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>Cmd</kbd> <kbd>←</kbd> <kbd>→</kbd> | Move to the other display |
 | <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>O</kbd> | Lexstia | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>K</kbd> | Keep awake |
 | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>T</kbd> | Twistia | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>M</kbd> | Microphone mute |
-| <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>S</kbd> | Snipstia | <kbd>Ctrl</kbd> <kbd>Cmd</kbd> <kbd>L</kbd> | Lock screen |
+| <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>S</kbd> | Snipstia | <kbd>Cmd</kbd> <kbd>L</kbd> / <kbd>Ctrl</kbd> <kbd>Cmd</kbd> <kbd>L</kbd> | Lock screen |
 
 ## Install
 

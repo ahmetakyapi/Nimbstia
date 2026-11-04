@@ -44,10 +44,10 @@ end
 
 hs.hotkey.bind({ "cmd" }, "q", onPress, onRelease)
 
--- ⌃⌘L: ekranı kilitle, şifre ekranı gelsin (Windows'taki Win+L gibi).
-hs.hotkey.bind({ "ctrl", "cmd" }, "l", function()
-  hs.caffeinate.lockScreen()
-end)
+-- ⌘L / ⌃⌘L: ekranı kilitle, şifre ekranı gelsin (Windows'taki Win+L gibi).
+-- ⌘L is taken globally, so apps no longer receive it (e.g. the browser address bar shortcut).
+hs.hotkey.bind({ "cmd" }, "l", hs.caffeinate.lockScreen)
+hs.hotkey.bind({ "ctrl", "cmd" }, "l", hs.caffeinate.lockScreen)
 
 
 
@@ -187,7 +187,7 @@ local HELP = {
   { keys = "⌃⌥⌘← / →", label = "Diğer Ekrana Taşı" },
   { keys = "⌃⌥K", label = "Pulstia · Mac'i Uyanık Tut" },
   { keys = "⌃⌥M", label = "Pulstia · Mikrofonu Kapat / Aç" },
-  { keys = "⌃⌘L", label = "Ekranı Kilitle" },
+  { keys = "⌘L / ⌃⌘L", label = "Ekranı Kilitle" },
   { keys = "⌘Q", label = "@ Yazar (Basılı Tut: Uygulamayı Kapatır)" },
 }
 for _, h in ipairs(Tools and Tools.HELP or {}) do table.insert(HELP, h) end

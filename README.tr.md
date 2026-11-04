@@ -108,7 +108,7 @@ Tek tuşla çok uygulamalı düzenler, "son iki pencere yan yana", ayarlanabilir
 | <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>P</kbd> | Repostia | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>Cmd</kbd> <kbd>←</kbd> <kbd>→</kbd> | Diğer ekrana taşı |
 | <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>O</kbd> | Lexstia | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>K</kbd> | Uyanık tut |
 | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>T</kbd> | Twistia | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>M</kbd> | Mikrofonu kapat |
-| <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>S</kbd> | Snipstia | <kbd>Ctrl</kbd> <kbd>Cmd</kbd> <kbd>L</kbd> | Ekranı kilitle |
+| <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>S</kbd> | Snipstia | <kbd>Cmd</kbd> <kbd>L</kbd> / <kbd>Ctrl</kbd> <kbd>Cmd</kbd> <kbd>L</kbd> | Ekranı kilitle |
 
 ## Kurulum
 
