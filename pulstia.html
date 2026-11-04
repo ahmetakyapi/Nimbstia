@@ -252,23 +252,6 @@ button.ss:hover .go{color:var(--text);transform:translate(2px,-2px)}
 :root[data-theme="dark"] .w{box-shadow:0 0 0 1px var(--line),inset 0 1px 0 rgba(255,255,255,.06),0 12px 30px -14px rgba(0,0,0,.6)}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .w{box-shadow:0 0 0 1px var(--line),inset 0 1px 0 rgba(255,255,255,.06),0 12px 30px -14px rgba(0,0,0,.6)}}
 .w > *{position:relative;z-index:1}
-/* Claude rings */
-.ring2{display:flex;align-items:center;gap:12px;margin-top:2px}
-.rgw{position:relative;flex:none;width:72px;height:72px}
-.rg{width:72px;height:72px;transform:rotate(-90deg)}
-.rg circle{fill:none;stroke-width:10;stroke-linecap:round}
-.rg .t1{stroke:color-mix(in srgb,#d9623f 14%,transparent)} .rg .t2{stroke:color-mix(in srgb,#ef9a1a 14%,transparent)}
-.rg .v1{stroke:url(#r1);animation:dash 1s var(--ease-out) both .1s} .rg .v2{stroke:url(#r2);animation:dash 1s var(--ease-out) both .22s}
-.rv{position:absolute;inset:0;display:grid;place-items:center;color:#d9623f}
-.rv svg{width:20px;height:20px}
-.rv small{font-size:11px;font-weight:650;color:var(--faint);margin-left:1px;letter-spacing:0}
-.rv.warn b{color:var(--warn)} .rv.bad b{color:var(--danger)}
-.lg{display:flex;flex-direction:column;gap:9px;min-width:0;flex:1}
-.lg div{display:grid;grid-template-columns:8px 1fr;column-gap:7px;row-gap:1px;align-items:center}
-.lg i{width:8px;height:8px;border-radius:50%}
-.lg i.c1{background:linear-gradient(145deg,#f7b195,#d9623f)} .lg i.c2{background:linear-gradient(145deg,#fcd581,#ef9a1a)}
-.lg span{font-size:11.5px;font-weight:550;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.lg b{grid-column:2;font:700 15px/1.1 var(--font-display);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .w.claude .rs{margin-top:10px}
 /* glassier app tiles */
 .ti .ico{background:linear-gradient(180deg,color-mix(in srgb,var(--k) 7%,#fff),color-mix(in srgb,var(--k) 17%,#fff));box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 0 0 1px color-mix(in srgb,var(--k) 20%,transparent),0 5px 12px -6px color-mix(in srgb,var(--k) 55%,transparent)}
@@ -310,8 +293,6 @@ button.ss:hover .go{color:var(--text);transform:translate(2px,-2px)}
 @keyframes roll-in-dn{from{transform:translateY(-100%);opacity:0}}
 /* press feedback on every hub control */
 .ib:active,.fb:active,.vbtn:active,.slink:active,.pp:active{transform:scale(.97)}
-.lg .lrs{font-style:normal;font-size:11px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.lg{gap:7px!important}
 .cnone{display:flex;flex-direction:column;gap:4px;padding:6px 0 2px}
 .cnone b{font-size:13.5px;font-weight:600}
 .cnone small{font-size:12px;color:var(--faint)}
@@ -329,17 +310,7 @@ button.ss:hover .go{color:var(--text);transform:translate(2px,-2px)}
 .vmeta .vh{flex:1;margin:0}
 .vmeta .ib{margin-right:-6px}
 .vbtn{height:32px!important;margin-top:10px!important}
-.rgw,.rg{width:60px!important;height:60px!important}
-.rg circle{stroke-width:11}
-.rv svg{width:16px;height:16px}
-.ring2{gap:12px!important}
-.lg b{display:flex;align-items:baseline;gap:6px}
-.lg .td{font-style:normal;font-size:10.5px;font-weight:650;letter-spacing:0;color:var(--accent-ink);background:var(--accent-soft);padding:2px 6px;border-radius:999px;white-space:nowrap}
 .w.claude .slink{margin-top:8px!important}
-.lg div{grid-template-columns:8px minmax(0,1fr) auto!important;column-gap:7px!important}
-.lg b{grid-column:auto!important;font-size:14.5px!important}
-.lg .lrs{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}
-.lg .lrs .td{font-size:10.5px;font-weight:650;color:var(--accent-ink);background:var(--accent-soft);padding:1px 6px;border-radius:999px}
 /* top-row variants */
 .vstrip{display:flex;align-items:center;gap:10px;min-width:0;--vc:var(--faint)}
 .vstrip.ok,.w.ok .vstrip{--vc:var(--ok-bar)} .vstrip.warn{--vc:var(--warn-bar)} .vstrip.bad{--vc:var(--bad-bar)}
@@ -351,10 +322,6 @@ button.ss:hover .go{color:var(--text);transform:translate(2px,-2px)}
 .w.slim{padding:10px 12px}
 .cwide .cwh .wh{margin-bottom:8px}
 .cwb{display:flex;align-items:center;gap:14px}
-.cwb .ring2{flex:1;min-width:0}
-.cwb .lg{flex-direction:row!important;flex-wrap:wrap;gap:6px 18px!important;align-items:center}
-.cwb .lg > div{min-width:96px}
-.cwb .lg .lrs{flex-basis:100%}
 .cws{flex:none}
 .cws .slink{margin:0!important;padding:8px 10px;border-radius:12px;background:var(--chip);flex-direction:row}
 .w.status{padding:12px 14px;display:flex;flex-direction:column;gap:10px}
@@ -521,23 +488,16 @@ function renderMain() {
     const p = lim && typeof lim.percent === 'number' ? Math.max(0, Math.min(100, Math.round(lim.percent))) : null;
     const tone = p == null ? '' : limTone(p);
     const busy = sess.filter(x => x.busy).length;
-    // Activity-style concentric rings: outer = first limit (weekly), inner = second (session).
     const short = l => String(l.label || '').replace(/ Limiti?$/, '');
     const pct = l => l && typeof l.percent === 'number' ? Math.max(0, Math.min(100, Math.round(l.percent))) : null;
-    const p2 = pct(lims[1]);
-    const arc = (r, v) => { const C = 2 * Math.PI * r; return `${(C * Math.max(v || 0, .5) / 100).toFixed(1)} ${C.toFixed(1)}`; };
-    const rings = `<svg class="rg" viewBox="0 0 88 88"><defs><linearGradient id="r1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7b195"/><stop offset="1" stop-color="#d9623f"/></linearGradient><linearGradient id="r2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fcd581"/><stop offset="1" stop-color="#ef9a1a"/></linearGradient></defs>
-      <circle class="t1" cx="44" cy="44" r="38"/><circle class="v1" cx="44" cy="44" r="38" stroke-dasharray="${arc(38, p)}"/>
-      ${p2 != null ? `<circle class="t2" cx="44" cy="44" r="27"/><circle class="v2" cx="44" cy="44" r="27" stroke-dasharray="${arc(27, p2)}"/>` : ''}</svg>`;
     const fmtP = v => v == null ? '–' : (pctAfter() ? v + '%' : '%' + v);
     // Bar view: one thick meter per limit; today's share drawn as a lighter tail at the end.
     const barRow = (l, k) => { const v = pct(l); const t = typeof l.today === 'number' ? Math.min(v, Math.max(0, Math.round(l.today))) : 0;
       return `<div class="cbr"><div class="cbt"><span>${esc(short(l))}</span><b data-roll="b${k}">${fmtP(v)}</b></div><div class="cbm b${k}"><i style="width:${Math.max(2, v - t)}%"></i>${t ? `<i class="tday" style="width:${t}%"></i>` : ''}</div></div>`; };
     const barBody = lim ? `<div class="cbars">${barRow(lim, 1)}${lims[1] ? barRow(lims[1], 2) : ''}<div class="cbx">${lim.resets ? `<span>↻ ${esc(lim.resets)}</span>` : ''}${typeof lim.today === 'number' ? `<span class="td">Bugün +%${lim.today}</span>` : ''}</div></div>` : '';
-    const VIS = d.claudeVis || window.NB_CVIS || 'ring';
     parts.claude = {
       plan: c.plan ? `<span class="plan">${esc(c.plan)}</span>` : '',
-      body: lim && VIS === 'bar' ? barBody : lim ? `<div class="ring2"><div class="rgw">${rings}<div class="rv">${W_ICON.spark}</div></div><div class="lg"><div><i class="c1"></i><span>${esc(short(lim))}</span><b data-roll="c1">${fmtP(p)}</b></div>${p2 != null ? `<div><i class="c2"></i><span>${esc(short(lims[1]))}</span><b data-roll="c2">${fmtP(p2)}</b></div>` : ''}${lim.resets || typeof lim.today === 'number' ? `<em class="lrs">${lim.resets ? `<span>↻ ${esc(lim.resets)}</span>` : ''}${typeof lim.today === 'number' ? `<span class="td">Bugün +%${lim.today}</span>` : ''}</em>` : ''}</div></div>` : `<div class="cnone"><b>Kullanım verisi yok</b><small>Claude Code açıkken güncellenir</small></div>`,
+      body: lim ? barBody : `<div class="cnone"><b>Kullanım verisi yok</b><small>Claude Code açıkken güncellenir</small></div>`,
       sess: sess.length ? `<button class="slink" data-act="sessions" type="button"><span class="sdot${busy ? ' b' : ''}"></span><span>${sess.length} oturum</span>${busy ? `<small>${busy} aktif</small>` : ''}<span class="sp"></span>${CHEV}</button>` : '',
     };
     row1.push(`<section class="w claude">

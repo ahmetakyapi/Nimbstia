@@ -43,7 +43,7 @@ Menü çubuğundaki işarete tıkla. Günün her şeyi tek bir panoda: VPN ve ge
 </p>
 
 - **Bağlantı** — sunucuna her 30 sn'de ve uyanma ya da ağ değişikliğinden hemen sonra VPN + TCP denetimi; her şey yolundaysa gecikmeyle birlikte canlı yeşil bir etiket.
-- **Claude kullanımı** — haftalık ve oturum limitleri halka grafikle, sıfırlanma zamanı ve açık oturumlar (oturumu claude.ai'de açar); Claude Code'un yerelde tuttuğu dosyalardan okunur.
+- **Claude kullanımı** — haftalık ve oturum limitleri çubuk grafikle, sıfırlanma zamanı ve açık oturumlar (oturumu claude.ai'de açar); Claude Code'un yerelde tuttuğu dosyalardan okunur.
 - **Geliştirme sunucuları** — şu an dinleyen her yerel sunucu (`npm run dev`, Vite, Django, Ollama…) portu ve proje klasörüyle; tek tıkla tarayıcıda aç ya da durdur. Kodlama ajanlarının açık bıraktığı sunucular için birebir.
 - **Hızlı ayarlar** — Mac'i uyanık tut <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>K</kbd>, mikrofonu kapat <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>M</kbd>, macOS Takvim'den isteğe bağlı toplantı uyarısı ve macOS Koyu Görünüm.
 - **Sistem** — pil, bellek (dokununca onu kullanan uygulamalar) ve boş disk bir bakışta.

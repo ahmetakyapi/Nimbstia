@@ -50,7 +50,7 @@ Click the mark in the menu bar. Everything about your day sits in one popover: w
 </p>
 
 - **Connection** — VPN + TCP check to your host every 30 s and right after wake or a network change; a live green chip with the latency when all is well.
-- **Claude usage** — weekly and session limits as activity rings, reset time and open sessions (opens the session on claude.ai), read from the files Claude Code keeps locally.
+- **Claude usage** — weekly and session limits as bar meters, reset time and open sessions (opens the session on claude.ai), read from the files Claude Code keeps locally.
 - **Dev servers** — every local server that is listening right now (`npm run dev`, Vite, Django, Ollama…) with its port and project folder; open it in the browser or stop it in one click. Handy when coding agents leave servers running.
 - **Quick switches** — keep the Mac awake <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>K</kbd>, mute the microphone <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>M</kbd>, opt-in meeting alerts from macOS Calendar, and macOS Dark Mode.
 - **System** — battery, memory (tap for the apps using it) and free disk at a glance.
