@@ -32,7 +32,7 @@ const PANELS = {
   clipboard: { w: 1060, h: 660, run: `Clip.setItems(${JSON.stringify(D.CLIP)});Clip.open();` },
   projects: { w: 1060, h: 660, run: `Projects.setGitHub(${JSON.stringify(D.GH)});Projects.setItems(${JSON.stringify(D.PROJECTS)});Projects.log('/Users/demo/Projects/Nimbstia','4f2c9e1',${JSON.stringify(D.LOG)});Projects.open();` },
   layouts: { w: 980, h: 680, run: `Layouts.setData(${JSON.stringify(D.LAYOUTS)});Layouts.open();` },
-  pulstia: { w: 470, h: 1000, file: 'popover', run: `Pulse.set(${JSON.stringify(D.POP)});Pulse.open();`, fit: true },
+  pulstia: { w: 500, h: 1000, file: 'popover', run: `Pulse.set(${JSON.stringify(D.POP)});Pulse.open();`, fit: true },
   shot: { w: 1440, h: 900, file: 'screenshot', desktop: true, clip: { x: 205, y: 68, width: 1060, height: 740 },
     run: `Shot.begin({w:1440,h:900,hint:false});Shot.setSrc(__desk);setTimeout(()=>Shot.test(${JSON.stringify(WIN)},{objs:${JSON.stringify(OBJS)}}),300);` },
 };

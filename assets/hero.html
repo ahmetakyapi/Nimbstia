@@ -31,7 +31,7 @@
   .eyebrow span { opacity: .55; font-weight: 500; }
   .eyebrow img { width: 32px; height: 32px; }
   h1 { margin: 28px 0 0; font: 750 78px/1.02 var(--font-display); letter-spacing: -.045em; }
-  h1 span { background: linear-gradient(90deg,#3d7bff,#8b5cf6 60%,#ec4899); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  h1 span { opacity: .38; }
   .keys { display: inline-flex; gap: 10px; margin-top: 30px; }
   .keys kbd { height: 34px; min-width: 34px; padding: 0 12px; font-size: 15px; border-radius: 9px; color: inherit; }
   .light .keys kbd { background: #fff; box-shadow: 0 0 0 1px rgba(12,12,16,.12), 0 2px 0 rgba(12,12,16,.14); }
@@ -47,8 +47,8 @@
 <div class="stage">
   <div class="grid"></div>
   <div class="copy">
-    <div class="eyebrow"><img src="logo.svg" alt="">Nimbstia <span>· a workbench for macOS</span></div>
-    <h1>Every move, one key.<br><span>Calm panels for the rest.</span></h1>
+    <div class="eyebrow"><img src="logo.svg" alt="">Nimbstia <span>· A Workbench for macOS</span></div>
+    <h1>Every Move, One Key.<br><span>Calm Panels for the Rest.</span></h1>
     <div class="keys"><kbd>⌃ V</kbd><kbd>⌃ .</kbd><kbd>⌃ Space</kbd><kbd>⌃ ⇧ P</kbd></div>
   </div>
   <canvas id="mid"></canvas>
@@ -61,7 +61,7 @@
   document.documentElement.className = theme;
   const LAYERS = [
     { id: 'mid', name: 'clipboard', winW: 1060, inset: 16 },
-    { id: 'front', name: 'popover', winW: 470, inset: 10 },
+    { id: 'front', name: 'popover', winW: 500, inset: 10 },
   ];
   const load = src => new Promise(res => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = src; });
   Promise.all(LAYERS.map(async L => {

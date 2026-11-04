@@ -124,8 +124,8 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .vago{margin-top:10px;font-size:11.5px;color:var(--faint)}
 
 /* tools: glossy app icons */
-.tw{display:grid;grid-template-columns:repeat(var(--n,5),1fr);gap:2px;margin:-4px -6px -6px}
-.ti{position:relative;display:flex;flex-direction:column;align-items:center;min-width:0;padding:6px 2px 14px;border-radius:14px;transition:background var(--dur-1)}
+.tw{display:grid;grid-template-columns:repeat(var(--n,5),1fr);gap:0;margin:-4px -6px -6px}
+.ti{position:relative;display:flex;flex-direction:column;align-items:center;min-width:0;padding:6px 0 14px;border-radius:14px;transition:background var(--dur-1)}
 .ti:hover{background:var(--hover)}
 .ti .ico{position:relative;width:48px;height:48px;border-radius:15px;display:grid;place-items:center;margin-bottom:8px;color:var(--k);
   background:linear-gradient(180deg,color-mix(in srgb,var(--k) 10%,var(--card)),color-mix(in srgb,var(--k) 16%,var(--card)));
@@ -136,7 +136,7 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .ti:hover .ico{transform:translateY(-2px) scale(1.03)}
 .ti:active .ico{transform:scale(.95)}
 .ti .nm{font-size:12.5px;font-weight:650;letter-spacing:-.01em;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ti .wt{font-size:11.5px;color:var(--faint);white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.ti .wt{font-size:11px;letter-spacing:-.01em;color:var(--faint);white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
 .ti .ky{margin-top:auto;position:relative;top:6px;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.04em;white-space:nowrap;padding:2px 7px;border-radius:6px;background:var(--chip)}
 
 /* quick toggles: Control Center */
@@ -237,7 +237,7 @@ button.ss:hover .go{color:var(--text);transform:translate(2px,-2px)}
 .pm{font-size:12.5px;font-weight:650;font-variant-numeric:tabular-nums;text-align:right}
 .pc2{font-size:11.5px;color:var(--faint);text-align:right;font-variant-numeric:tabular-nums}
 
-/* ---- premium pass: material, rings, ripple */
+/* ---- premium pass: material, rings */
 .app{background:radial-gradient(70% 45% at 0% 0%,color-mix(in srgb,#5b8cff 14%,transparent),transparent 70%),radial-gradient(60% 40% at 100% 0%,color-mix(in srgb,#f472b6 10%,transparent),transparent 70%),radial-gradient(80% 40% at 50% 100%,color-mix(in srgb,#a78bfa 9%,transparent),transparent 70%),var(--app-bg)}
 .app::before{display:none}
 .app::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background-image:var(--grain);background-size:160px;opacity:var(--grain-op);mix-blend-mode:overlay}
@@ -245,16 +245,6 @@ button.ss:hover .go{color:var(--text);transform:translate(2px,-2px)}
 :root[data-theme="dark"] .w{box-shadow:0 0 0 1px var(--line),inset 0 1px 0 rgba(255,255,255,.06),0 12px 30px -14px rgba(0,0,0,.6)}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .w{box-shadow:0 0 0 1px var(--line),inset 0 1px 0 rgba(255,255,255,.06),0 12px 30px -14px rgba(0,0,0,.6)}}
 .w > *{position:relative;z-index:1}
-/* connection ripple: a quiet radar that says "live" */
-.w.vpn .ripple{position:absolute;z-index:0;right:-44px;top:58px;width:140px;height:140px;pointer-events:none;opacity:.9}
-.ripple i{position:absolute;inset:0;border-radius:50%;border:1.5px solid color-mix(in srgb,var(--vc) 32%,transparent);background:radial-gradient(circle,color-mix(in srgb,var(--vc) 7%,transparent),transparent 70%)}
-.ripple i:nth-child(2){inset:20px;border-color:color-mix(in srgb,var(--vc) 40%,transparent)}
-.ripple i:nth-child(3){inset:40px;border-color:color-mix(in srgb,var(--vc) 50%,transparent);background:color-mix(in srgb,var(--vc) 10%,transparent)}
-.ripple b{position:absolute;inset:40px;padding-right:0;display:grid;place-items:center;color:var(--vc)}
-.ripple b svg{width:24px;height:24px}
-.w.vpn.ok .ripple i{animation:radar 3.6s var(--ease-out) infinite}
-.w.vpn.ok .ripple i:nth-child(2){animation-delay:.25s}.w.vpn.ok .ripple i:nth-child(3){animation-delay:.5s}
-@keyframes radar{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.06);opacity:.55}}
 /* Claude rings */
 .ring2{display:flex;align-items:center;gap:12px;margin-top:2px}
 .rgw{position:relative;flex:none;width:88px;height:88px}
@@ -277,6 +267,19 @@ button.ss:hover .go{color:var(--text);transform:translate(2px,-2px)}
 .ti .ico{background:linear-gradient(180deg,color-mix(in srgb,var(--k) 7%,#fff),color-mix(in srgb,var(--k) 17%,#fff));box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 0 0 1px color-mix(in srgb,var(--k) 20%,transparent),0 5px 12px -6px color-mix(in srgb,var(--k) 55%,transparent)}
 :root[data-theme="dark"] .ti .ico{background:linear-gradient(180deg,color-mix(in srgb,var(--k) 22%,#2a2b30),color-mix(in srgb,var(--k) 12%,#26272c));box-shadow:inset 0 1px 0 rgba(255,255,255,.1),inset 0 0 0 1px color-mix(in srgb,var(--k) 30%,transparent),0 6px 14px -6px color-mix(in srgb,var(--k) 40%,transparent)}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .ti .ico{background:linear-gradient(180deg,color-mix(in srgb,var(--k) 22%,#2a2b30),color-mix(in srgb,var(--k) 12%,#26272c));box-shadow:inset 0 1px 0 rgba(255,255,255,.1),inset 0 0 0 1px color-mix(in srgb,var(--k) 30%,transparent),0 6px 14px -6px color-mix(in srgb,var(--k) 40%,transparent)}}
+/* foldable card header */
+.wfold{width:calc(100% + 12px);margin:-6px -6px 6px;padding:6px;border-radius:12px;text-align:left;transition:background var(--dur-1)}
+.wfold:hover{background:var(--hover)}
+.w.ports.folded .wfold{margin-bottom:-6px}
+.chev{display:grid;place-items:center;width:18px;height:18px;color:var(--faint);transition:transform var(--dur-2) var(--ease-out)}
+.chev svg{width:12px;height:12px}
+.chev.open{transform:rotate(90deg)}
+/* restraint: neutral shadows only, no coloured glows */
+.ti .ico{box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 0 0 1px color-mix(in srgb,var(--k) 18%,transparent),0 1px 2px rgba(20,24,40,.08)!important}
+.ti:hover .ico{box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 0 0 1px color-mix(in srgb,var(--k) 28%,transparent),0 4px 10px -4px rgba(20,24,40,.18)!important}
+:root[data-theme="dark"] .ti .ico{box-shadow:inset 0 1px 0 rgba(255,255,255,.08),inset 0 0 0 1px color-mix(in srgb,var(--k) 26%,transparent)!important}
+.rt.on .rc{box-shadow:0 1px 2px rgba(20,24,40,.15)}
+.mark{filter:none}
 </style>
 </head>
 <body>
@@ -402,7 +405,6 @@ function renderMain() {
         : `<button class="vbtn solid" data-act="vpn" data-v="connect" type="button">${power}Bağlan</button>`;
     const tip = 'Yeniden Kontrol Et' + (dev.checkedAgo ? ' · ' + dev.checkedAgo : '');
     row1.push(`<section class="w vpn ${tone}">
-      <span class="ripple" aria-hidden="true"><i></i><i></i><i></i><b>${ICONS.shield}</b></span>
       ${wh(ICONS.shield, 'Bağlantı', `<button class="ib" data-act="check" type="button" data-tip="${esc(tip)}" aria-label="Yeniden Kontrol Et">${ICONS.refresh}</button>`)}
       <div class="vt">${esc(dev.title || 'VPN Bağlantısı')}</div>${dev.host ? `<div class="vh">${esc(dev.host)}</div>` : ''}
       <div class="vs"><span class="vchip"><i></i>${esc(label)}${tone === 'ok' && ms != null ? `<em>${ms} ms</em>` : ''}</span></div>
@@ -435,6 +437,15 @@ function renderMain() {
   if (row1.length) out.push(`<div class="wrow${row1.length === 1 ? ' one' : ''}">${row1.join('')}</div>`);
 
 
+  // ---- dev servers that are listening right now (status.lua → fetchPorts); the header folds the list
+  const ports = Array.isArray(d.ports) ? d.ports : [];
+  if (ports.length) {
+    const folded = d.portsFolded === true;
+    const head = `<button class="wh wfold" data-act="fold" type="button" aria-expanded="${folded ? 'false' : 'true'}"><span class="wi">${ICONS.term}</span><b>Geliştirme Sunucuları</b><span class="sp"></span><span class="meta">${ports.length}</span><span class="chev${folded ? '' : ' open'}" aria-label="${folded ? 'Genişlet' : 'Daralt'}">${CHEV}</span></button>`;
+    out.push(`<section class="w ports${folded ? ' folded' : ''}">${head}${folded ? '' : `<div class="pl">` + ports.map(x =>
+      `<div class="pr"><span class="pd"></span><button class="pp" data-act="port" data-v="open" data-port="${x.port}" type="button" aria-label="localhost:${x.port}"><b>:${x.port}</b><small>${esc(x.cmd)}${x.folder ? ' · ' + esc(x.folder) : ''}</small></button><button class="ib sm" data-act="port" data-v="open" data-port="${x.port}" type="button" data-tip="Aç" aria-label="Aç">${W_ICON.ext}</button><button class="ib sm stop" data-act="port" data-v="stop" data-port="${x.port}" type="button" data-tip="Durdur" aria-label="Durdur">${W_ICON.stop}</button></div>`).join('') + `</div>`}</section>`);
+  }
+
   // ---- tools: app icons
   const tools = Array.isArray(d.tools) ? d.tools : [];
   if (tools.length) {
@@ -442,18 +453,11 @@ function renderMain() {
       `<button class="ti" data-act="tool" data-id="${esc(t.id)}" style="--k:${TOOL_COLOR[t.id] || '#64748b'}" aria-label="${esc(t.name + ' · ' + t.what)}"><span class="ico">${ICONS[TOOL_ICON[t.id]] || ICONS.clip}</span><span class="nm">${esc(t.name)}</span><span class="wt">${esc(t.what)}</span><span class="ky">${esc(Array.from(String(t.keys || '')).join(' ').replace('S p a c e', 'Space'))}</span></button>`).join('') + `</div></section>`);
   }
 
-  // ---- dev servers that are listening right now (status.lua → fetchPorts)
-  const ports = Array.isArray(d.ports) ? d.ports : [];
-  if (ports.length) {
-    out.push(`<section class="w ports">${wh(ICONS.term, 'Geliştirme Sunucuları', `<span class="meta">${ports.length}</span>`)}<div class="pl">` + ports.map(x =>
-      `<div class="pr"><span class="pd"></span><button class="pp" data-act="port" data-v="open" data-port="${x.port}" type="button" aria-label="localhost:${x.port}"><b>:${x.port}</b><small>${esc(x.cmd)}${x.folder ? ' · ' + esc(x.folder) : ''}</small></button><button class="ib sm" data-act="port" data-v="open" data-port="${x.port}" type="button" data-tip="Aç" aria-label="Aç">${W_ICON.ext}</button><button class="ib sm stop" data-act="port" data-v="stop" data-port="${x.port}" type="button" data-tip="Durdur" aria-label="Durdur">${W_ICON.stop}</button></div>`).join('') + `</div></section>`);
-  }
-
   // ---- quick toggles
   const tg = d.toggles || {};
   const rt = (id, label, icon, color, states) => `<button class="rt${tg[id] ? ' on' : ''}" role="switch" aria-checked="${tg[id] ? 'true' : 'false'}" data-act="toggle" data-id="${id}" style="--q:${color}"><span class="rc">${ICONS[icon]}</span><span><span class="rn">${label}</span><small>${(states || ['Açık', 'Kapalı'])[tg[id] ? 0 : 1]}</small></span></button>`;
   let q = `<section class="w quick"><div class="rw">` +
-    rt('awake', 'Uyanık Tut', 'cup', '#f59e0b') + rt('mic', 'Mikrofon', 'mic', '#f43f5e', ['Sessiz', 'Açık']) +
+    rt('awake', 'Her Zaman Uyanık', 'cup', '#f59e0b') + rt('mic', 'Mikrofon', 'mic', '#f43f5e', ['Sessiz', 'Açık']) +
     rt('meetings', 'Toplantılar', 'cal', '#8b5cf6') + rt('appearance', 'Koyu Görünüm', 'moonf', '#6366f1') + `</div>`;
   const meets = Array.isArray(d.meetings) ? d.meetings : [];
   if (tg.meetings && meets.length) {
@@ -562,6 +566,7 @@ document.addEventListener('click', e => {
     case 'url': if (el.dataset.url) post({ action: 'url', url: el.dataset.url }); break;
     case 'vpn': post({ action: 'vpn', v: el.dataset.v }); break;
     case 'port': post({ action: 'port', v: el.dataset.v, port: +el.dataset.port }); break;
+    case 'fold': data.portsFolded = !data.portsFolded; render(); post({ action: 'fold', v: data.portsFolded }); break;
     case 'tool': post({ action: 'tool', id: el.dataset.id }); break;
     case 'toggle': post({ action: 'toggle', id: el.dataset.id }); break;
     case 'theme': post({ action: 'theme', v: el.dataset.v }); break;

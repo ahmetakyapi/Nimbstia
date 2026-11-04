@@ -20,7 +20,7 @@ svg{display:block}
 .app.show{opacity:1;transform:none}
 
 /* header: a calm, large search field */
-header{display:flex;align-items:center;gap:12px;height:62px;padding:0 14px 0 22px;flex:none}
+header{display:flex;align-items:center;gap:12px;height:64px;padding:0 16px 0 20px;flex:none}
 header>svg{width:19px;height:19px;color:var(--faint);flex:none;transition:color var(--dur-2)}
 header:focus-within>svg{color:var(--text)}
 #q{flex:1;min-width:0;border:0;outline:0;background:transparent;font:450 19px/1.3 var(--font-display);letter-spacing:var(--track-title);color:var(--text);padding:3px 0;caret-color:var(--accent)}
@@ -39,11 +39,11 @@ header:focus-within>svg{color:var(--text)}
 #closeBtn:hover{color:#fff;background:#e5484d}
 
 /* filter bar: two pill segmented controls */
-.bar{display:flex;align-items:center;gap:10px 14px;padding:2px 18px 14px;border-bottom:1px solid var(--line);flex:none}
+.bar{display:flex;align-items:center;gap:8px 16px;padding:0 20px 16px;border-bottom:1px solid var(--line);flex:none}
 .seg{display:flex;gap:2px;flex-wrap:nowrap;padding:3px;border-radius:var(--r-pill);background:var(--chip);box-shadow:inset 0 0 0 1px var(--line);overflow:hidden}
 #kinds{flex:0 1 auto;min-width:0}
 .seg.time{flex:none;margin-left:auto}
-.f,.t{flex:none;display:flex;align-items:center;gap:7px;height:28px;padding:0 12px 0 10px;border-radius:var(--r-pill);font:500 12.5px/1 var(--font-ui);letter-spacing:-.005em;color:var(--muted);white-space:nowrap;
+.f,.t{flex:none;display:flex;align-items:center;gap:6px;height:28px;padding:0 12px 0 10px;border-radius:var(--r-pill);font:500 12.5px/1 var(--font-ui);letter-spacing:-.005em;color:var(--muted);white-space:nowrap;
   transition:background var(--dur-1),color var(--dur-1),box-shadow var(--dur-2) var(--ease-out)}
 .t{padding:0 12px}
 .f svg{width:15px;height:15px;flex:none;color:var(--faint);transition:color var(--dur-1)}
@@ -64,11 +64,11 @@ main{flex:1;display:grid;grid-template-columns:400px 1fr;min-height:0}
   background:linear-gradient(180deg,var(--pane) 70%,color-mix(in srgb,var(--pane) 0%,transparent))}
 .group::after{content:"";flex:1;height:1px;background:var(--line);order:1}
 .group span{order:2;min-width:20px;height:18px;padding:0 6px;display:grid;place-items:center;border-radius:var(--r-pill);background:var(--chip);color:var(--faint);font:600 11px/1 var(--font-ui);font-variant-numeric:tabular-nums}
-.row{position:relative;display:flex;align-items:center;gap:13px;padding:0 10px 0 12px;border-radius:var(--r-md);height:56px;transition:background var(--dur-1),box-shadow var(--dur-2) var(--ease-out)}
+.row{position:relative;display:flex;align-items:center;gap:12px;padding:0 12px 0 10px;border-radius:var(--r-md);height:56px;transition:background var(--dur-1),box-shadow var(--dur-2) var(--ease-out)}
 .row+.row{margin-top:1px}
 .row:hover{background:var(--hover)}
 .row.sel{background:color-mix(in srgb,var(--accent-soft) 70%,transparent);box-shadow:inset 0 0 0 1px var(--accent-line)}
-.row.sel::before{content:"";position:absolute;left:-1px;top:16px;bottom:16px;width:3px;border-radius:0 3px 3px 0;background:var(--accent);box-shadow:0 0 10px var(--accent-ring)}
+.row.sel::before{content:"";position:absolute;left:-1px;top:16px;bottom:16px;width:3px;border-radius:0 3px 3px 0;background:var(--accent)}
 .intro .row{animation:nb-rise .36s var(--ease-out) both;animation-delay:calc(min(var(--i,0),10) * 18ms)}
 /* kind tile: a soft gradient in the kind's colour, glyph in the full colour */
 :root{--t-top:19%;--t-bot:8%}
@@ -78,7 +78,7 @@ main{flex:1;display:grid;grid-template-columns:400px 1fr;min-height:0}
   background:linear-gradient(160deg,color-mix(in srgb,var(--k) var(--t-top),var(--card)) 0%,color-mix(in srgb,var(--k) var(--t-bot),var(--card)) 100%);
   color:color-mix(in srgb,var(--k) var(--glyph),#000);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--k) var(--tile-ring),transparent),inset 0 1px 0 rgba(255,255,255,.35)}
 .ico svg{width:17px;height:17px}
-.row.sel .ico{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--k) 42%,transparent),0 2px 6px -2px color-mix(in srgb,var(--k) 35%,transparent)}
+.row.sel .ico{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--k) 42%,transparent)}
 .meta{min-width:0;flex:1}
 .ti{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13.5px;font-weight:560;letter-spacing:-.008em;color:var(--text)}
 .su{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px;color:var(--faint);margin-top:2px;font-variant-numeric:tabular-nums}
@@ -113,9 +113,9 @@ mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
 #preview{display:flex;flex-direction:column;min-width:0;min-height:0;background:color-mix(in srgb,var(--pv-bg) 55%,transparent)}
 #preview:empty{display:grid;place-items:center}
 #preview:empty::before{content:"Seçili öğe yok";font:500 13px/1 var(--font-ui);color:var(--faint)}
-.pv-actions{display:flex;gap:6px;padding:14px 18px;border-bottom:1px solid var(--line);align-items:center;flex:none}
+.pv-actions{display:flex;gap:8px;padding:16px 20px;border-bottom:1px solid var(--line);align-items:center;flex:none}
 .pv-actions .sp{flex:1}
-.sec{display:flex;align-items:center;gap:10px;margin:28px 0 12px;font:600 12px/1 var(--font-ui);color:var(--muted)}
+.sec{display:flex;align-items:center;gap:12px;margin:32px 0 12px;font:600 12px/1 var(--font-ui);color:var(--muted)}
 .sec::after{content:"";flex:1;height:1px;background:var(--line)}
 .sec .idx{letter-spacing:.02em}
 
@@ -144,22 +144,21 @@ body{-webkit-font-smoothing:auto}
 :root[data-theme="dark"] body{-webkit-font-smoothing:antialiased}
 
 /* Repostia: pills collapse to icon + count as one unit when their labels no longer fit */
-.bar{padding-top:14px}
+.bar{padding-top:16px}
 .bar.compact .f .lb{display:none}
 .bar.compact .f{gap:5px;padding:0 9px}
 .sync{display:none;align-items:center;gap:7px;font:500 12px/1 var(--font-ui);color:var(--faint);white-space:nowrap}
 .sync.on{display:flex}
-.sync i{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);animation:pulse 1s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.1)}}
+.sync i{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
 .ico.k-main{--k:var(--k-link)}.ico.k-copy{--k:var(--k-code)}
 .dirty{min-width:20px;text-align:center;font:650 11.5px/20px var(--font-ui);color:var(--warn);background:var(--warn-soft);padding:0 7px;border-radius:var(--r-pill);font-variant-numeric:tabular-nums}
 .sy{font:550 11.5px/1 var(--font-ui);color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
-.pv-body{flex:1;min-height:0;overflow:auto;padding:24px 28px 24px}
+.pv-body{flex:1;min-height:0;overflow:auto;padding:24px}
 .intro .pv-body>*{animation:nb-rise .32s var(--ease-out) both}
 .pv-name{font:700 32px/1.1 var(--font-display);letter-spacing:var(--track-display);word-break:break-all;-webkit-user-select:text}
-.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
-.tag{display:inline-flex;align-items:center;gap:6px;font:550 12px/1 var(--font-ui);padding:0 10px;height:24px;border-radius:var(--r-pill);background:var(--chip);color:var(--muted)}
-.tag::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.9}
+.tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.tag{display:inline-flex;align-items:center;font:550 12px/1 var(--font-ui);padding:0 10px;height:24px;border-radius:var(--r-pill);background:var(--chip);color:var(--muted)}
 .tag.main{color:var(--accent-ink);background:var(--accent-soft)}
 .tag.copy{color:var(--ink-code);background:color-mix(in srgb,var(--k-code) 11%,transparent)}
 .tag.warn{color:var(--warn);background:var(--warn-soft)}
@@ -184,10 +183,9 @@ body{-webkit-font-smoothing:auto}
 
 /* "Bugün" strip: Shoji-style stats row */
 .today[hidden]{display:none}
-.today{position:relative;display:flex;align-items:stretch;gap:0;margin:0;padding:12px 18px 4px;border-top:1px solid var(--line);flex:none}
-.today .gl{display:flex;flex-direction:column;justify-content:center;gap:7px;padding:0 22px 0 4px;margin-right:6px;border-right:1px solid var(--line);min-width:150px}
-.today .gl .eyebrow{display:flex;align-items:center;gap:7px}
-.today .gl .eyebrow i{width:6px;height:6px;border-radius:50%;background:var(--ok-bar);box-shadow:0 0 0 3px color-mix(in srgb,var(--ok-bar) 18%,transparent)}
+.today{position:relative;display:flex;align-items:stretch;gap:0;margin:0;padding:12px 20px 0;border-top:1px solid var(--line);flex:none}
+.today .gl{display:flex;flex-direction:column;justify-content:center;gap:8px;padding:0 24px 0 0;margin-right:6px;border-right:1px solid var(--line);min-width:150px}
+.today .gl .eyebrow{display:flex;align-items:center;gap:8px}
 .today .gl b{font:650 14.5px/1.2 var(--font-display);letter-spacing:var(--track-title);color:var(--text)}
 .gs{position:relative;display:flex;flex-direction:column;justify-content:center;gap:8px;padding:6px 16px;border:0;border-radius:12px;background:none;
   font:500 12px/1 var(--font-ui);color:var(--faint);text-align:left}
@@ -205,7 +203,7 @@ button.gs.on b svg{transform:rotate(180deg)}
   transition:box-shadow var(--dur-1),background var(--dur-1)}
 .gb:hover,.gb.on{background:var(--hover);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--text) 20%,transparent)}
 .gb b{display:grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:var(--r-pill);font:650 11.5px/1 var(--font-ui);font-variant-numeric:tabular-nums;color:var(--muted);background:var(--chip)}
-.gb.hot b{color:var(--on-accent);background:var(--accent-fill);box-shadow:0 0 0 3px var(--accent-soft)}
+.gb.hot b{color:var(--on-accent);background:var(--accent-fill)}
 .gb svg{width:13px;height:13px;color:var(--faint);transition:transform var(--dur-2) var(--ease-out)}
 .gb.on svg{transform:rotate(180deg)}
 /* dropdown list */
@@ -331,7 +329,7 @@ const lastUsed = p => Math.max(p.opened || 0, activity(p));
 function isStale(p) { return isCopy(p) && p.dirty === 0 && nowS() - activity(p) > 7 * DAY && !(p.opened && nowS() - p.opened < 7 * DAY); }
 
 function rel(t) {
-  if (!t) return '—';
+  if (!t) return '–';
   const s = Math.max(0, nowS() - t);
   if (s < 60) return 'şimdi';
   if (s < 3600) return Math.floor(s / 60) + ' dk önce';
@@ -344,8 +342,8 @@ function rel(t) {
   return Math.floor(d / 365) + ' yıl önce';
 }
 function fullTime(t) {
-  if (!t) return '—';
-  return new Date(t * 1000).toLocaleString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  if (!t) return '–';
+  return new Date(t * 1000).toLocaleString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
 function groupOf(p) {
   if (p.pinned) return 'Sabitlenenler';
@@ -356,7 +354,7 @@ function groupOf(p) {
   if (diff < 7) return 'Bu Hafta';
   return 'Daha Eski';
 }
-const branchOf = p => p.branch || (p.sha ? `${p.sha} (detached)` : '—');
+const branchOf = p => p.branch || (p.sha ? `${p.sha} (detached)` : '–');
 
 // ---- filters / sorting / search -------------------------------------------
 const KINDS = [
@@ -433,9 +431,9 @@ function emptyHTML(toks) {
   const all = items.filter(p => !toks.length || score(p, toks)).length;
   if (!isDefault() && all) {
     const K = KINDS.find(x => x.key === kind);
-    return `<div class="empty"><div>${ICONS[K.icon]}<div>“${K.label}” filtresinde ${q ? 'eşleşen ' : ''}proje yok</div><div class="hint">Filtre kaldırılınca ${num(all)} proje var.</div><div class="btn" data-act="clear">${ICONS.x}Filtreyi Kaldır</div></div></div>`;
+    return `<div class="empty"><div>${ICONS[K.icon]}<div>“${K.label}” Filtresinde ${q ? 'Eşleşen ' : ''}Proje Yok</div><div class="hint">Filtre kaldırılınca ${num(all)} proje var.</div><div class="btn" data-act="clear">${ICONS.x}Filtreyi Kaldır</div></div></div>`;
   }
-  return `<div class="empty"><div>${ICONS.folder}<div>“${esc(q)}” için sonuç yok</div><div class="hint">Farklı bir kelime dene ya da Esc ile aramayı temizle.</div></div></div>`;
+  return `<div class="empty"><div>${ICONS.folder}<div>“${esc(q)}” için Sonuç Yok</div><div class="hint">Farklı bir kelime dene ya da Esc ile aramayı temizle.</div></div></div>`;
 }
 
 function subOf(p, toks) {
@@ -509,9 +507,9 @@ function renderPreview() {
   ];
   pvEl.innerHTML = `<div class="pv-actions">${acts}</div>` +
     `<div class="pv-body"><div class="pv-name">${esc(p.name)}</div><div class="tags">${tags.join('')}</div>` +
-    `<div class="sec"><span class="idx">01</span>Özet</div><dl class="pv-meta">${meta.map(([k, v, c]) => `<div><dt>${esc(k)}</dt><dd class="${c}">${esc(v)}</dd></div>`).join('')}</dl>` +
-    `<div class="sec"><span class="idx">02</span>Son Commit’ler</div><div class="commits">${commits}</div>` +
-    `<div class="sec"><span class="idx">03</span>Konum</div><div class="pv-path"><code>${esc(p.path)}</code><div class="cp" data-act="copy" title="Yolu Kopyala">${ICONS.copyi}</div></div></div>`;
+    `<div class="sec">Özet</div><dl class="pv-meta">${meta.map(([k, v, c]) => `<div><dt>${esc(k)}</dt><dd class="${c}">${esc(v)}</dd></div>`).join('')}</dl>` +
+    `<div class="sec">Son Commit’ler</div><div class="commits">${commits}</div>` +
+    `<div class="sec">Konum</div><div class="pv-path"><code>${esc(p.path)}</code><div class="cp" data-act="copy" title="Yolu Kopyala">${ICONS.copyi}</div></div></div>`;
   wantLog(p);
 }
 
@@ -648,7 +646,7 @@ function renderGitHub() {
     : `<span class="gs ${cls}"><b>${v}</b>${label}</span>`;
   const btn = (key, label, count) => count == null ? '' :
     `<button class="gb${ghOpen === key ? ' on' : ''}${key === 'review' && count > 0 ? ' hot' : ''}" data-gh="${key}" type="button">${label}<b>${n(count)}</b>${CHEV}</button>`;
-  let html = `<span class="gl"><span class="eyebrow"><i></i>Bugün${gh.org ? ' · ' + esc(gh.org) : ''}</span><b>Senin Hareketlerin</b></span>` +
+  let html = `<span class="gl"><span class="eyebrow">Bugün${gh.org ? ' · ' + esc(gh.org) : ''}</span><b>Senin Hareketlerin</b></span>` +
     stat('pr', gh.prsToday == null ? '–' : n(gh.prsToday), 'Açılan PR', gh.opened ? 'opened' : null) +
     stat('cm', n(gh.commits), 'Commit', 'commits') +
     stat('add', '+' + n(gh.added), 'Eklenen Satır') + stat('del', '−' + n(gh.deleted), 'Silinen Satır') +

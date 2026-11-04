@@ -41,7 +41,7 @@
   /* accent: focus, selection, links AND the primary action */
   --accent:#2563ff; --accent-fill:#2563ff; --accent-hover:#1d55f0; --accent-press:#1846d4; --accent-ink:#1d4fe0;
   --accent-soft:rgba(37,99,255,.085); --accent-line:rgba(37,99,255,.32); --accent-ring:rgba(37,99,255,.42); --on-accent:#ffffff;
-  --accent-grad:linear-gradient(180deg,#3d7bff 0%,#2563ff 100%); --accent-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 1px 2px rgba(37,99,255,.3),0 6px 14px -4px rgba(37,99,255,.45);
+  --accent-grad:linear-gradient(180deg,#3d7bff 0%,#2563ff 100%); --accent-shadow:0 1px 0 rgba(255,255,255,.22) inset,0 1px 2px rgba(20,24,40,.18),0 2px 6px -2px rgba(37,99,255,.28);
   --primary:var(--accent-grad); --on-primary:#ffffff; --primary-shadow:var(--accent-shadow);
 
   /* status */
@@ -81,7 +81,7 @@
   --ink:#3a3c45; --on-ink:#ffffff; --ink-hover:#454852; --ink-shadow:0 1px 0 rgba(255,255,255,.12) inset,0 6px 16px -4px rgba(0,0,0,.5);
   --accent:#5b9dff; --accent-fill:#2f6fec; --accent-hover:#3b7cf5; --accent-press:#255fd6; --accent-ink:#8bb8ff;
   --accent-soft:rgba(91,157,255,.14); --accent-line:rgba(91,157,255,.45); --accent-ring:rgba(91,157,255,.55); --on-accent:#ffffff;
-  --accent-grad:linear-gradient(180deg,#4a86ff 0%,#2f6fec 100%); --accent-shadow:0 1px 0 rgba(255,255,255,.2) inset,0 6px 16px -4px rgba(47,111,236,.55);
+  --accent-grad:linear-gradient(180deg,#4a86ff 0%,#2f6fec 100%); --accent-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 1px 2px rgba(0,0,0,.35),0 2px 8px -2px rgba(47,111,236,.3);
   --primary:var(--accent-grad); --on-primary:#ffffff; --primary-shadow:var(--accent-shadow);
   --ok:#4ade80; --danger:#ff7a8a; --warn:#fbbf24; --warn-soft:rgba(251,191,36,.14);
   --ok-bar:#34d399; --warn-bar:#fbbf24; --bad-bar:#fb7185;
@@ -107,7 +107,7 @@
   --ink:#3a3c45; --on-ink:#ffffff; --ink-hover:#454852; --ink-shadow:0 1px 0 rgba(255,255,255,.12) inset,0 6px 16px -4px rgba(0,0,0,.5);
   --accent:#5b9dff; --accent-fill:#2f6fec; --accent-hover:#3b7cf5; --accent-press:#255fd6; --accent-ink:#8bb8ff;
   --accent-soft:rgba(91,157,255,.14); --accent-line:rgba(91,157,255,.45); --accent-ring:rgba(91,157,255,.55); --on-accent:#ffffff;
-  --accent-grad:linear-gradient(180deg,#4a86ff 0%,#2f6fec 100%); --accent-shadow:0 1px 0 rgba(255,255,255,.2) inset,0 6px 16px -4px rgba(47,111,236,.55);
+  --accent-grad:linear-gradient(180deg,#4a86ff 0%,#2f6fec 100%); --accent-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 1px 2px rgba(0,0,0,.35),0 2px 8px -2px rgba(47,111,236,.3);
   --primary:var(--accent-grad); --on-primary:#ffffff; --primary-shadow:var(--accent-shadow);
   --ok:#4ade80; --danger:#ff7a8a; --warn:#fbbf24; --warn-soft:rgba(251,191,36,.14);
   --ok-bar:#34d399; --warn-bar:#fbbf24; --bad-bar:#fb7185;

@@ -59,14 +59,14 @@
 
     // Pastia (clipboard.html, clipboard.lua)
     'Pano geçmişinde ara…': 'Search clipboard history…',
-    'Çok Satırlı Metin': 'Multi-line Text', 'E-Posta': 'Email', 'Dosya Yolu': 'File Path', 'Sayı': 'Number',
+    'Çok Satırlı Metin': 'Multi-Line Text', 'E-Posta': 'Email', 'Dosya Yolu': 'File Path', 'Sayı': 'Number',
     'Kopyalanan Görsel': 'Copied Image', 'Her Zaman': 'Any Time', '7 Gün': '7 Days', '30 Gün': '30 Days',
     'Pano Geçmişi Boş': 'Clipboard History Is Empty', 'Bir şey kopyaladığında burada görünür.': 'Anything you copy shows up here.',
     'Tür': 'Type', 'Boyut': 'Size', 'Dosya': 'File', 'Uzunluk': 'Length', 'Kaynak': 'Source',
     'Çekildi': 'Captured', 'Güncellendi': 'Updated', 'Kopyalandı': 'Copied', 'Öğe': 'Items', 'Finder': 'Finder',
     'Bu metin düzenlemek için çok uzun': 'This text is too long to edit', 'Boş metin kaydedilmez': 'Empty text is not saved',
     'Öğe okunamadı': 'Could not read the item', 'Panoya kopyalandı': 'Copied to clipboard',
-    "Çöp Sepeti'ne taşındı": 'Moved to Trash', 'Seçili öğe yok': 'Nothing selected',
+    "Çöp Sepeti'ne taşındı": 'Moved to Trash', 'Silinemedi': 'Could not delete', 'Seçili öğe yok': 'Nothing selected',
 
     // Repostia (projects.html, projects.lua)
     'Projelerde ara: ad, dal, son commit…': 'Search projects: name, branch, last commit…',
@@ -83,7 +83,7 @@
     'Hiç Açılmadı': 'Never Opened', 'Özet': 'Summary', 'Son Commit’ler': 'Recent Commits', "Son Commit'ler": 'Recent Commits',
     'Konum': 'Location', 'Proje': 'Projects', 'Yol kopyalandı': 'Path copied',
     "Bugün Açılan PR'lar": 'PRs Opened Today', "Bugünkü Commit'ler": "Today's Commits",
-    'Bugün PR açılmadı.': 'No PRs opened today.', 'Bugün commit yok.': 'No commits today.',
+    'Commit': 'Commits', 'Bugün PR açılmadı.': 'No PRs opened today.', 'Bugün commit yok.': 'No commits today.',
     'İnceleme Bekleyen': 'Awaiting Review', 'Bekleyen inceleme yok.': 'No reviews waiting.',
     "Açık PR'larım": 'My Open PRs', 'Açık PR yok.': 'No open PRs.', 'Açan:': 'By:', 'Taslak': 'Draft',
     'Senin Hareketlerin': 'Your Activity', 'Açılan PR': 'PRs Opened', 'Eklenen Satır': 'Lines Added',
@@ -92,7 +92,8 @@
 
     // Panestia (layouts.html, layouts.lua)
     'Düzen veya uygulama ara…': 'Search layouts or apps…', 'Diğerlerini Gizler': 'Hides Others', 'Özel Oran': 'Custom Ratio',
-    'Sol daralsın': 'Narrow the left side', 'Sol genişlesin': 'Widen the left side', 'Bu Pencere': 'This Window',
+    'Sol daralsın': 'Narrow Left Side', 'Sol genişlesin': 'Widen Left Side', 'Sol Daralsın': 'Narrow Left Side', 'Sol Genişlesin': 'Widen Left Side',
+    'Öndeki solda · önceki sağda': 'Front on the left · previous on the right', 'Bu Pencere': 'This Window',
     'Odakta Pencere Yok': 'No Focused Window', 'Eşleşen Düzen Yok': 'No Matching Layout', 'Uygula': 'Apply',
     'Hızlı Seç': 'Quick Pick', 'Oran': 'Ratio', 'Sıfırla': 'Reset',
     'İki Uygulama': 'Two Apps', 'Üç Uygulama': 'Three Apps', 'Odak': 'Focus',
@@ -112,7 +113,7 @@
     'Küçük': 'Small', 'Orta': 'Medium', 'Büyük': 'Large',
 
     // Pulstia hub (pulstia.html, status.lua, claude.lua)
-    'Günlük Durum Paneli': 'Daily Status Panel', 'Geliştirme Sunucuları': 'Dev Servers', 'Durdur': 'Stop',
+    'Günlük Durum Paneli': 'Daily Status Panel', 'Her Zaman Uyanık': 'Always Awake', 'Daralt': 'Collapse', 'Genişlet': 'Expand', 'Geliştirme Sunucuları': 'Dev Servers', 'Durdur': 'Stop',
     'Koyu Görünüm': 'Dark Mode', 'Açık Görünüm': 'Light Mode', 'Sıfırlanma': 'Resets', 'Son kontrol': 'Checked', 'Son Kontrol': 'Checked', 'Çevrimiçi': 'Online', 'Her Şey Yolunda': 'All Good',
     'Bağlantı Yok': 'No Connection', 'Dikkat': 'Attention', 'Bağlı': 'Connected', 'Bağlı Değil': 'Not Connected',
     'Yanıt Vermiyor': 'Not Responding', 'Kontrol Ediliyor…': 'Checking…', 'Bağlantıyı Kes': 'Disconnect',
@@ -204,11 +205,12 @@
     R('^' + NUM + ' tane daha$', function (m) { return m[1] + ' more'; }),
     R('^Filtreler kaldırılınca ' + NUM + ' öğe var\\.$', function (m) { return pl(m[1], 'item', 'items') + ' without filters.'; }),
     R('^Filtre kaldırılınca ' + NUM + ' proje var\\.$', function (m) { return pl(m[1], 'project', 'projects') + ' without the filter.'; }),
-    R('^((?:“[^”]*”(?: \\+ )?)+) filtresinde (eşleşen )?(öğe|proje) yok$', function (m) {
+    // Empty-state headings (Title Case); the old sentence-case wording is still matched.
+    R('^((?:“[^”]*”(?: \\+ )?)+) [Ff]iltresinde ([Ee]şleşen )?([Öö]ğe|[Pp]roje) [Yy]ok$', function (m) {
       var labels = m[1].replace(/“([^”]*)”/g, function (_, x) { return '“' + tr(x) + '”'; });
-      return 'No ' + (m[2] ? 'matching ' : '') + (m[3] === 'öğe' ? 'items' : 'projects') + ' in ' + labels;
+      return 'No ' + (m[2] ? 'Matching ' : '') + (/^[Öö]/.test(m[3]) ? 'Items' : 'Projects') + ' in ' + labels;
     }),
-    R('^“([\\s\\S]*)” için sonuç yok$', function (m) { return 'No results for “' + m[1] + '”'; }),
+    R('^“([\\s\\S]*)” için [Ss]onuç [Yy]ok$', function (m) { return 'No Results for “' + m[1] + '”'; }),
     R('^Odak: ([^·]+)$', function (m) { return 'Focus: ' + m[1]; }),
     R('^Öndeki ([^·]+) solda$', function (m) { return m[1] + ' (front) on the left'; }),
     R('^önceki ([^·]+) sağda$', function (m) { return m[1] + ' (previous) on the right'; }),

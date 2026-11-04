@@ -229,7 +229,7 @@ end
 -- ---------------------------------------------------------------- popover (pulstia.html)
 
 local Panel = require("panel")
-local POP_W = 470 -- 450 px card + 10 px transparent inset on each side for the shadow
+local POP_W = 500 -- 480 px card + 10 px transparent inset on each side for the shadow
 local pop
 
 local function ago(t)
@@ -257,7 +257,7 @@ end
 
 local TOOLS = {
   { id = "clip",   name = "Pastia",   what = "Pano",      keys = "⌃V",     ok = function() return Clip end,    run = function() Clip.toggle() end },
-  { id = "shot",   name = "Clipstia", what = "Ekran Al",   keys = "⌃.",     ok = function() return Shot end,    run = function() Shot.start() end, delay = 0.3 },
+  { id = "shot",   name = "Clipstia", what = "Ekran Görüntüsü", keys = "⌃.",     ok = function() return Shot end,    run = function() Shot.start() end, delay = 0.3 },
   { id = "layout", name = "Panestia", what = "Düzen", keys = "⌃Space", ok = function() return Layouts end, run = function() Layouts.toggle() end },
   { id = "repo",   name = "Repostia", what = "Projeler",          keys = "⌃⇧P",    ok = function() return Projects end, run = function() Projects.toggle() end },
   { id = "text",   name = "Lexstia",  what = "Metin Oku",    keys = "⌃⇧O",    ok = function() return Tools and Tools.ocr end, run = function() Tools.ocr() end, delay = 0.3 },
@@ -326,6 +326,7 @@ local function popoverData()
   local d = { errors = LOAD_ERRORS or {}, theme = Panel.theme(), shortcuts = M.help or {},
     toggles = { awake = hs.caffeinate.get("displayIdle") or false, mic = micMuted(), meetings = meetingsEnabled(),
       appearance = hs.host.interfaceStyle() == "Dark" } }
+  d.portsFolded = hs.settings.get("nimbstia.portsFolded") == true
   if state.ports and #state.ports > 0 then
     d.ports = {}
     for _, x in ipairs(state.ports) do table.insert(d.ports, { port = x.port, cmd = x.cmd, folder = x.folder }) end
@@ -543,6 +544,8 @@ local function onPopMessage(p, msg)
     M.vpn(msg.v == "connect")
   elseif a == "forti" then
     after(function() hs.application.launchOrFocusByBundleID("com.fortinet.FortiClient") end)
+  elseif a == "fold" then
+    hs.settings.set("nimbstia.portsFolded", msg.v == true)
   elseif a == "port" and tonumber(msg.port) then
     local port = tonumber(msg.port)
     local hit
