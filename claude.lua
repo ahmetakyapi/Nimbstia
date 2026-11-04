@@ -6,6 +6,9 @@ local M = {}
 local HOME = os.getenv("HOME")
 local STATE = HOME .. "/.claude.json"
 local SESSIONS = HOME .. "/.claude/sessions"
+-- Newer Claude Code no longer caches usage in ~/.claude.json; the status line receives it as
+-- `rate_limits` and ~/.claude/hooks/statusline.sh saves it here as { fetchedAt, rate_limits }.
+local RATE_LIMITS = HOME .. "/.claude/cache/rate-limits.json"
 
 local cache = { mtime = nil, data = nil }
 
@@ -48,19 +51,35 @@ end
 -- "used_percent"; 0-100). nil when the entry carries none.
 local function pct(t)
   if type(t) ~= "table" then return nil end
-  for _, k in ipairs({ "utilization", "percent", "used_percent", "usedPercent", "percentUsed" }) do
+  for _, k in ipairs({ "utilization", "percent", "used_percentage", "used_percent", "usedPercent", "percentUsed" }) do
     local v = tonumber(t[k])
     if v then return v end
   end
   return nil
 end
-local function resets(t) return type(t) == "table" and parseTime(t.resets_at or t.resetsAt) or nil end
+local function resets(t)
+  if type(t) ~= "table" then return nil end
+  local r = t.resets_at or t.resetsAt
+  if type(r) == "number" then return r > 1e11 and math.floor(r / 1000) or math.floor(r) end -- epoch s or ms
+  return parseTime(r)
+end
+
+local function readRateLimits()
+  if not hs.fs.attributes(RATE_LIMITS) then return nil end
+  local ok, d = pcall(hs.json.read, RATE_LIMITS)
+  if ok and type(d) == "table" and type(d.rate_limits) == "table" then return d end
+  return nil
+end
 
 -- { plan, fetchedAt, limits = { { label, percent, resetsAt, severity, weekly } } } or nil
 function M.usage()
   local d = readState()
   if not d then return nil end
   local u = d.cachedUsageUtilization or d.cachedUsage or d.usageUtilization
+  if type(u) ~= "table" then
+    local rl = readRateLimits()
+    if rl then u = { utilization = rl.rate_limits, fetchedAtMs = tonumber(rl.fetchedAt) and rl.fetchedAt * 1000 } end
+  end
   local acc = d.oauthAccount or {}
   local out = { plan = acc.planDisplayName, limits = {},
     fetchedAt = type(u) == "table" and tonumber(u.fetchedAtMs or u.fetched_at_ms) and math.floor(tonumber(u.fetchedAtMs or u.fetched_at_ms) / 1000) or nil }
@@ -112,7 +131,9 @@ function M.debug()
   table.sort(keys)
   local out = { "plan: " .. tostring((d.oauthAccount or {}).planDisplayName) }
   for _, k in ipairs(keys) do table.insert(out, k .. ": " .. shape(d[k], 0)) end
-  if #keys == 0 then table.insert(out, "kullanım alanı yok (Claude Code henüz yazmamış)") end
+  local rl = readRateLimits()
+  table.insert(out, "rate-limits.json: " .. (rl and shape(rl, 0) or "yok"))
+  if #keys == 0 and not rl then table.insert(out, "kullanım alanı yok (Claude Code henüz yazmamış)") end
   return table.concat(out, "\n")
 end
 
