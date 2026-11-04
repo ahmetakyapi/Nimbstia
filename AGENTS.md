@@ -96,6 +96,7 @@ Ask the user to try:
 | <kbd>Ctrl Space</kbd> switches the keyboard language | Turn off "Select the previous input source" in System Settings › Keyboard › Keyboard Shortcuts › Input Sources. |
 | Repostia is empty | Projects are scanned under `~/Projects`; clone repositories there. |
 | No PR numbers in the hub | Install and log in to the GitHub CLI: `brew install gh && gh auth login` (the user runs the login). |
+| Claude card says "Kullanım verisi yok" | Claude Code has not written usage to `~/.claude.json` yet, or in a new shape. `hs -c 'return require("claude").debug()'` prints only the field names (no values); share that output in an issue. |
 | Lightshot keeps opening | Nimbstia quits Lightshot on start; remove it from Login Items if it is still there. |
 
 ## Uninstall

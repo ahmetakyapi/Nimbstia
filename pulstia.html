@@ -29,11 +29,12 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .scroll.still > *{animation:none!important}
 
 /* ---------------------------------------------------------------- header */
-.head{display:flex;align-items:center;gap:11px;padding:16px 4px 2px 4px;flex:none}
-.mark{width:34px;height:34px;flex:none;filter:drop-shadow(0 3px 6px rgba(37,70,255,.28))}
-.ht{display:flex;flex-direction:column;gap:3px;min-width:0}
+.head{display:flex;align-items:center;gap:10px;padding:12px 4px 0 4px;flex:none}
+.mark{width:28px;height:28px;flex:none;filter:drop-shadow(0 3px 6px rgba(37,70,255,.28))}
+.ht{display:flex;align-items:baseline;gap:8px;min-width:0}
 .ht b{font:700 16px/1.05 var(--font-display);letter-spacing:-.02em}
-.ht small{font-size:12px;font-weight:500;color:var(--faint);white-space:nowrap}
+.ht small{font-size:12.5px;font-weight:500;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ht small::before{content:"·";margin-right:8px;opacity:.6}
 .head .sp{flex:1}
 .pill{display:inline-flex;align-items:center;gap:7px;height:28px;padding:0 12px 0 10px;border-radius:var(--r-pill);font-size:12px;font-weight:600;white-space:nowrap;color:var(--ok);background:color-mix(in srgb,var(--ok-bar) 13%,transparent)}
 .pill i{position:relative;width:7px;height:7px;border-radius:50%;background:var(--ok-bar)}
@@ -76,7 +77,13 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .w.vpn .ib svg{width:13px;height:13px}
 .w.vpn .ib[data-tip]:hover::after{right:-4px}
 .vt{font:560 17px/1.2 var(--font-display);letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.vh{margin-top:3px;font:450 11.5px/1 var(--font-mono);color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vtr{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0}
+.vtr .vt{min-width:0}
+.vtr .vchip{flex:none}
+.vh{display:flex;flex-wrap:wrap;gap:2px 0;margin-top:6px;font-size:12px;color:var(--faint);min-width:0}
+.vh span{white-space:nowrap}
+.vh span + span::before{content:"·";margin:0 6px;opacity:.6}
+.vh .mono{font:450 11.5px/1.45 var(--font-mono)}
 .vs{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px}
 .vchip{display:inline-flex;align-items:center;gap:7px;height:26px;padding:0 11px 0 9px;border-radius:var(--r-pill);font-size:12px;font-weight:650;color:color-mix(in srgb,var(--vc) 70%,var(--text));background:color-mix(in srgb,var(--vc) 13%,transparent)}
 .vchip em{font-style:normal;font-weight:550;opacity:.75;margin-left:2px;font-variant-numeric:tabular-nums}
@@ -247,8 +254,8 @@ button.ss:hover .go{color:var(--text);transform:translate(2px,-2px)}
 .w > *{position:relative;z-index:1}
 /* Claude rings */
 .ring2{display:flex;align-items:center;gap:12px;margin-top:2px}
-.rgw{position:relative;flex:none;width:88px;height:88px}
-.rg{width:88px;height:88px;transform:rotate(-90deg)}
+.rgw{position:relative;flex:none;width:72px;height:72px}
+.rg{width:72px;height:72px;transform:rotate(-90deg)}
 .rg circle{fill:none;stroke-width:10;stroke-linecap:round}
 .rg .t1{stroke:color-mix(in srgb,#d9623f 14%,transparent)} .rg .t2{stroke:color-mix(in srgb,#ef9a1a 14%,transparent)}
 .rg .v1{stroke:url(#r1);animation:dash 1s var(--ease-out) both .1s} .rg .v2{stroke:url(#r2);animation:dash 1s var(--ease-out) both .22s}
@@ -303,6 +310,12 @@ button.ss:hover .go{color:var(--text);transform:translate(2px,-2px)}
 @keyframes roll-in-dn{from{transform:translateY(-100%);opacity:0}}
 /* press feedback on every hub control */
 .ib:active,.fb:active,.vbtn:active,.slink:active,.pp:active{transform:scale(.97)}
+.lg .lrs{font-style:normal;font-size:11px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lg{gap:7px!important}
+.cnone{display:flex;flex-direction:column;gap:4px;padding:6px 0 2px}
+.cnone b{font-size:13.5px;font-weight:600}
+.cnone small{font-size:12px;color:var(--faint)}
+.vbtn{margin-top:12px}
 </style>
 </head>
 <body>
@@ -429,9 +442,8 @@ function renderMain() {
     const tip = 'Yeniden Kontrol Et' + (dev.checkedAgo ? ' · ' + dev.checkedAgo : '');
     row1.push(`<section class="w vpn ${tone}">
       ${wh(ICONS.shield, 'Bağlantı', `<button class="ib" data-act="check" type="button" data-tip="${esc(tip)}" aria-label="Yeniden Kontrol Et">${ICONS.refresh}</button>`)}
-      <div class="vt">${esc(dev.title || 'VPN Bağlantısı')}</div>${dev.host ? `<div class="vh">${esc(dev.host)}</div>` : ''}
-      <div class="vs"><span class="vchip"><i></i>${esc(label)}${tone === 'ok' && ms != null ? `<em>${ms} ms</em>` : ''}</span></div>
-      ${dev.checkedAgo ? `<div class="vago"><span>Son kontrol</span> <span>${esc(dev.checkedAgo)}</span></div>` : ''}
+      <div class="vtr"><div class="vt">${esc(dev.title || 'VPN Bağlantısı')}</div><span class="vchip"><i></i>${esc(label)}</span></div>
+      <div class="vh">${dev.host ? `<span class="mono">${esc(dev.host)}</span>` : ''}${tone === 'ok' && ms != null ? `<span>${ms} ms</span>` : ''}${dev.checkedAgo ? `<span>${esc(dev.checkedAgo)}</span>` : ''}</div>
       <span style="flex:1"></span>${action}</section>`);
   }
   if (d.claude) {
@@ -450,9 +462,8 @@ function renderMain() {
     const fmtP = v => v == null ? '–' : (pctAfter() ? v + '%' : '%' + v);
     row1.push(`<section class="w claude">
       ${wh(W_ICON.spark, 'Claude', c.plan ? `<span class="plan">${esc(c.plan)}</span>` : '')}
-      <div class="ring2"><div class="rgw">${rings}<div class="rv">${W_ICON.spark}</div></div>
-        <div class="lg"><div><i class="c1"></i><span>${esc(lim ? short(lim) : 'Kullanım')}</span><b data-roll="c1">${fmtP(p)}</b></div>${p2 != null ? `<div><i class="c2"></i><span>${esc(short(lims[1]))}</span><b data-roll="c2">${fmtP(p2)}</b></div>` : ''}</div></div>
-      ${lim && lim.resets ? `<div class="rs"><span>Sıfırlanma</span> <span>${esc(lim.resets)}</span></div>` : ''}
+      ${lim ? `<div class="ring2"><div class="rgw">${rings}<div class="rv">${W_ICON.spark}</div></div>
+        <div class="lg"><div><i class="c1"></i><span>${esc(lim ? short(lim) : 'Kullanım')}</span><b data-roll="c1">${fmtP(p)}</b></div>${p2 != null ? `<div><i class="c2"></i><span>${esc(short(lims[1]))}</span><b data-roll="c2">${fmtP(p2)}</b></div>` : ''}${lim.resets ? `<em class="lrs">↻ ${esc(lim.resets)}</em>` : ''}</div></div>` : `<div class="cnone"><b>Kullanım verisi yok</b><small>Claude Code açıkken güncellenir</small></div>`}
       ${lim && typeof lim.today === 'number' ? `<div class="today">Bugün +%${lim.today}</div>` : ''}
       ${sess.length ? `<button class="slink" data-act="sessions" type="button"><span class="sdot${busy ? ' b' : ''}"></span><span>${sess.length} oturum</span>${busy ? `<small>${busy} aktif</small>` : ''}<span class="sp"></span>${CHEV}</button>` : ''}
       </section>`);

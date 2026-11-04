@@ -44,30 +44,76 @@ local function readState()
   return d
 end
 
--- { plan, fetchedAt, limits = { { label, percent, resetsAt, severity } } } or nil
+-- A percentage from any of the shapes Claude Code has written so far ("utilization", "percent",
+-- "used_percent"; 0-100). nil when the entry carries none.
+local function pct(t)
+  if type(t) ~= "table" then return nil end
+  for _, k in ipairs({ "utilization", "percent", "used_percent", "usedPercent", "percentUsed" }) do
+    local v = tonumber(t[k])
+    if v then return v end
+  end
+  return nil
+end
+local function resets(t) return type(t) == "table" and parseTime(t.resets_at or t.resetsAt) or nil end
+
+-- { plan, fetchedAt, limits = { { label, percent, resetsAt, severity, weekly } } } or nil
 function M.usage()
   local d = readState()
   if not d then return nil end
-  local u = d.cachedUsageUtilization
+  local u = d.cachedUsageUtilization or d.cachedUsage or d.usageUtilization
   local acc = d.oauthAccount or {}
-  local out = { plan = acc.planDisplayName, limits = {}, fetchedAt = u and u.fetchedAtMs and math.floor(u.fetchedAtMs / 1000) }
-  local util = u and u.utilization or {}
-  local fh = util.five_hour
-  if type(fh) == "table" and fh.utilization then
-    table.insert(out.limits, { label = "5 Saatlik Limit", percent = fh.utilization, resetsAt = parseTime(fh.resets_at) })
-  end
-  for _, l in ipairs(util.limits or {}) do
-    if type(l) == "table" and l.percent and (l.is_active or l.percent > 0) then
-      local label = l.kind == "weekly_all" and "Haftalık Limit" or "Haftalık"
-      local model = l.scope and l.scope.model and l.scope.model.display_name
-      if l.kind ~= "weekly_all" and model then label = "Haftalık · " .. model end
-      table.insert(out.limits, { label = label, percent = l.percent, resetsAt = parseTime(l.resets_at), severity = l.severity, weekly = l.kind == "weekly_all" })
+  local out = { plan = acc.planDisplayName, limits = {},
+    fetchedAt = type(u) == "table" and tonumber(u.fetchedAtMs or u.fetched_at_ms) and math.floor(tonumber(u.fetchedAtMs or u.fetched_at_ms) / 1000) or nil }
+  local util = type(u) == "table" and (u.utilization or u) or {}
+  -- the rolling session window first, then the weekly limits
+  local fh = util.five_hour or util.fiveHour
+  if pct(fh) then table.insert(out.limits, { label = "Oturum Limiti", percent = pct(fh), resetsAt = resets(fh) }) end
+  local weeklySeen = false
+  for _, l in ipairs(type(util.limits) == "table" and util.limits or {}) do
+    local p = pct(l)
+    if p and (l.is_active ~= false or p > 0) then
+      local all = l.kind == nil or l.kind == "weekly_all" or l.kind == "seven_day"
+      local model = type(l.scope) == "table" and type(l.scope.model) == "table" and l.scope.model.display_name
+      local label = all and "Haftalık Limit" or (model and ("Haftalık · " .. model) or "Haftalık")
+      table.insert(out.limits, { label = label, percent = p, resetsAt = resets(l), severity = l.severity, weekly = all })
+      weeklySeen = weeklySeen or all
     end
   end
-  if #out.limits == 0 and type(util.seven_day) == "table" and util.seven_day.utilization then
-    table.insert(out.limits, { label = "Haftalık Limit", percent = util.seven_day.utilization, resetsAt = parseTime(util.seven_day.resets_at) })
+  if not weeklySeen and pct(util.seven_day or util.sevenDay) then
+    local sd = util.seven_day or util.sevenDay
+    table.insert(out.limits, { label = "Haftalık Limit", percent = pct(sd), resetsAt = resets(sd), weekly = true })
   end
+  for key, name in pairs({ seven_day_opus = "Opus", seven_day_sonnet = "Sonnet" }) do
+    if pct(util[key]) then table.insert(out.limits, { label = "Haftalık · " .. name, percent = pct(util[key]), resetsAt = resets(util[key]) }) end
+  end
+  -- Weekly first in the hub (outer ring), the session window second (inner ring).
+  table.sort(out.limits, function(x, y)
+    local rx, ry = x.weekly and 0 or (x.label == "Oturum Limiti" and 1 or 2), y.weekly and 0 or (y.label == "Oturum Limiti" and 1 or 2)
+    return rx < ry
+  end)
   return out
+end
+
+-- Shape of the usage block, for bug reports: key names and value types only, never values.
+--   hs -c 'return require("claude").debug()'
+function M.debug()
+  local d = readState()
+  if not d then return "~/.claude.json okunamadı" end
+  local function shape(t, depth)
+    if type(t) ~= "table" then return type(t) end
+    if depth > 3 then return "{…}" end
+    local parts = {}
+    for k, v in pairs(t) do table.insert(parts, tostring(k) .. "=" .. shape(v, depth + 1)) end
+    table.sort(parts)
+    return "{" .. table.concat(parts, ", ") .. "}"
+  end
+  local keys = {}
+  for k in pairs(d) do if tostring(k):lower():match("usage") or tostring(k):lower():match("limit") then table.insert(keys, k) end end
+  table.sort(keys)
+  local out = { "plan: " .. tostring((d.oauthAccount or {}).planDisplayName) }
+  for _, k in ipairs(keys) do table.insert(out, k .. ": " .. shape(d[k], 0)) end
+  if #keys == 0 then table.insert(out, "kullanım alanı yok (Claude Code henüz yazmamış)") end
+  return table.concat(out, "\n")
 end
 
 -- ---------------------------------------------------------------- today's share of the weekly limit
