@@ -70,6 +70,9 @@
 
     // Repostia (projects.html, projects.lua)
     'Projelerde ara: ad, dal, son commit…': 'Search projects: name, branch, last commit…',
+    'Commit’lenmemiş Değişiklikler': 'Uncommitted Changes', 'Değişen Dosya': 'Changed Files', 'Yeni Dosya': 'New Files',
+    'Hesaplanıyor…': 'Calculating…', 'Değişiklik yok': 'No changes',
+    'Satır farkı yok (yalnız izin/mod değişikliği olabilir).': 'No line changes (maybe only mode changes).',
     'Yenileniyor…': 'Refreshing…', 'Tüm Projeler': 'All Projects', 'Değişiklik Var': 'Has Changes',
     'Ana Kopyalar': 'Main Clones', 'PR/Çalışma Kopyaları': 'PR/Work Copies', 'Son Kullanılan': 'Last Used',
     'Projeler Taranıyor…': 'Scanning Projects…', 'Proje Bulunamadı': 'No Projects Found',
