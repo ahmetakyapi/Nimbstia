@@ -28,12 +28,12 @@
   /* radii */
   --r-xs:6px; --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:22px; --r-pill:999px;
 
-  /* surfaces (light): cool, bright, white cards */
-  --bg:#f4f5f8; --bg2:#eceef3; --top:#fafbfc; --pane:#ffffff; --ctl:#ffffff; --card:#ffffff;
-  --group-bg:#f7f8fa; --pv-bg:#f2f3f7; --pv-card:#ffffff;
-  --line:rgba(20,24,40,.08); --line2:rgba(20,24,40,.14);
-  --text:#111320; --muted:#4b5065; --faint:#6b7085;
-  --hover:rgba(20,24,40,.045); --chip:rgba(20,24,40,.055); --seg-on:#ffffff; --mark:rgba(255,200,0,.42);
+  /* surfaces (light): warm paper neutrals (bencho-like ink scale), white cards */
+  --bg:#f6f6f5; --bg2:#efefed; --top:#fbfbfa; --pane:#ffffff; --ctl:#ffffff; --card:#ffffff;
+  --group-bg:#f8f8f7; --pv-bg:#f3f3f1; --pv-card:#ffffff;
+  --line:rgba(23,24,26,.08); --line2:rgba(23,24,26,.14);
+  --text:#17181a; --muted:#4a4945; --faint:#6b6a64;
+  --hover:rgba(23,24,26,.045); --chip:rgba(23,24,26,.055); --seg-on:#ffffff; --mark:rgba(255,200,0,.42);
 
   /* ink: tooltips and toasts only (graphite, never pure black) */
   --ink:#24262f; --on-ink:#ffffff; --ink-hover:#30333d; --ink-shadow:0 1px 0 rgba(255,255,255,.1) inset,0 4px 12px -2px rgba(20,24,40,.25);
@@ -62,7 +62,7 @@
   --rim:inset 0 1px 0 rgba(255,255,255,.9);
 
   /* window canvas */
-  --app-bg:linear-gradient(180deg,#fbfbfd 0,#f2f3f7 100%);
+  --app-bg:linear-gradient(180deg,#fbfbfa 0,#f3f3f1 100%);
   --wash:radial-gradient(60% 80% at 10% 0%,rgba(37,99,255,.08),transparent 70%),radial-gradient(50% 70% at 100% 0%,rgba(168,85,247,.06),transparent 70%);
 
   /* film grain, used at a few percent */
@@ -126,7 +126,7 @@
 }
 
 /* Smooth theme switch: the colour tokens are typed so they interpolate. */
-@property --bg{syntax:"<color>";inherits:true;initial-value:#f4f5f8}
+@property --bg{syntax:"<color>";inherits:true;initial-value:#f6f6f5}
 @property --bg2{syntax:"<color>";inherits:true;initial-value:#efefec}
 @property --top{syntax:"<color>";inherits:true;initial-value:#fbfbfa}
 @property --pane{syntax:"<color>";inherits:true;initial-value:#ffffff}

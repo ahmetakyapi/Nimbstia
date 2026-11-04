@@ -128,7 +128,7 @@
     'Pil': 'Battery', 'Şarj': 'Charging', 'Şarjda': 'Charging', 'Bellek': 'Memory', 'Boş Disk': 'Free Disk',
     'Pil Ayarları': 'Battery Settings', 'Depolama Ayarları': 'Storage Settings',
     'Neyin ne kadar kullandığını gör': 'See what uses how much', 'Uygulamalar okunuyor…': 'Reading apps…',
-    'Okunamadı.': 'Could not read.', 'Bellek Kullanımı': 'Memory Usage',
+    'Okunamadı.': 'Could not read.', 'Bellek Kullanımı': 'Memory Usage', 'Diğer': 'Other',
     "Etkinlik İzleyicisi'nde Aç": 'Open in Activity Monitor', 'Çalışıyor': 'Running', 'Boşta': 'Idle',
     "claude.ai'de aç": 'Open on claude.ai', 'Claude Oturumları': 'Claude Sessions', 'Açık oturum yok.': 'No open sessions.',
     "Bir oturuma tıklayınca claude.ai'de açılır.": 'Click a session to open it on claude.ai.',

@@ -75,7 +75,7 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .w.vpn .ib{width:26px;height:26px}
 .w.vpn .ib svg{width:13px;height:13px}
 .w.vpn .ib[data-tip]:hover::after{right:-4px}
-.vt{font:700 17px/1.2 var(--font-display);letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vt{font:560 17px/1.2 var(--font-display);letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .vh{margin-top:3px;font:450 11.5px/1 var(--font-mono);color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .vs{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px}
 .vchip{display:inline-flex;align-items:center;gap:7px;height:26px;padding:0 11px 0 9px;border-radius:var(--r-pill);font-size:12px;font-weight:650;color:color-mix(in srgb,var(--vc) 70%,var(--text));background:color-mix(in srgb,var(--vc) 13%,transparent)}
@@ -99,7 +99,7 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .w.claude{display:flex;flex-direction:column;--wc:rgba(217,119,87,.16)}
 .w.claude .wh .wi{color:#d97757}
 .w.claude .plan{font-size:11px;font-weight:650;color:var(--muted);padding:3px 8px;border-radius:var(--r-pill);background:var(--chip)}
-.big{display:flex;align-items:baseline;gap:2px;font:720 38px/.95 var(--font-display);letter-spacing:-.045em;font-variant-numeric:tabular-nums}
+.big{display:flex;align-items:baseline;gap:2px;font:560 38px/.95 var(--font-display);letter-spacing:-.045em;font-variant-numeric:tabular-nums}
 .big small{font-size:18px;font-weight:650;letter-spacing:-.02em;color:var(--faint)}
 .bl{margin-top:5px;font-size:12px;font-weight:550;color:var(--muted)}
 .meter{height:8px;margin-top:12px;border-radius:5px;background:var(--chip);overflow:hidden}
@@ -186,7 +186,7 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .gauge .gi{position:absolute;inset:0;display:grid;place-items:center;color:var(--s)}
 .gauge .gi svg{width:16px;height:16px;transform:none}
 .sx{display:flex;flex-direction:column;gap:3px;min-width:0}
-.sx b{font:700 17px/1 var(--font-display);letter-spacing:-.025em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.sx b{font:560 17px/1 var(--font-display);letter-spacing:-.025em;font-variant-numeric:tabular-nums;white-space:nowrap}
 .sx b em{font-style:normal;font-size:12px;font-weight:600;color:var(--faint);margin-left:1px}
 .sx small{font-size:11.5px;font-weight:550;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sc.alert{--s:var(--bad-bar)!important} .sc.alert b{color:var(--danger)}
@@ -203,7 +203,7 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 /* ---------------------------------------------------------------- sub views */
 .vhead{display:flex;align-items:center;gap:12px;padding:16px 2px 4px}
 .vht{display:flex;flex-direction:column;gap:4px;min-width:0}
-.vhead h2{margin:0;font:700 18px/1.1 var(--font-display);letter-spacing:-.025em}
+.vhead h2{margin:0;font:560 18px/1.1 var(--font-display);letter-spacing:-.025em}
 .vht small{font-size:12px;color:var(--faint)}
 .card{flex:none;background:var(--card);border-radius:18px;box-shadow:var(--card-lift);padding:6px 14px}
 .krow{display:flex;align-items:center;gap:10px;min-height:40px;font-size:13px;border-top:1px solid var(--line)}
@@ -226,7 +226,7 @@ button.ss:hover{background:var(--hover);box-shadow:none}
 .ss .go{flex:none;width:14px;height:14px;color:var(--faint);transition:transform var(--dur-2) var(--ease-out)}
 button.ss:hover .go{color:var(--text);transform:translate(2px,-2px)}
 .msum{display:flex;align-items:baseline;gap:8px;padding:12px 0}
-.msum b{font:720 28px/1 var(--font-display);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.msum b{font:560 28px/1 var(--font-display);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
 .msum span{font-size:12.5px;color:var(--faint)}
 .mbar{height:8px;border-radius:5px;background:var(--chip);overflow:hidden;margin-bottom:10px}
 .mbar i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,#60a5fa,#2563ff);transform-origin:left;animation:grow .7s var(--ease-out) both}
@@ -280,6 +280,29 @@ button.ss:hover .go{color:var(--text);transform:translate(2px,-2px)}
 :root[data-theme="dark"] .ti .ico{box-shadow:inset 0 1px 0 rgba(255,255,255,.08),inset 0 0 0 1px color-mix(in srgb,var(--k) 26%,transparent)!important}
 .rt.on .rc{box-shadow:0 1px 2px rgba(20,24,40,.15)}
 .mark{filter:none}
+/* memory: one segmented usage bar + legend; hovering a segment, chip or row lights its pair */
+.card.mem{padding:6px 16px 8px}
+.ubar{display:flex;gap:2px;height:14px;margin:2px 0 12px;border-radius:7px;overflow:hidden;background:var(--chip)}
+.ubar .sg{display:block;min-width:4px;background:var(--c);transform-origin:left;animation:grow .7s var(--ease-out) both;transition:opacity var(--dur-1)}
+.ubar .free{display:block;background:transparent}
+.ulg{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.ulg span{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px 0 8px;border-radius:999px;font-size:12px;font-weight:550;color:var(--muted);background:var(--chip);transition:opacity var(--dur-1)}
+.ulg i,.pn i{width:7px;height:7px;border-radius:50%;background:var(--c);flex:none}
+.pn{display:flex;align-items:center;gap:8px}
+.prc{grid-template-columns:minmax(0,1fr) 72px 60px!important;transition:opacity var(--dur-1)}
+.card.mem.hl .ubar .sg:not(.on),.card.mem.hl .ulg span:not(.on),.card.mem.hl .prc:not(.on){opacity:.35}
+/* rolling numbers */
+.rl{position:relative;display:inline-grid;overflow:hidden;vertical-align:bottom}
+.rl > span{grid-area:1/1}
+.rl .ro{animation:roll-out .5s var(--ease-out) both}
+.rl .rn{animation:roll-in .5s var(--ease-out) both}
+.rl.dn .ro{animation-name:roll-out-dn}.rl.dn .rn{animation-name:roll-in-dn}
+@keyframes roll-out{to{transform:translateY(-100%);opacity:0}}
+@keyframes roll-in{from{transform:translateY(100%);opacity:0}}
+@keyframes roll-out-dn{to{transform:translateY(100%);opacity:0}}
+@keyframes roll-in-dn{from{transform:translateY(-100%);opacity:0}}
+/* press feedback on every hub control */
+.ib:active,.fb:active,.vbtn:active,.slink:active,.pp:active{transform:scale(.97)}
 </style>
 </head>
 <body>
@@ -428,7 +451,7 @@ function renderMain() {
     row1.push(`<section class="w claude">
       ${wh(W_ICON.spark, 'Claude', c.plan ? `<span class="plan">${esc(c.plan)}</span>` : '')}
       <div class="ring2"><div class="rgw">${rings}<div class="rv">${W_ICON.spark}</div></div>
-        <div class="lg"><div><i class="c1"></i><span>${esc(lim ? short(lim) : 'Kullanım')}</span><b>${fmtP(p)}</b></div>${p2 != null ? `<div><i class="c2"></i><span>${esc(short(lims[1]))}</span><b>${fmtP(p2)}</b></div>` : ''}</div></div>
+        <div class="lg"><div><i class="c1"></i><span>${esc(lim ? short(lim) : 'Kullanım')}</span><b data-roll="c1">${fmtP(p)}</b></div>${p2 != null ? `<div><i class="c2"></i><span>${esc(short(lims[1]))}</span><b data-roll="c2">${fmtP(p2)}</b></div>` : ''}</div></div>
       ${lim && lim.resets ? `<div class="rs"><span>Sıfırlanma</span> <span>${esc(lim.resets)}</span></div>` : ''}
       ${lim && typeof lim.today === 'number' ? `<div class="today">Bugün +%${lim.today}</div>` : ''}
       ${sess.length ? `<button class="slink" data-act="sessions" type="button"><span class="sdot${busy ? ' b' : ''}"></span><span>${sess.length} oturum</span>${busy ? `<small>${busy} aktif</small>` : ''}<span class="sp"></span>${CHEV}</button>` : ''}
@@ -472,7 +495,7 @@ function renderMain() {
   // ---- system: ring gauges
   const sy = d.system || {};
   const C = 2 * Math.PI * 19.5;
-  const gauge = (id, icon, color, value, unit, label, alert, tip, fill) => `<button class="sc${alert ? ' alert' : ''}" data-act="${id === 'mem' ? 'memory' : 'sys'}" data-id="${id}" type="button" style="--s:${color}" aria-label="${esc(tip)}"><span class="gauge"><svg viewBox="0 0 44 44"><circle class="trk" cx="22" cy="22" r="19.5"/><circle class="val" cx="22" cy="22" r="19.5" stroke-dasharray="${(C * Math.max(2, Math.min(100, fill || 0)) / 100).toFixed(1)} ${C.toFixed(1)}"/></svg><span class="gi">${ICONS[icon]}</span></span><span class="sx"><b>${value}<em>${unit}</em></b><small>${label}</small></span></button>`;
+  const gauge = (id, icon, color, value, unit, label, alert, tip, fill) => `<button class="sc${alert ? ' alert' : ''}" data-act="${id === 'mem' ? 'memory' : 'sys'}" data-id="${id}" type="button" style="--s:${color}" aria-label="${esc(tip)}"><span class="gauge"><svg viewBox="0 0 44 44"><circle class="trk" cx="22" cy="22" r="19.5"/><circle class="val" cx="22" cy="22" r="19.5" stroke-dasharray="${(C * Math.max(2, Math.min(100, fill || 0)) / 100).toFixed(1)} ${C.toFixed(1)}"/></svg><span class="gi">${ICONS[icon]}</span></span><span class="sx"><b><span data-roll="${id}">${value}</span><em>${unit}</em></b><small>${label}</small></span></button>`;
   const cols = [];
   if (sy.battery) cols.push(gauge('battery', 'bat', '#22c55e', sy.battery.pct, '%', sy.battery.charging ? 'Şarjda' : 'Pil', sy.battery.pct < 20 && !sy.battery.charging, 'Pil Ayarları', sy.battery.pct));
   if (typeof sy.mem === 'number') cols.push(gauge('mem', 'memo', '#3b82f6', sy.mem, '%', 'Bellek', sy.mem >= 85, 'Neyin ne kadar kullandığını gör', sy.mem));
@@ -482,18 +505,28 @@ function renderMain() {
 }
 
 let procs = null;
+// Usage bar palette: one hue per slot, "rest" stays neutral.
+const SEG = ['#3b82f6', '#8b5cf6', '#14b8a6', '#f59e0b', '#ec4899'];
 function renderMemory() {
   const fmt = mb => mb >= 1024 ? (mb / 1024).toFixed(1).replace('.', ',') + ' GB' : Math.round(mb) + ' MB';
-  let body;
+  let body = '', total = '';
   if (!procs) body = '<div class="empty">Uygulamalar okunuyor…</div>';
   else if (!procs.list.length) body = '<div class="empty">Okunamadı.</div>';
   else {
-    const max = procs.list[0].mb || 1;
-    body = procs.list.map((p, i) => `<div class="prc"><span class="pn">${esc(p.name)}</span><span class="pb"><i style="width:${Math.max(3, p.mb / max * 100)}%;animation-delay:${i * 30}ms"></i></span><span class="pm">${fmt(p.mb)}</span>${p.cpu ? `<span class="pc2">%${p.cpu} CPU</span>` : '<span class="pc2"></span>'}</div>`).join('');
+    const top = procs.list.slice(0, 5), cap = procs.memMB || procs.totalMB || 1;
+    const topMB = top.reduce((a, p) => a + p.mb, 0), rest = Math.max(0, (procs.totalMB || topMB) - topMB);
+    // One bar for the whole machine: each top app is a segment, the rest of the used memory is grey,
+    // free memory is the empty track (Bencho's "context" bar).
+    const seg = (mb, color, i, name) => `<i class="sg" style="flex:${Math.max(.6, mb / cap * 100)} 0 0;--c:${color};animation-delay:${i * 40}ms" data-i="${i}" title="${esc(name)} · ${fmt(mb)}"></i>`;
+    const bar = top.map((p, i) => seg(p.mb, SEG[i], i, p.name)).join('') + (rest > 0 ? seg(rest, 'var(--faint)', 5, 'Diğer') : '')
+      + `<i class="free" style="flex:${Math.max(0, (cap - (procs.totalMB || topMB)) / cap * 100)} 0 0"></i>`;
+    total = `<div class="msum"><b>${fmt(procs.totalMB || topMB)}</b>${procs.memMB ? `<span>/ ${fmt(procs.memMB)}</span>` : ''}</div>
+      <div class="ubar">${bar}</div>
+      <div class="ulg">${top.map((p, i) => `<span data-i="${i}"><i style="--c:${SEG[i]}"></i>${esc(p.name)}</span>`).join('')}${rest > 0 ? `<span data-i="5"><i style="--c:var(--faint)"></i>Diğer</span>` : ''}</div>`;
+    body = procs.list.map((p, i) => `<div class="prc" data-i="${i < 5 ? i : ''}"><span class="pn"><i style="--c:${i < 5 ? SEG[i] : 'var(--line2)'}"></i>${esc(p.name)}</span><span class="pm">${fmt(p.mb)}</span>${p.cpu ? `<span class="pc2">%${p.cpu} CPU</span>` : '<span class="pc2"></span>'}</div>`).join('');
   }
-  const total = procs && procs.memMB ? `<div class="msum"><b>${fmt(procs.totalMB)}</b><span>/ ${fmt(procs.memMB)}</span></div><div class="mbar"><i style="width:${Math.min(100, procs.totalMB / procs.memMB * 100)}%"></i></div>` : '';
   return `<div class="vhead"><button class="ib ring" data-act="back" aria-label="Geri">${ICONS.back}</button><div class="vht"><h2>Bellek Kullanımı</h2></div></div>
-    <section class="card">${total}${body}</section>
+    <section class="card mem">${total}<div class="plist">${body}</div></section>
     <button class="fb wide" data-act="sys" data-id="activity" type="button">${ICONS.memo}<span>Etkinlik İzleyicisi'nde Aç</span></button>`;
 }
 
@@ -552,10 +585,23 @@ function render() {
   scrollEl.innerHTML = html;
   footEl.innerHTML = renderFoot();
   syncFlip();
+  rollChanged();
   scrollEl.scrollTop = top;
   postSize();
 }
 let lastH = 0;
+// Values that changed since the last render roll: the old number slides up and out, the new one in.
+const lastRoll = {};
+function rollChanged() {
+  document.querySelectorAll('[data-roll]').forEach(el => {
+    const k = el.dataset.roll, v = el.textContent, old = lastRoll[k];
+    lastRoll[k] = v;
+    if (old == null || old === v || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const up = parseFloat(String(v).replace(/[^\d,.-]/g, '').replace(',', '.')) >= parseFloat(String(old).replace(/[^\d,.-]/g, '').replace(',', '.'));
+    el.innerHTML = `<span class="rl${up ? '' : ' dn'}"><span class="ro">${esc(old)}</span><span class="rn">${esc(v)}</span></span>`;
+    setTimeout(() => { if (el.isConnected) el.textContent = v; }, 560);
+  });
+}
 function postSize() { const h = Math.ceil(app.offsetHeight) + 20; if (h !== lastH) { lastH = h; post({ action: 'size', h }); } }
 
 document.addEventListener('click', e => {
@@ -580,6 +626,14 @@ document.addEventListener('click', e => {
     case 'back': view = 'main'; render(); break;
     default: post({ action: a });
   }
+});
+// Memory view: hovering a bar segment, a legend chip or a row highlights the same app everywhere.
+document.addEventListener('mouseover', e => {
+  const card = e.target.closest && e.target.closest('.card.mem');
+  if (!card) return;
+  const hit = e.target.closest('[data-i]'), i = hit && hit.dataset.i;
+  card.classList.toggle('hl', !!i);
+  card.querySelectorAll('[data-i]').forEach(el => el.classList.toggle('on', !!i && el.dataset.i === i));
 });
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { e.preventDefault(); if (view !== 'main') { view = 'main'; render(); } else post({ action: 'close' }); }
