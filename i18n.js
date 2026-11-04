@@ -128,7 +128,7 @@
     'Pil': 'Battery', 'Şarj': 'Charging', 'Şarjda': 'Charging', 'Bellek': 'Memory', 'Boş Disk': 'Free Disk',
     'Pil Ayarları': 'Battery Settings', 'Depolama Ayarları': 'Storage Settings',
     'Neyin ne kadar kullandığını gör': 'See what uses how much', 'Uygulamalar okunuyor…': 'Reading apps…',
-    'Okunamadı.': 'Could not read.', 'Bellek Kullanımı': 'Memory Usage', 'Diğer': 'Other', 'Kullanım verisi yok': 'No usage data yet', 'Claude Code açıkken güncellenir': 'Updates while Claude Code runs',
+    'Okunamadı.': 'Could not read.', 'Bellek Kullanımı': 'Memory Usage', 'Diğer': 'Other', 'Uzak Dal': 'Remote Branch', 'Uzak Dal Yok': 'No Remote Branch', 'Son Değişiklik': 'Last Change', 'Son Açılış': 'Last Opened', 'Ana Depo': 'Main Repo', 'Ana Depolar': 'Main Repos', 'Çalışma Kopyaları': 'Work Copies', 'Bugün Yaptıkların': 'Your Day', 'Solu Daralt': 'Narrow Left Side', 'Solu Genişlet': 'Widen Left Side', 'Seçili Pencere Yok': 'No Focused Window', 'Kullanım verisi yok': 'No usage data yet', 'Claude Code açıkken güncellenir': 'Updates while Claude Code runs',
     "Etkinlik İzleyicisi'nde Aç": 'Open in Activity Monitor', 'Çalışıyor': 'Running', 'Boşta': 'Idle',
     "claude.ai'de aç": 'Open on claude.ai', 'Claude Oturumları': 'Claude Sessions', 'Açık oturum yok.': 'No open sessions.',
     "Bir oturuma tıklayınca claude.ai'de açılır.": 'Click a session to open it on claude.ai.',

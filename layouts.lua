@@ -34,10 +34,11 @@ end
 local function single(a, rect) return function() return { { a, rect } } end end
 
 local LAYOUTS = {
+  -- The owner's daily default comes first (key 1): code 35 % · browser 65 %.
+  { id = "browser",  group = "İki Uygulama", name = "Tarayıcı Ağırlıklı", ratio = 0.35, build = cols("code", "chrome") },
   -- "pair" uses the two most recently focused windows, whatever apps they are.
   { id = "pair",     group = "İki Uygulama", name = "Son İki Pencere Yan Yana", ratio = 0.50, pair = true,
     build = function(r) return { { "win1", { 0, 0, r, 1 } }, { "win2", { r, 0, 1 - r, 1 } } } end },
-  { id = "browser",  group = "İki Uygulama", name = "Tarayıcı Ağırlıklı", ratio = 0.35, build = cols("code", "chrome") },
   { id = "code",     group = "İki Uygulama", name = "Kod Ağırlıklı",      ratio = 0.60, build = cols("code", "chrome") },
   { id = "half",     group = "İki Uygulama", name = "Yarı Yarıya",        ratio = 0.50, build = cols("code", "chrome") },
   { id = "claude",   group = "İki Uygulama", name = "Claude Yanında",     ratio = 0.65, build = cols("code", "claude") },

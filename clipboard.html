@@ -571,7 +571,7 @@ function renderPreview() {
   if (c === 'image' || c === 'shot') acts += btn('reveal', 'open', 'Finder', '⌘O');
   acts += '<span class="sp"></span>';
   if (c !== 'shot') acts += btn('pin', it.pinned ? 'pin' : 'pinO', it.pinned ? 'Sabitli' : 'Sabitle', '');
-  acts += btn('delete', 'trash', c === 'shot' ? 'Çöpe At' : 'Sil', '⌘⌫', 'danger');
+  acts += btn('delete', 'trash', 'Sil', '⌘⌫', 'danger');
 
   if (c === 'image' || c === 'shot') {
     const th = thumbs[it.id];

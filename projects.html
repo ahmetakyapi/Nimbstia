@@ -360,8 +360,8 @@ const branchOf = p => p.branch || (p.sha ? `${p.sha} (detached)` : '–');
 const KINDS = [
   { key: 'all',   label: 'Tümü',                   icon: 'all',   test: () => true },
   { key: 'dirty', label: 'Değişiklik Var',          icon: 'dirty', test: p => p.dirty > 0 },
-  { key: 'main',  label: 'Ana Kopyalar',            icon: 'main',  test: p => !isCopy(p) },
-  { key: 'copy',  label: 'PR/Çalışma Kopyaları',    icon: 'copy',  test: p => isCopy(p) },
+  { key: 'main',  label: 'Ana Depolar',            icon: 'main',  test: p => !isCopy(p) },
+  { key: 'copy',  label: 'Çalışma Kopyaları',    icon: 'copy',  test: p => isCopy(p) },
 ];
 const SORTS = [{ key: 'recent', label: 'Son Kullanılan' }, { key: 'name', label: 'Ad' }];
 const isDefault = () => kind === 'all';
@@ -477,7 +477,7 @@ function statusText(p) {
   return [`${num(p.dirty)} Değişiklik`, 'warn'];
 }
 function syncText(p) {
-  if (p.ahead == null) return p.branch ? 'Yukarı Akış Yok' : 'Detached HEAD';
+  if (p.ahead == null) return p.branch ? 'Uzak Dal Yok' : 'Detached HEAD';
   if (!p.ahead && !p.behind) return 'Güncel';
   return [p.ahead ? `${num(p.ahead)} ileride` : '', p.behind ? `${num(p.behind)} geride` : ''].filter(Boolean).join(' · ');
 }
@@ -488,7 +488,7 @@ function renderPreview() {
   selPath = p.path;
   const acts = btn('vscode', 'code', 'VS Code\'da Aç', '↩', 'primary') + btn('terminal', 'term', 'Terminal', '') + btn('github', 'gh', 'GitHub Desktop', '') + btn('reveal', 'folder', 'Finder', '') +
     '<span class="sp"></span>' + btn('pin', p.pinned ? 'pin' : 'pinO', p.pinned ? 'Sabitli' : 'Sabitle', '');
-  const tags = [`<span class="tag ${isCopy(p) ? 'copy' : 'main'}">${isCopy(p) ? (p.worktree ? 'Çalışma Kopyası · Worktree' : 'Çalışma Kopyası · Klon') : 'Ana Kopya'}</span>`];
+  const tags = [`<span class="tag ${isCopy(p) ? 'copy' : 'main'}">${isCopy(p) ? (p.worktree ? 'Çalışma Kopyası · Worktree' : 'Çalışma Kopyası · Klon') : 'Ana Depo'}</span>`];
   if (p.dirty > 0) tags.push(`<span class="tag warn">${num(p.dirty)} Değişiklik</span>`);
   if (isStale(p)) tags.push('<span class="tag stale" title="Yalnız bilgi: 7+ gündür hareketsiz, temiz bir çalışma kopyası. Hiçbir şey silinmez.">Temizlenebilir</span>');
 
@@ -500,10 +500,10 @@ function renderPreview() {
 
   const [st, stCls] = statusText(p);
   const meta = [
-    ['Dal', branchOf(p), ''], ['Durum', st, stCls], ['Yukarı Akış', syncText(p), ''],
+    ['Dal', branchOf(p), ''], ['Durum', st, stCls], ['Uzak Dal', syncText(p), ''],
     ['Son Commit', fullTime(p.ct), ''],
-    ['Dizin Değişimi', fullTime(p.mtime), ''],
-    ['Panelden Açılış', p.opened ? rel(p.opened) : 'Hiç Açılmadı', ''],
+    ['Son Değişiklik', fullTime(p.mtime), ''],
+    ['Son Açılış', p.opened ? rel(p.opened) : 'Hiç Açılmadı', ''],
   ];
   pvEl.innerHTML = `<div class="pv-actions">${acts}</div>` +
     `<div class="pv-body"><div class="pv-name">${esc(p.name)}</div><div class="tags">${tags.join('')}</div>` +
@@ -646,7 +646,7 @@ function renderGitHub() {
     : `<span class="gs ${cls}"><b>${v}</b>${label}</span>`;
   const btn = (key, label, count) => count == null ? '' :
     `<button class="gb${ghOpen === key ? ' on' : ''}${key === 'review' && count > 0 ? ' hot' : ''}" data-gh="${key}" type="button">${label}<b>${n(count)}</b>${CHEV}</button>`;
-  let html = `<span class="gl"><span class="eyebrow">Bugün${gh.org ? ' · ' + esc(gh.org) : ''}</span><b>Senin Hareketlerin</b></span>` +
+  let html = `<span class="gl"><span class="eyebrow">Bugün${gh.org ? ' · ' + esc(gh.org) : ''}</span><b>Bugün Yaptıkların</b></span>` +
     stat('pr', gh.prsToday == null ? '–' : n(gh.prsToday), 'Açılan PR', gh.opened ? 'opened' : null) +
     stat('cm', n(gh.commits), 'Commit', 'commits') +
     stat('add', '+' + n(gh.added), 'Eklenen Satır') + stat('del', '−' + n(gh.deleted), 'Silinen Satır') +

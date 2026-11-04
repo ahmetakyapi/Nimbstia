@@ -243,7 +243,7 @@ function layoutCard(L, i) {
   if (L.hideOthers) tags.push('Diğerlerini Gizler');
   if (L.custom) tags.push('Özel Oran');
   const last = data.last === L.id ? '<span class="last">Son Kullanılan</span>' : '';
-  const adj = L.adjustable ? `<div class="adj"><div data-d="-1" title="Sol Daralsın">−</div><span>${pct(L.ratio)}<u>/</u>${pct(1 - L.ratio)}</span><div data-d="1" title="Sol Genişlesin">+</div></div>` : '';
+  const adj = L.adjustable ? `<div class="adj"><div data-d="-1" title="Solu Daralt">−</div><span>${pct(L.ratio)}<u>/</u>${pct(1 - L.ratio)}</span><div data-d="1" title="Solu Genişlet">+</div></div>` : '';
   return `<div class="card${last ? ' has-last' : ''}" data-i="${i}" style="--d:${Math.min(i * 20, 200)}ms">${last}${screenHTML(cells, adj)}
     <div class="meta"><span class="idx${i < 9 ? '' : ' off'}">${i + 1}</span><div class="name">${hl(L.name)}</div><div class="desc">${esc(descOf(L))}${tags.length ? ` · <span class="tag">${tags.join(' · ')}</span>` : ''}</div></div></div>`;
 }
@@ -290,14 +290,14 @@ function render(keepId) {
   }
   if (open) html += '</div>';
   if (actions.length) {
-    html += `<h2 class="eyebrow">Bu Pencere<em>${esc(data.win ? data.win.app : 'Odakta Pencere Yok')}</em><small>${actions.length}</small></h2><div class="grid small">`;
+    html += `<h2 class="eyebrow">Bu Pencere<em>${esc(data.win ? data.win.app : 'Seçili Pencere Yok')}</em><small>${actions.length}</small></h2><div class="grid small">`;
     for (const A of actions) html += actionCard(A, idx++);
     html += '</div>';
   }
   if (!view.length) html = `<div class="empty">${EMPTY_ICON}<b>Eşleşen Düzen Yok</b><span>Farklı bir kelime dene ya da Esc ile aramayı temizle.</span></div>`;
   contentEl.innerHTML = html;
   targetEl.classList.toggle('none', !data.win);
-  targetEl.innerHTML = data.win ? `${data.win.icon ? `<img src="${data.win.icon}">` : '<i class="live"></i>'}<span><b>${esc(data.win.app)}</b>${data.win.title ? ' · ' + esc(data.win.title) : ''}</span>` : '<i class="live"></i><span>Odakta Pencere Yok</span>';
+  targetEl.innerHTML = data.win ? `${data.win.icon ? `<img src="${data.win.icon}">` : '<i class="live"></i>'}<span><b>${esc(data.win.app)}</b>${data.win.title ? ' · ' + esc(data.win.title) : ''}</span>` : '<i class="live"></i><span>Seçili Pencere Yok</span>';
   targetEl.style.display = 'flex';
   mark(false);
 }

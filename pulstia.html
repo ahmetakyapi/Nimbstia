@@ -316,6 +316,30 @@ button.ss:hover .go{color:var(--text);transform:translate(2px,-2px)}
 .cnone b{font-size:13.5px;font-weight:600}
 .cnone small{font-size:12px;color:var(--faint)}
 .vbtn{margin-top:12px}
+/* compact top row */
+.w.vpn,.w.claude{padding:12px 14px}
+.w.claude .wh{margin-bottom:8px}
+.vtr{gap:8px!important}
+.vic{flex:none;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;color:var(--vc);background:color-mix(in srgb,var(--vc) 14%,transparent)}
+.vic svg{width:14px;height:14px}
+.vtr .vt{flex:1;font-size:15.5px}
+.vmeta{display:flex;align-items:center;gap:6px;margin:8px 0 0;min-width:0}
+.vmeta .vh{flex-wrap:nowrap;overflow:hidden}
+.vmeta .vh span:last-child{overflow:hidden;text-overflow:ellipsis}
+.vmeta .vh{flex:1;margin:0}
+.vmeta .ib{margin-right:-6px}
+.vbtn{height:32px!important;margin-top:10px!important}
+.rgw,.rg{width:60px!important;height:60px!important}
+.rg circle{stroke-width:11}
+.rv svg{width:16px;height:16px}
+.ring2{gap:12px!important}
+.lg b{display:flex;align-items:baseline;gap:6px}
+.lg .td{font-style:normal;font-size:10.5px;font-weight:650;letter-spacing:0;color:var(--accent-ink);background:var(--accent-soft);padding:2px 6px;border-radius:999px;white-space:nowrap}
+.w.claude .slink{margin-top:8px!important}
+.lg div{grid-template-columns:8px minmax(0,1fr) auto!important;column-gap:7px!important}
+.lg b{grid-column:auto!important;font-size:14.5px!important}
+.lg .lrs{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}
+.lg .lrs .td{font-size:10.5px;font-weight:650;color:var(--accent-ink);background:var(--accent-soft);padding:1px 6px;border-radius:999px}
 </style>
 </head>
 <body>
@@ -441,9 +465,8 @@ function renderMain() {
         : `<button class="vbtn solid" data-act="vpn" data-v="connect" type="button">${power}Bağlan</button>`;
     const tip = 'Yeniden Kontrol Et' + (dev.checkedAgo ? ' · ' + dev.checkedAgo : '');
     row1.push(`<section class="w vpn ${tone}">
-      ${wh(ICONS.shield, 'Bağlantı', `<button class="ib" data-act="check" type="button" data-tip="${esc(tip)}" aria-label="Yeniden Kontrol Et">${ICONS.refresh}</button>`)}
-      <div class="vtr"><div class="vt">${esc(dev.title || 'VPN Bağlantısı')}</div><span class="vchip"><i></i>${esc(label)}</span></div>
-      <div class="vh">${dev.host ? `<span class="mono">${esc(dev.host)}</span>` : ''}${tone === 'ok' && ms != null ? `<span>${ms} ms</span>` : ''}${dev.checkedAgo ? `<span>${esc(dev.checkedAgo)}</span>` : ''}</div>
+      <div class="vtr"><span class="vic">${ICONS.shield}</span><div class="vt">${esc(dev.title || 'VPN Bağlantısı')}</div><span class="vchip"><i></i>${esc(label)}</span></div>
+      <div class="vmeta"><div class="vh">${dev.host ? `<span class="mono">${esc(dev.host)}</span>` : ''}${tone === 'ok' && ms != null ? `<span>${ms} ms</span>` : ''}${dev.checkedAgo ? `<span>${esc(dev.checkedAgo)}</span>` : ''}</div><button class="ib sm" data-act="check" type="button" data-tip="${esc(tip)}" aria-label="Yeniden Kontrol Et">${ICONS.refresh}</button></div>
       <span style="flex:1"></span>${action}</section>`);
   }
   if (d.claude) {
@@ -463,8 +486,7 @@ function renderMain() {
     row1.push(`<section class="w claude">
       ${wh(W_ICON.spark, 'Claude', c.plan ? `<span class="plan">${esc(c.plan)}</span>` : '')}
       ${lim ? `<div class="ring2"><div class="rgw">${rings}<div class="rv">${W_ICON.spark}</div></div>
-        <div class="lg"><div><i class="c1"></i><span>${esc(lim ? short(lim) : 'Kullanım')}</span><b data-roll="c1">${fmtP(p)}</b></div>${p2 != null ? `<div><i class="c2"></i><span>${esc(short(lims[1]))}</span><b data-roll="c2">${fmtP(p2)}</b></div>` : ''}${lim.resets ? `<em class="lrs">↻ ${esc(lim.resets)}</em>` : ''}</div></div>` : `<div class="cnone"><b>Kullanım verisi yok</b><small>Claude Code açıkken güncellenir</small></div>`}
-      ${lim && typeof lim.today === 'number' ? `<div class="today">Bugün +%${lim.today}</div>` : ''}
+        <div class="lg"><div><i class="c1"></i><span>${esc(lim ? short(lim) : 'Kullanım')}</span><b data-roll="c1">${fmtP(p)}</b></div>${p2 != null ? `<div><i class="c2"></i><span>${esc(short(lims[1]))}</span><b data-roll="c2">${fmtP(p2)}</b></div>` : ''}${lim.resets || typeof lim.today === 'number' ? `<em class="lrs">${lim.resets ? `<span>↻ ${esc(lim.resets)}</span>` : ''}${typeof lim.today === 'number' ? `<span class="td">Bugün +%${lim.today}</span>` : ''}</em>` : ''}</div></div>` : `<div class="cnone"><b>Kullanım verisi yok</b><small>Claude Code açıkken güncellenir</small></div>`}
       ${sess.length ? `<button class="slink" data-act="sessions" type="button"><span class="sdot${busy ? ' b' : ''}"></span><span>${sess.length} oturum</span>${busy ? `<small>${busy} aktif</small>` : ''}<span class="sp"></span>${CHEV}</button>` : ''}
       </section>`);
   }
