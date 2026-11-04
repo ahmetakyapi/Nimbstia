@@ -70,9 +70,15 @@
 
     // Repostia (projects.html, projects.lua)
     'Projelerde ara: ad, dal, son commit…': 'Search projects: name, branch, last commit…',
+    'Ara: dal, klasör, son commit…': 'Search: branch, folder, last commit…',
+    'Commit’lenmemiş': 'Uncommitted', 'Push Bekleyen': 'Unpushed', 'Geride': 'Behind',
+    'Bütün projeler': 'All projects', 'Commit’lenmemiş değişikliği ya da yeni dosyası olanlar': 'Uncommitted changes or new files',
+    'Uzak dala gönderilmemiş commit’i olanlar': 'Commits not pushed to the remote yet',
+    'Uzak dalda henüz çekilmemiş commit olanlar': 'The remote has commits not pulled yet',
+    '7+ gündür hareketsiz, temiz çalışma kopyaları (bilgi amaçlı, hiçbir şey silinmez)': 'Clean work copies idle for 7+ days (info only, nothing gets deleted)',
     'Commit’lenmemiş Değişiklikler': 'Uncommitted Changes', 'Değişen Dosya': 'Changed Files', 'Yeni Dosya': 'New Files',
-    'Hesaplanıyor…': 'Calculating…', 'Değişiklik yok': 'No changes',
-    'Satır farkı yok (yalnız izin/mod değişikliği olabilir).': 'No line changes (maybe only mode changes).',
+    'Hesaplanıyor…': 'Calculating…', 'Değişiklik yok': 'No changes', 'Ana Klon': 'Main Clone', 'Klon (Kopya)': 'Clone (Copy)',
+    'Worktree': 'Worktree', 'Satır farkı yok (yalnız izin/mod değişikliği olabilir).': 'No line changes (maybe only mode changes).',
     'Yenileniyor…': 'Refreshing…', 'Tüm Projeler': 'All Projects', 'Değişiklik Var': 'Has Changes',
     'Ana Kopyalar': 'Main Clones', 'PR/Çalışma Kopyaları': 'PR/Work Copies', 'Son Kullanılan': 'Last Used',
     'Projeler Taranıyor…': 'Scanning Projects…', 'Proje Bulunamadı': 'No Projects Found',
