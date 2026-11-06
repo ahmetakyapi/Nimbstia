@@ -77,9 +77,7 @@ local function render()
     elseif h == "ok" then tip = tip .. " · VPN Bağlı" end
   end
   if micMuted() then out = out .. text("  ● Mikrofon Kapalı", { color = RED }) end
-  -- Claude usage appears only when it needs attention (≥ 80 % of a limit).
-  local peak = Claude.peak()
-  if peak and peak >= 80 then out = out .. text("  Claude %" .. math.floor(peak + 0.5), { color = peak >= 90 and RED or AMBER }) end
+  -- Claude usage lives in the hub only; the menu bar stays quiet about it.
   local m = nextMeeting()
   if m then
     local mins = math.floor((m.start - os.time()) / 60)
