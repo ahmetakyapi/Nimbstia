@@ -495,6 +495,22 @@ function githubData()
     end)(),
     open = h and top(h.open) or nil, openCount = h and #(h.open or {}) or nil,
     review = h and top(h.review) or nil, reviewCount = h and #(h.review or {}) or nil,
+    -- Repostia's Bugün / Bu Hafta / Bu Ay switch
+    periods = (function()
+      local out = {}
+      for key, pd in pairs(type(g.periods) == "table" and g.periods or {}) do
+        local list = {}
+        for i, c in ipairs(pd.list or {}) do
+          if i > 12 then break end
+          table.insert(list, { sha = c.sha, subject = c.subject, t = c.t, added = c.added, deleted = c.deleted, repo = c.repo, owner = c.owner, url = c.url })
+        end
+        local prs = h and h.openedPeriods and h.openedPeriods[key]
+        out[key] = { commits = pd.commits or 0, added = pd.added or 0, deleted = pd.deleted or 0, repos = pd.repos or 0,
+          commitList = list, prs = prs and #prs or nil, opened = prs and top(prs) or nil }
+      end
+      return next(out) and out or nil
+    end)(),
+    days = type(g.days) == "table" and g.days or nil,
     org = devStats.org,
     updatedAgo = devStats.at and ago(devStats.at) or nil,
     ghMissing = h == nil,
