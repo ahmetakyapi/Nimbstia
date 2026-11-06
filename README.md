@@ -52,8 +52,8 @@ Click the mark in the menu bar. Everything about your day sits in one popover: w
 - **Connection** — VPN + TCP check to your host every 30 s and right after wake or a network change; a live green chip with the latency when all is well.
 - **Claude usage** — weekly and session limits as bar meters, reset time and open sessions (opens the session on claude.ai), read from the files Claude Code keeps locally.
 - **Dev servers** — every local server that is listening right now (`npm run dev`, Vite, Django, Ollama…) with its port and project folder; open it in the browser or stop it in one click. Handy when coding agents leave servers running.
-- **Quick switches** — keep the Mac awake <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>K</kbd>, mute the microphone <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>M</kbd>, opt-in meeting alerts from macOS Calendar, and macOS Dark Mode.
-- **System** — battery, memory (tap for the apps using it) and free disk at a glance.
+- **Quick switches** — keep the Mac awake <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>K</kbd>, mute the microphone <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>M</kbd>, a screen saver that keeps the Mac awake (Claude sessions and the browser keep working behind it; styled like the lock screen, it fades out on any key or a deliberate mouse move, not a nudge), and opt-in meeting alerts from macOS Calendar.
+- **System** — CPU and memory (tap either for the apps using it), battery and free disk at a glance.
 
 ## The tools
 
@@ -61,9 +61,9 @@ Click the mark in the menu bar. Everything about your day sits in one popover: w
 
 <img src="assets/screens/clipboard-dark.png" width="880" alt="Pastia clipboard history">
 
-Text, links, colours, copied images and your screenshots folder — always newest first, grouped by day. Filter by kind and time, search, pin, edit in place, copy without closing (<kbd>Cmd</kbd> <kbd>C</kbd>) or paste (<kbd>↩</kbd>).
+Text, links, colours, copied images and your screenshots folder — always newest first, grouped by day. Filter by kind and time, search, pin, edit in place, copy without closing (<kbd>Cmd</kbd> <kbd>C</kbd>) or paste (<kbd>↩</kbd>). Screenshots you have not pinned move to the Trash after 30 days.
 
-### Clipstia · screenshots — <kbd>Ctrl</kbd> <kbd>.</kbd>
+### Clipstia · screenshots — <kbd>Cmd</kbd> <kbd>.</kbd>
 
 <img src="assets/screens/screenshot-dark.png" width="720" alt="Clipstia screenshot editor">
 
@@ -79,7 +79,7 @@ Multi-app layouts in one key, "last two windows side by side", adjustable splits
 
 <img src="assets/screens/projects-dark.png" width="880" alt="Repostia project opener">
 
-Every repository in `~/Projects` with branch, changes, ahead/behind and recent commits. Opens in VS Code, Terminal, GitHub Desktop or Finder.
+Every repository in `~/Projects` with branch, changes, ahead/behind and recent commits. Opens in VS Code, Terminal, Claude Code, GitHub Desktop or Finder. The strip on top counts your commits, PRs and lines added / deleted for today, this week or this month, with a bar per day; click its title for the last 90 days of commits, day by day, filtered by repo or search.
 
 ### And the small ones
 
@@ -109,7 +109,7 @@ Every repository in `~/Projects` with branch, changes, ahead/behind and recent c
 | Keys | Action | Keys | Action |
 |---|---|---|---|
 | <kbd>Ctrl</kbd> <kbd>V</kbd> | Pastia | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>←</kbd> <kbd>→</kbd> | Snap left / right (again: ⅓ · ⅔) |
-| <kbd>Ctrl</kbd> <kbd>.</kbd> | Clipstia | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>↑</kbd> <kbd>↓</kbd> <kbd>↩</kbd> | Top / bottom / full |
+| <kbd>Cmd</kbd> <kbd>.</kbd> | Clipstia | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>↑</kbd> <kbd>↓</kbd> <kbd>↩</kbd> | Top / bottom / full |
 | <kbd>Ctrl</kbd> <kbd>Space</kbd> | Panestia | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>C</kbd> · <kbd>Z</kbd> | Centre · undo placement |
 | <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>P</kbd> | Repostia | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>Cmd</kbd> <kbd>←</kbd> <kbd>→</kbd> | Move to the other display |
 | <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>O</kbd> | Lexstia | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>K</kbd> | Keep awake |

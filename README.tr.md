@@ -28,7 +28,7 @@
 
 ---
 
-**Neden.** macOS'ta bazı gündelik işler gereğinden fazla tıklama istiyor: bir saat önce kopyaladığın şeyi bulmak, iki pencereyi yan yana koymak, üstüne not düşülmüş bir ekran görüntüsü almak, doğru depoyu açmak. Nimbstia bunların her birini tek bir kısayola ve yolunu kesmeyen bir panele indiriyor.
+**Neden.** macOS'ta bazı gündelik işler gereğinden fazla tıklama istiyor: bir saat önce kopyaladığın şeyi bulmak, iki pencereyi yan yana koymak, üstüne not düşülmüş bir ekran görüntüsü almak, doğru repoyu açmak. Nimbstia bunların her birini tek bir kısayola ve yolunu kesmeyen bir panele indiriyor.
 
 - **Yerel ve hafif** — [Hammerspoon](https://www.hammerspoon.org) içinde çalışan Lua ve küçük HTML panelleri. Electron yok, boştayken işlemci ~%0, bellek sabit (on ekran görüntüsünden sonra ≈ 140 MB).
 - **Varsayılan olarak gizli** — her şey Mac'inde kalır. Parola yöneticisinden kopyalananlar hiç kaydedilmez.
@@ -45,8 +45,8 @@ Menü çubuğundaki işarete tıkla. Günün her şeyi tek bir panoda: VPN ve ge
 - **Bağlantı** — sunucuna her 30 sn'de ve uyanma ya da ağ değişikliğinden hemen sonra VPN + TCP denetimi; her şey yolundaysa gecikmeyle birlikte canlı yeşil bir etiket.
 - **Claude kullanımı** — haftalık ve oturum limitleri çubuk grafikle, sıfırlanma zamanı ve açık oturumlar (oturumu claude.ai'de açar); Claude Code'un yerelde tuttuğu dosyalardan okunur.
 - **Geliştirme sunucuları** — şu an dinleyen her yerel sunucu (`npm run dev`, Vite, Django, Ollama…) portu ve proje klasörüyle; tek tıkla tarayıcıda aç ya da durdur. Kodlama ajanlarının açık bıraktığı sunucular için birebir.
-- **Hızlı ayarlar** — Mac'i uyanık tut <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>K</kbd>, mikrofonu kapat <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>M</kbd>, macOS Takvim'den isteğe bağlı toplantı uyarısı ve macOS Koyu Görünüm.
-- **Sistem** — pil, bellek (dokununca onu kullanan uygulamalar) ve boş disk bir bakışta.
+- **Hızlı ayarlar** — Mac'i uyanık tut <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>K</kbd>, mikrofonu kapat <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>M</kbd>, ekran koruyucu (Mac uyumaz, Claude oturumları ve tarayıcı arkada çalışmaya devam eder; kilit ekranı görünümünde, herhangi bir tuşla ya da fareyi biraz hareket ettirince yumuşakça kapanır) ve macOS Takvim'den isteğe bağlı toplantı uyarısı.
+- **Sistem** — işlemci ve bellek (dokununca onları kullanan uygulamalar), pil ve boş disk bir bakışta.
 - **Dil** — arayüz varsayılan olarak Türkçe; `config.local.lua` içinde `language = "en"` ile tamamen İngilizce.
 
 ## Araçlar
@@ -55,9 +55,9 @@ Menü çubuğundaki işarete tıkla. Günün her şeyi tek bir panoda: VPN ve ge
 
 <img src="assets/screens/clipboard-dark.png" width="880" alt="Pastia pano geçmişi">
 
-Metin, bağlantı, renk, kopyalanan görseller ve ekran görüntüleri klasörü — her zaman en yeni üstte, günlere göre gruplu. Tür ve zamana göre filtrele, ara, sabitle, yerinde düzenle; paneli kapatmadan kopyala (<kbd>Cmd</kbd> <kbd>C</kbd>) ya da yapıştır (<kbd>↩</kbd>).
+Metin, bağlantı, renk, kopyalanan görseller ve ekran görüntüleri klasörü — her zaman en yeni üstte, günlere göre gruplu. Tür ve zamana göre filtrele, ara, sabitle, yerinde düzenle; paneli kapatmadan kopyala (<kbd>Cmd</kbd> <kbd>C</kbd>) ya da yapıştır (<kbd>↩</kbd>). Sabitlemediğin ekran görüntüleri 30 gün sonra Çöp Sepeti'ne taşınır.
 
-### Clipstia · ekran görüntüsü — <kbd>Ctrl</kbd> <kbd>.</kbd>
+### Clipstia · ekran görüntüsü — <kbd>Cmd</kbd> <kbd>.</kbd>
 
 <img src="assets/screens/screenshot-dark.png" width="720" alt="Clipstia ekran görüntüsü düzenleyicisi">
 
@@ -73,7 +73,7 @@ Tek tuşla çok uygulamalı düzenler, "son iki pencere yan yana", ayarlanabilir
 
 <img src="assets/screens/projects-dark.png" width="880" alt="Repostia proje açıcı">
 
-`~/Projects` altındaki her depo: dal, değişiklikler, ileride/geride ve son commit'ler. VS Code, Terminal, GitHub Desktop ya da Finder'da açar.
+`~/Projects` altındaki her repo: dal, değişiklikler, ileride/geride ve son commit'ler. VS Code, Terminal, Claude Code, GitHub Desktop ya da Finder'da açar. Üstteki şerit bugün, bu hafta ya da bu ay attığın commit'leri, açtığın PR'ları ve eklenen / silinen satırları gün gün çubuklarla gösterir; başlığa tıklayınca son 90 günün commit geçmişi repo ve arama filtreleriyle açılır.
 
 ### Küçük yardımcılar
 
@@ -103,7 +103,7 @@ Tek tuşla çok uygulamalı düzenler, "son iki pencere yan yana", ayarlanabilir
 | Tuşlar | Eylem | Tuşlar | Eylem |
 |---|---|---|---|
 | <kbd>Ctrl</kbd> <kbd>V</kbd> | Pastia | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>←</kbd> <kbd>→</kbd> | Sola / sağa yasla (tekrar: ⅓ · ⅔) |
-| <kbd>Ctrl</kbd> <kbd>.</kbd> | Clipstia | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>↑</kbd> <kbd>↓</kbd> <kbd>↩</kbd> | Üst / alt / tam ekran |
+| <kbd>Cmd</kbd> <kbd>.</kbd> | Clipstia | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>↑</kbd> <kbd>↓</kbd> <kbd>↩</kbd> | Üst / alt / tam ekran |
 | <kbd>Ctrl</kbd> <kbd>Space</kbd> | Panestia | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>C</kbd> · <kbd>Z</kbd> | Ortala · yerleşimi geri al |
 | <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>P</kbd> | Repostia | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>Cmd</kbd> <kbd>←</kbd> <kbd>→</kbd> | Diğer ekrana taşı |
 | <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>O</kbd> | Lexstia | <kbd>Ctrl</kbd> <kbd>Opt</kbd> <kbd>K</kbd> | Uyanık tut |
