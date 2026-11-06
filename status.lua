@@ -266,7 +266,39 @@ local TOOLS = {
   { id = "text",   name = "Lexstia",  what = "Metin Oku",    keys = "⌃⇧O",    ok = function() return Tools and Tools.ocr end, run = function() Tools.ocr() end, delay = 0.3 },
 }
 
--- ---------------------------------------------------------------- system strip (battery, memory, disk)
+-- ---------------------------------------------------------------- system strip (CPU, memory, battery, disk)
+
+-- ps reports %cpu per core (a busy app can show 190 %); everything shown is divided by the core count
+-- so it reads as a share of the whole processor (0-100).
+local CORES = (function() local ok, t = pcall(hs.host.cpuUsageTicks); return ok and t and tonumber(t.n) or 1 end)()
+
+-- Memory in use the way Activity Monitor counts it (app + wired + compressed), in MB, and as a share.
+-- The gauge and the detail view both read this, so they always show the same number.
+local function memUsage()
+  local ok, v = pcall(hs.host.vmStat)
+  if not ok or not v or not v.memSize or v.memSize <= 0 or not v.pageSize then return nil end
+  local used = ((v.pagesActive or 0) + (v.pagesWiredDown or 0) + (v.pagesUsedByVMCompressor or 0)) * v.pageSize
+  return { usedMB = math.floor(used / 1048576 + 0.5), totalMB = math.floor(v.memSize / 1048576 + 0.5),
+    pct = math.floor(used / v.memSize * 100 + 0.5) }
+end
+
+-- Overall CPU load since the previous sample (at least 0.5 s apart). The very first call only records
+-- a sample and returns nil.
+local cpuPrev
+local function cpuLoad()
+  local ok, t = pcall(hs.host.cpuUsageTicks)
+  if not ok or not t or not t.overall then return cpuPrev and cpuPrev.pct end
+  local o, now = t.overall, hs.timer.secondsSinceEpoch()
+  local prev = cpuPrev
+  if prev and now - prev.at < 0.5 then return prev.pct end
+  local pct = prev and prev.pct
+  if prev then
+    local da, di = o.active - prev.active, o.idle - prev.idle
+    if da + di > 0 then pct = math.floor(da / (da + di) * 100 + 0.5) end
+  end
+  cpuPrev = { at = now, active = o.active, idle = o.idle, pct = pct }
+  return pct
+end
 
 -- Top memory users, grouped by app (Chrome/Electron helpers count towards their app). Async.
 local function appName(cmd)
@@ -292,28 +324,35 @@ function M.fetchProcs()
     end
     local list = {}
     for _, g in pairs(groups) do table.insert(list, g) end
-    table.sort(list, function(a, b) return a.mb > b.mb end)
-    local top = {}
-    for i = 1, math.min(10, #list) do
-      table.insert(top, { name = list[i].name, mb = math.floor(list[i].mb + 0.5), cpu = math.floor(list[i].cpu + 0.5) })
+    local function topBy(key)
+      table.sort(list, function(a, b) return a[key] > b[key] end)
+      local out = {}
+      for i = 1, math.min(10, #list) do
+        local g = list[i]
+        -- cpu as a share of the whole processor, one decimal below 10 %
+        local c = g.cpu / CORES
+        table.insert(out, { name = g.name, mb = math.floor(g.mb + 0.5), cpu = c >= 10 and math.floor(c + 0.5) or math.floor(c * 10 + 0.5) / 10 })
+      end
+      return out
     end
-    local memGB
-    pcall(function() memGB = hs.host.vmStat().memSize / 1073741824 end)
-    pop:js("Pulse.setProcs(" .. hs.json.encode({ list = top, totalMB = math.floor(total + 0.5), memMB = memGB and math.floor(memGB * 1024) or nil }) .. ")")
+    local top, byCpu = topBy("mb"), topBy("cpu")
+    local mem = memUsage()
+    -- usedMB / memPct / cpuLoad are the same measurements the gauges show (the page syncs them back)
+    -- The gauge shows the last CPU sample; reuse it while it is recent so both read the same number.
+    local load = cpuPrev and cpuPrev.pct and hs.timer.secondsSinceEpoch() - cpuPrev.at < 10 and cpuPrev.pct or cpuLoad()
+    pop:js("Pulse.setProcs(" .. hs.json.encode({ list = top, byCpu = byCpu, cores = CORES, cpuLoad = load,
+      usedMB = mem and mem.usedMB, memPct = mem and mem.pct, memMB = mem and mem.totalMB }) .. ")")
   end, { "-axco", "rss=,%cpu=,comm=" })
 end
 
 local function systemData()
-  local sys = {}
+  local sys = { cpu = cpuLoad(), cores = CORES }
   pcall(function()
     local pct = hs.battery.percentage()
     if pct then sys.battery = { pct = math.floor(pct + 0.5), charging = hs.battery.isCharging() == true or hs.battery.powerSource() == "AC Power" } end
   end)
-  pcall(function()
-    local v = hs.host.vmStat()
-    local used = (v.pagesActive or 0) + (v.pagesWiredDown or 0) + (v.pagesUsedByVMCompressor or 0)
-    if v.memSize and v.pageSize and v.memSize > 0 then sys.mem = math.floor(used * v.pageSize / v.memSize * 100 + 0.5) end
-  end)
+  local mem = memUsage()
+  if mem then sys.mem = mem.pct end
   pcall(function()
     local root = hs.fs.volume.allVolumes()["/"]
     local free = root and (root.NSURLVolumeAvailableCapacityForImportantUsageKey or root.NSURLVolumeAvailableCapacityKey)
@@ -610,6 +649,8 @@ function M.start(help)
     name = "pulse", html = HOME .. "/.hammerspoon/pulstia.html", w = POP_W, h = 560,
     position = popPosition, onMessage = onPopMessage,
     onShow = function(p)
+      cpuLoad() -- start a CPU sample; the push a second later shows the load over that second
+      Keep.after(1.2, function() if pop and pop.visible then pushPopover() end end)
       p:js("Pulse.set(" .. hs.json.encode(popoverData()) .. ");Pulse.open()")
       M.fetchDevStats(false)
       M.fetchPorts()

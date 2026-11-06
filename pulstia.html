@@ -197,6 +197,11 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .sx b em{font-style:normal;font-size:12px;font-weight:600;color:var(--faint);margin-left:1px}
 .sx small{font-size:11.5px;font-weight:550;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sc.alert{--s:var(--bad-bar)!important} .sc.alert b{color:var(--danger)}
+/* four gauges in a row: smaller rings so the numbers keep their room */
+.sw4.four .sc{gap:8px}
+.sw4.four .gauge,.sw4.four .gauge svg{width:38px;height:38px}
+.sw4.four .gauge .gi svg{width:14px;height:14px}
+.sw4.four .sx b{font-size:16px}
 
 /* ---------------------------------------------------------------- footer */
 .foot{flex:none;display:flex;align-items:center;gap:4px;padding:10px 12px 12px}
@@ -366,6 +371,7 @@ const P = (soft, line) => `<svg viewBox="0 0 16 16" fill="none" stroke="currentC
 const DOT = (x, y, r) => `<circle cx="${x}" cy="${y}" r="${r}" fill="currentColor" stroke="none"/>`;
 const ICONS = {
   bat:    P('<rect x="2" y="5" width="7" height="6" rx="1"/>', '<rect x="1.8" y="4.5" width="11" height="7" rx="2"/><path d="M14.4 7v2"/>'),
+  cpu:    P('<path d="M2.6 11.2a5.4 5.4 0 0 1 10.8 0z"/>', '<path d="M2.6 11.2a5.4 5.4 0 1 1 10.8 0M8 11.2l2.4-3.1M1.8 13.2h12.4"/>'),
   memo:   P('<rect x="4.5" y="4.5" width="7" height="7" rx="1.2"/>', '<rect x="3" y="3" width="10" height="10" rx="2"/><path d="M6 1.5V3M10 1.5V3M6 13v1.5M10 13v1.5M1.5 6H3M1.5 10H3M13 6h1.5M13 10h1.5"/>'),
   disk:   P('<ellipse cx="8" cy="4.5" rx="5" ry="2"/>', '<ellipse cx="8" cy="4.5" rx="5" ry="2"/><path d="M3 4.5v7c0 1.1 2.2 2 5 2s5-.9 5-2v-7M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>'),
   box:    P('<path d="M8 2.2 13.5 5v6L8 13.8 2.5 11V5z"/>', '<path d="M8 2.2 13.5 5v6L8 13.8 2.5 11V5z"/><path d="M2.5 5 8 7.8 13.5 5M8 7.8v6"/>'),
@@ -558,16 +564,46 @@ function renderMain() {
   // ---- system: ring gauges
   const sy = d.system || {};
   const C = 2 * Math.PI * 19.5;
-  const gauge = (id, icon, color, value, unit, label, alert, tip, fill) => `<button class="sc${alert ? ' alert' : ''}" data-act="${id === 'mem' ? 'memory' : 'sys'}" data-id="${id}" type="button" style="--s:${color}" aria-label="${esc(tip)}"><span class="gauge"><svg viewBox="0 0 44 44"><circle class="trk" cx="22" cy="22" r="19.5"/><circle class="val" cx="22" cy="22" r="19.5" stroke-dasharray="${(C * Math.max(2, Math.min(100, fill || 0)) / 100).toFixed(1)} ${C.toFixed(1)}"/></svg><span class="gi">${ICONS[icon]}</span></span><span class="sx"><b><span data-roll="${id}">${value}</span><em>${unit}</em></b><small>${label}</small></span></button>`;
+  const gauge = (id, icon, color, value, unit, label, alert, tip, fill) => `<button class="sc${alert ? ' alert' : ''}" data-act="${id === 'mem' ? 'memory' : id === 'cpu' ? 'cpu' : 'sys'}" data-id="${id}" type="button" style="--s:${color}" aria-label="${esc(tip)}"><span class="gauge"><svg viewBox="0 0 44 44"><circle class="trk" cx="22" cy="22" r="19.5"/><circle class="val" cx="22" cy="22" r="19.5" stroke-dasharray="${(C * Math.max(2, Math.min(100, fill || 0)) / 100).toFixed(1)} ${C.toFixed(1)}"/></svg><span class="gi">${ICONS[icon]}</span></span><span class="sx"><b><span data-roll="${id}">${value}</span><em>${unit}</em></b><small>${label}</small></span></button>`;
   const cols = [];
-  if (sy.battery) cols.push(gauge('battery', 'bat', '#22c55e', sy.battery.pct, '%', sy.battery.charging ? 'Şarjda' : 'Pil', sy.battery.pct < 20 && !sy.battery.charging, 'Pil Ayarları', sy.battery.pct));
+  if (typeof sy.cpu === 'number') cols.push(gauge('cpu', 'cpu', '#f97316', sy.cpu, '%', 'İşlemci', sy.cpu >= 90, 'Neyin ne kadar işlemci kullandığını gör', sy.cpu));
+  else if (sy.cores) cols.push(gauge('cpu', 'cpu', '#f97316', '–', '', 'İşlemci', false, 'Neyin ne kadar işlemci kullandığını gör', 0));
   if (typeof sy.mem === 'number') cols.push(gauge('mem', 'memo', '#3b82f6', sy.mem, '%', 'Bellek', sy.mem >= 85, 'Neyin ne kadar kullandığını gör', sy.mem));
+  if (sy.battery) cols.push(gauge('battery', 'bat', '#22c55e', sy.battery.pct, '%', sy.battery.charging ? 'Şarjda' : 'Pil', sy.battery.pct < 20 && !sy.battery.charging, 'Pil Ayarları', sy.battery.pct));
   if (typeof sy.disk === 'number') cols.push(gauge('disk', 'disk', '#8b5cf6', sy.disk >= 1000 ? (sy.disk / 1000).toFixed(1).replace('.', ',') : sy.disk, sy.disk >= 1000 ? 'TB' : 'GB', 'Boş Disk', sy.disk < 20 || sy.diskUsed >= 90, 'Depolama Ayarları', sy.diskUsed));
-  if (cols.length) out.push(`<section class="w sys"><div class="sw4" style="--n:${cols.length}">${cols.join('')}</div></section>`);
+  if (cols.length) out.push(`<section class="w sys"><div class="sw4${cols.length >= 4 ? ' four' : ''}" style="--n:${cols.length}">${cols.join('')}</div></section>`);
   return out.join('');
 }
 
 let procs = null;
+const pctTxt = v => String(v).replace('.', ',');
+// The same list sorted by processor use. Every number is a share of the whole processor (all cores).
+function renderCpu() {
+  let body = '', total = '';
+  const list = procs && (procs.byCpu || procs.list);
+  if (!procs) body = '<div class="empty">Uygulamalar okunuyor…</div>';
+  else if (!list.length) body = '<div class="empty">Okunamadı.</div>';
+  else {
+    // `cpuLoad` is the gauge's own number; per-app figures (ps, a slightly different window) are scaled
+    // to fit inside it so the bar never claims more than the header says.
+    const top = list.slice(0, 5), rawTop = top.reduce((a, p) => a + p.cpu, 0), rawAll = list.reduce((a, p) => a + p.cpu, 0);
+    const load = typeof procs.cpuLoad === 'number' ? procs.cpuLoad : Math.round(rawAll);
+    const k = rawAll > load && rawAll > 0 ? load / rawAll : 1, topCpu = rawTop * k;
+    const rest = Math.max(0, load - topCpu);
+    const scaled = v => { const x = v * k; return x >= 10 ? Math.round(x) : Math.round(x * 10) / 10; };
+    const seg = (v, color, i, name) => `<i class="sg" style="flex:${Math.max(.6, v)} 0 0;--c:${color};animation-delay:${i * 40}ms" data-i="${i}" title="${esc(name)} · %${pctTxt(v >= 10 ? Math.round(v) : Math.round(v * 10) / 10)}"></i>`;
+    const bar = top.map((p, i) => seg(p.cpu * k, SEG[i], i, p.name)).join('') + (rest > 0 ? seg(Math.round(rest), 'var(--faint)', 5, 'Diğer') : '')
+      + `<i class="free" style="flex:${Math.max(0, 100 - load)} 0 0"></i>`;
+    total = `<div class="msum"><b>%${load}</b>${procs.cores ? `<span>${procs.cores} çekirdeğin toplamı</span>` : ''}</div>
+      <div class="ubar">${bar}</div>
+      <div class="ulg">${top.map((p, i) => `<span data-i="${i}"><i style="--c:${SEG[i]}"></i>${esc(p.name)}</span>`).join('')}${rest > 0 ? `<span data-i="5"><i style="--c:var(--faint)"></i>Diğer</span>` : ''}</div>`;
+    const fmt = mb => mb >= 1024 ? (mb / 1024).toFixed(1).replace('.', ',') + ' GB' : Math.round(mb) + ' MB';
+    body = list.map((p, i) => `<div class="prc" data-i="${i < 5 ? i : ''}"><span class="pn"><i style="--c:${i < 5 ? SEG[i] : 'var(--line2)'}"></i>${esc(p.name)}</span><span class="pm">%${pctTxt(scaled(p.cpu))}</span><span class="pc2">${fmt(p.mb)}</span></div>`).join('');
+  }
+  return `<div class="vhead"><button class="ib ring" data-act="back" aria-label="Geri">${ICONS.back}</button><div class="vht"><h2>İşlemci Kullanımı</h2></div></div>
+    <section class="card mem">${total}<div class="plist">${body}</div></section>
+    <button class="fb wide" data-act="sys" data-id="activity" type="button">${ICONS.cpu}<span>Etkinlik İzleyicisi'nde Aç</span></button>`;
+}
 // Usage bar palette: one hue per slot, "rest" stays neutral.
 const SEG = ['#3b82f6', '#8b5cf6', '#14b8a6', '#f59e0b', '#ec4899'];
 function renderMemory() {
@@ -576,17 +612,23 @@ function renderMemory() {
   if (!procs) body = '<div class="empty">Uygulamalar okunuyor…</div>';
   else if (!procs.list.length) body = '<div class="empty">Okunamadı.</div>';
   else {
-    const top = procs.list.slice(0, 5), cap = procs.memMB || procs.totalMB || 1;
-    const topMB = top.reduce((a, p) => a + p.mb, 0), rest = Math.max(0, (procs.totalMB || topMB) - topMB);
+    // `usedMB` is the gauge's own number (app + wired + compressed). Per-app sizes come from ps and
+    // overlap (shared memory), so they are scaled to fit inside it when they add up to more.
+    const top = procs.list.slice(0, 5), cap = procs.memMB || 1;
+    const used = procs.usedMB || top.reduce((a, p) => a + p.mb, 0);
+    const rawTop = top.reduce((a, p) => a + p.mb, 0), rawAll = procs.list.reduce((a, p) => a + p.mb, 0);
+    const k = rawAll > used ? used / rawAll : 1;
+    const topMB = rawTop * k, rest = Math.max(0, used - topMB);
     // One bar for the whole machine: each top app is a segment, the rest of the used memory is grey,
     // free memory is the empty track (Bencho's "context" bar).
     const seg = (mb, color, i, name) => `<i class="sg" style="flex:${Math.max(.6, mb / cap * 100)} 0 0;--c:${color};animation-delay:${i * 40}ms" data-i="${i}" title="${esc(name)} · ${fmt(mb)}"></i>`;
-    const bar = top.map((p, i) => seg(p.mb, SEG[i], i, p.name)).join('') + (rest > 0 ? seg(rest, 'var(--faint)', 5, 'Diğer') : '')
-      + `<i class="free" style="flex:${Math.max(0, (cap - (procs.totalMB || topMB)) / cap * 100)} 0 0"></i>`;
-    total = `<div class="msum"><b>${fmt(procs.totalMB || topMB)}</b>${procs.memMB ? `<span>/ ${fmt(procs.memMB)}</span>` : ''}</div>
+    // rows use the same scale as the bar, so nothing adds up to more than the header
+    const bar = top.map((p, i) => seg(p.mb * k, SEG[i], i, p.name)).join('') + (rest > 0 ? seg(rest, 'var(--faint)', 5, 'Diğer') : '')
+      + `<i class="free" style="flex:${Math.max(0, (cap - used) / cap * 100)} 0 0"></i>`;
+    total = `<div class="msum"><b>%${procs.memPct ?? Math.round(used / cap * 100)}</b><span>${fmt(used)} / ${fmt(cap)}</span></div>
       <div class="ubar">${bar}</div>
       <div class="ulg">${top.map((p, i) => `<span data-i="${i}"><i style="--c:${SEG[i]}"></i>${esc(p.name)}</span>`).join('')}${rest > 0 ? `<span data-i="5"><i style="--c:var(--faint)"></i>Diğer</span>` : ''}</div>`;
-    body = procs.list.map((p, i) => `<div class="prc" data-i="${i < 5 ? i : ''}"><span class="pn"><i style="--c:${i < 5 ? SEG[i] : 'var(--line2)'}"></i>${esc(p.name)}</span><span class="pm">${fmt(p.mb)}</span>${p.cpu ? `<span class="pc2">%${p.cpu} CPU</span>` : '<span class="pc2"></span>'}</div>`).join('');
+    body = procs.list.map((p, i) => `<div class="prc" data-i="${i < 5 ? i : ''}"><span class="pn"><i style="--c:${i < 5 ? SEG[i] : 'var(--line2)'}"></i>${esc(p.name)}</span><span class="pm">${fmt(p.mb * k)}</span>${p.cpu ? `<span class="pc2">%${pctTxt(p.cpu)} CPU</span>` : '<span class="pc2"></span>'}</div>`).join('');
   }
   return `<div class="vhead"><button class="ib ring" data-act="back" aria-label="Geri">${ICONS.back}</button><div class="vht"><h2>Bellek Kullanımı</h2></div></div>
     <section class="card mem">${total}<div class="plist">${body}</div></section>
@@ -639,7 +681,7 @@ darkMQ.addEventListener('change', syncFlip);
 
 function render() {
   const top = scrollEl.scrollTop;
-  const html = view === 'keys' ? renderKeys() : view === 'sessions' ? renderSessions() : view === 'memory' ? renderMemory() : renderMain();
+  const html = view === 'keys' ? renderKeys() : view === 'sessions' ? renderSessions() : view === 'memory' ? renderMemory() : view === 'cpu' ? renderCpu() : renderMain();
   // Live updates that change nothing visible leave the DOM (and a running entrance) alone; a new view
   // plays the entrance, a data change within the same view just swaps in place.
   if (html === lastHTML && lastView === view) return;
@@ -684,7 +726,7 @@ document.addEventListener('click', e => {
     case 'more': sessionsOpen = !sessionsOpen; render(); break;
     case 'keys': view = 'keys'; scrollEl.scrollTop = 0; render(); break;
     case 'sessions': view = 'sessions'; scrollEl.scrollTop = 0; render(); break;
-    case 'memory': view = 'memory'; procs = null; scrollEl.scrollTop = 0; render(); post({ action: 'procs' }); break;
+    case 'memory': case 'cpu': view = el.dataset.act; procs = null; scrollEl.scrollTop = 0; render(); post({ action: 'procs' }); break;
     case 'sys': post({ action: 'sys', id: el.dataset.id }); break;
     case 'back': view = 'main'; render(); break;
     default: post({ action: a });
@@ -703,7 +745,15 @@ document.addEventListener('keydown', e => {
 });
 
 window.Pulse = {
-  setProcs(p) { procs = p && Array.isArray(p.list) ? p : { list: [] }; if (view === 'memory') render(); },
+  setProcs(p) {
+    procs = p && Array.isArray(p.list) ? p : { list: [] };
+    // the gauges show the same fresh numbers when going back
+    if (data && data.system) {
+      if (typeof procs.cpuLoad === 'number') data.system.cpu = procs.cpuLoad;
+      if (typeof procs.memPct === 'number') data.system.mem = procs.memPct;
+    }
+    if (view === 'memory' || view === 'cpu') render();
+  },
   set(d) { data = d || {}; applyTheme(); render(); },
   open() { view = 'main'; lastView = null; lastHTML = ''; render(); app.classList.remove('show'); void app.offsetWidth; requestAnimationFrame(() => app.classList.add('show')); try { app.focus({ preventScroll: true }); } catch (e) {} },
   close() { app.classList.remove('show'); },

@@ -142,6 +142,8 @@
     'Bu Hafta Yaptıkların': 'Your Week', 'Bu Ay Yaptıkların': 'Your Month', 'Hafta': 'Week', 'Ay': 'Month', 'Bu Ay': 'This Month', "Bu Hafta Açılan PR'lar": 'PRs Opened This Week', "Bu Ay Açılan PR'lar": 'PRs Opened This Month', "Bu Haftaki Commit'ler": "This Week's Commits", "Bu Ayki Commit'ler": "This Month's Commits", 'Bu hafta PR açılmadı.': 'No PRs opened this week.', 'Bu ay PR açılmadı.': 'No PRs opened this month.', 'Bu hafta commit yok.': 'No commits this week.', 'Bu ay commit yok.': 'No commits this month.', 'Günlük Commit': 'Daily Commits', 'Commit Geçmişi': 'Commit History', 'Gün gün geçmiş': 'Day-by-day history', 'Geçen Ay': 'Last Month', 'Son 90 Gün': 'Last 90 Days', 'Tüm Repolar': 'All Repos', 'Repo': 'Repo', 'Commit ara…': 'Search commits…', 'Aktif Gün': 'Active Days', 'Günlük Ortalama': 'Daily Average', 'En Çok Commit': 'Most Commits', 'Geçen ay commit yok.': 'No commits last month.', 'Son 90 günde commit yok.': 'No commits in the last 90 days.', 'Bu filtrelerle commit yok.': 'No commits match these filters.', 'Aramayı ya da repoyu değiştirmeyi dene.': 'Try another search or repo.', 'Geri · Esc': 'Back · Esc',
     // Repostia: filters and the Claude action
     'Değişiklik Var': 'Changed', 'Pull Bekleyen': 'Needs Pull', 'Hareketsiz': 'Idle', 'Claude': 'Claude', 'Henüz commit’lenmemiş değişikliği ya da yeni dosyası olan repolar': 'Repos with uncommitted changes or new files', 'Commit’lenmiş ama GitHub’a gönderilmemiş commit’i olan repolar': 'Repos with commits not pushed to GitHub yet', 'GitHub’da yeni commit’i olan, henüz çekilmemiş repolar': 'Repos with new commits on GitHub not pulled yet', '7+ gündür dokunulmamış, değişikliği olmayan kopyalar (yalnız bilgi, hiçbir şey silinmez)': 'Clean copies untouched for 7+ days (info only, nothing is deleted)',
+    // hub: CPU gauge and its detail
+    'İşlemci': 'CPU', 'İşlemci Kullanımı': 'CPU Usage', 'Neyin ne kadar işlemci kullandığını gör': 'See what uses the CPU',
     "Etkinlik İzleyicisi'nde Aç": 'Open in Activity Monitor', 'Çalışıyor': 'Running', 'Boşta': 'Idle',
     "claude.ai'de aç": 'Open on claude.ai', 'Claude Oturumları': 'Claude Sessions', 'Açık oturum yok.': 'No open sessions.',
     "Bir oturuma tıklayınca claude.ai'de açılır.": 'Click a session to open it on claude.ai.',
@@ -198,6 +200,7 @@
     R('^↻ ([^·]+)$', function (m) { return '↻ ' + tr(m[1]); }),
     R('^' + NUM + ' [Öö]ğe$', function (m) { return pl(m[1], 'Item', 'Items'); }),
     R('^' + NUM + ' Proje$', function (m) { return pl(m[1], 'Project', 'Projects'); }),
+    R('^' + NUM + ' çekirdeğin toplamı$', function (m) { return 'across all ' + m[1] + ' cores'; }),
     R('^' + NUM + ' oturum$', function (m) { return pl(m[1], 'session', 'sessions'); }),
     R('^' + NUM + ' oturum çalışıyor$', function (m) { return pl(m[1], 'session', 'sessions') + ' running'; }),
     R('^' + NUM + ' aktif$', function (m) { return m[1] + ' active'; }),
