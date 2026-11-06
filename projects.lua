@@ -262,6 +262,15 @@ local function handle(p, msg)
     return
   end
   local a, path = msg.action, msg.path
+  if a == "history" then
+    -- Every commit of the last 90 days, written by bin/dev-stats.py; read only when the history opens.
+    local f = io.open(HOME .. "/Library/Caches/nimbstia/dev-stats-history.json", "r")
+    local raw = f and f:read("a") or nil
+    if f then f:close() end
+    local ok, d = pcall(hs.json.decode, raw or "")
+    p:js("Projects.history(" .. ((ok and type(d) == "table") and raw or "null") .. ")") -- valid JSON is a JS literal
+    return
+  end
   if a == "refresh" then
     startScan(true)
     p:js("Projects.toast('Yenileniyor…')")

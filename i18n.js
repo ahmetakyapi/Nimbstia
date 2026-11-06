@@ -138,6 +138,8 @@
     'Pil Ayarları': 'Battery Settings', 'Depolama Ayarları': 'Storage Settings',
     'Neyin ne kadar kullandığını gör': 'See what uses how much', 'Uygulamalar okunuyor…': 'Reading apps…',
     'Okunamadı.': 'Could not read.', 'Bellek Kullanımı': 'Memory Usage', 'Diğer': 'Other', 'Uzak Dal': 'Remote Branch', 'Uzak Dal Yok': 'No Remote Branch', 'Son Değişiklik': 'Last Change', 'Son Açılış': 'Last Opened', 'Ana Depo': 'Main Repo', 'Ana Depolar': 'Main Repos', 'Çalışma Kopyaları': 'Work Copies', 'Bugün Yaptıkların': 'Your Day', 'Solu Daralt': 'Narrow Left Side', 'Solu Genişlet': 'Widen Left Side', 'Seçili Pencere Yok': 'No Focused Window', 'Kullanım verisi yok': 'No usage data yet', 'Claude Code açıkken güncellenir': 'Updates while Claude Code runs',
+    // Repostia: today / week / month and the commit history
+    'Bu Hafta Yaptıkların': 'Your Week', 'Bu Ay Yaptıkların': 'Your Month', 'Hafta': 'Week', 'Ay': 'Month', 'Bu Ay': 'This Month', "Bu Hafta Açılan PR'lar": 'PRs Opened This Week', "Bu Ay Açılan PR'lar": 'PRs Opened This Month', "Bu Haftaki Commit'ler": "This Week's Commits", "Bu Ayki Commit'ler": "This Month's Commits", 'Bu hafta PR açılmadı.': 'No PRs opened this week.', 'Bu ay PR açılmadı.': 'No PRs opened this month.', 'Bu hafta commit yok.': 'No commits this week.', 'Bu ay commit yok.': 'No commits this month.', 'Günlük Commit': 'Daily Commits', 'Commit Geçmişi': 'Commit History', 'Gün gün geçmiş': 'Day-by-day history', 'Geçen Ay': 'Last Month', 'Son 90 Gün': 'Last 90 Days', 'Tüm Repolar': 'All Repos', 'Repo': 'Repo', 'Commit ara…': 'Search commits…', 'Aktif Gün': 'Active Days', 'Günlük Ortalama': 'Daily Average', 'En Çok Commit': 'Most Commits', 'Geçen ay commit yok.': 'No commits last month.', 'Son 90 günde commit yok.': 'No commits in the last 90 days.', 'Bu filtrelerle commit yok.': 'No commits match these filters.', 'Aramayı ya da repoyu değiştirmeyi dene.': 'Try another search or repo.', 'Geri · Esc': 'Back · Esc',
     "Etkinlik İzleyicisi'nde Aç": 'Open in Activity Monitor', 'Çalışıyor': 'Running', 'Boşta': 'Idle',
     "claude.ai'de aç": 'Open on claude.ai', 'Claude Oturumları': 'Claude Sessions', 'Açık oturum yok.': 'No open sessions.',
     "Bir oturuma tıklayınca claude.ai'de açılır.": 'Click a session to open it on claude.ai.',
@@ -212,6 +214,7 @@
     R('^' + NUM + ' ileride$', function (m) { return m[1] + ' ahead'; }),
     R('^' + NUM + ' geride$', function (m) { return m[1] + ' behind'; }),
     R('^' + NUM + ' tane daha$', function (m) { return m[1] + ' more'; }),
+    R('^' + NUM + ' commit$', function (m) { return pl(m[1], 'commit', 'commits'); }),
     R('^Filtreler kaldırılınca ' + NUM + ' öğe var\\.$', function (m) { return pl(m[1], 'item', 'items') + ' without filters.'; }),
     R('^Filtre kaldırılınca ' + NUM + ' proje var\\.$', function (m) { return pl(m[1], 'project', 'projects') + ' without the filter.'; }),
     // Empty-state headings (Title Case); the old sentence-case wording is still matched.

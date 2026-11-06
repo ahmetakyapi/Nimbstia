@@ -210,13 +210,27 @@ body{-webkit-font-smoothing:auto}
 /* "Bugün" strip: Shoji-style stats row */
 .today[hidden]{display:none}
 .today{position:relative;display:flex;align-items:stretch;gap:0;margin:0;padding:12px 20px 0;border-top:1px solid var(--line);flex:none}
-.today .gl{display:flex;flex-direction:column;justify-content:center;gap:8px;padding:0 24px 0 0;margin-right:6px;border-right:1px solid var(--line);min-width:150px}
+.today .gl{display:flex;flex:none;flex-direction:column;justify-content:center;align-items:flex-start;gap:8px;padding:0 18px 0 0;margin-right:4px;border-right:1px solid var(--line);min-width:150px}
 .today .gl .eyebrow{display:flex;align-items:center;gap:8px}
 .today .gl b{font:650 14.5px/1.2 var(--font-display);letter-spacing:var(--track-title);color:var(--text)}
-.gs{position:relative;display:flex;flex-direction:column;justify-content:center;gap:8px;padding:6px 16px;border:0;border-radius:12px;background:none;
+/* Bugün / Hafta / Ay switch */
+.seg{display:inline-flex;gap:2px;padding:2px;border-radius:var(--r-pill);background:var(--chip);box-shadow:inset 0 0 0 1px var(--line)}
+.seg button{height:22px;padding:0 9px;border:0;border-radius:var(--r-pill);background:none;font:550 11.5px/1 var(--font-ui);color:var(--faint);cursor:pointer;
+  transition:color var(--dur-1),background var(--dur-1),box-shadow var(--dur-1)}
+.seg button:hover{color:var(--text)}
+.seg button.on{color:var(--text);background:var(--pane);box-shadow:0 1px 2px rgba(12,12,16,.12),inset 0 0 0 1px var(--line)}
+/* daily activity bars for the week / month */
+.gs.chart{gap:6px}
+.bars{display:flex;align-self:flex-start;align-items:flex-end;gap:var(--barg,3px);height:25px}
+.bars i{position:relative;flex:none;width:var(--barw,6px);min-height:2px;border-radius:2px;background:color-mix(in srgb,var(--accent-fill) 55%,transparent);transition:background var(--dur-1)}
+.bars i.b-zero{background:var(--line2)}
+.bars i.b-next{background:none;box-shadow:inset 0 0 0 1px var(--line)}
+.bars i.b-today{background:var(--accent-fill)}
+.bars i:hover{background:var(--text)}
+.gs{position:relative;display:flex;flex:none;flex-direction:column;justify-content:center;gap:8px;padding:6px 10px;white-space:nowrap;border:0;border-radius:12px;background:none;
   font:500 12px/1 var(--font-ui);color:var(--faint);text-align:left}
 .gs+.gs::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:1px;background:var(--line)}
-.gs b{display:flex;align-items:center;gap:4px;font:560 28px/1 var(--font-display);letter-spacing:-.035em;text-transform:none;font-variant-numeric:tabular-nums;color:var(--c,var(--text))}
+.gs b{display:flex;align-items:center;gap:4px;font:560 23px/1 var(--font-display);letter-spacing:-.035em;text-transform:none;font-variant-numeric:tabular-nums;color:var(--c,var(--text))}
 .gs b svg{width:13px;height:13px;color:var(--faint);opacity:0;transform:translateY(1px);transition:opacity var(--dur-1),transform var(--dur-2) var(--ease-out)}
 button.gs{cursor:pointer;transition:background var(--dur-1),box-shadow var(--dur-1)}
 button.gs:hover,button.gs.on{background:var(--hover);box-shadow:inset 0 0 0 1px var(--line)}
@@ -225,7 +239,7 @@ button.gs:hover b svg,button.gs.on b svg{opacity:1;color:var(--muted)}
 button.gs.on b svg{transform:rotate(180deg)}
 .gs.add{--c:var(--ok)} .gs.del{--c:var(--danger)}
 .today .sp{flex:1}
-.gb{align-self:center;display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 9px 0 14px;margin-left:6px;border:0;border-radius:var(--r-pill);font:inherit;font-size:12.5px;font-weight:500;color:var(--text);background:transparent;box-shadow:inset 0 0 0 1px var(--line2);
+.gb{align-self:center;flex:none;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 8px 0 12px;margin-left:5px;border:0;border-radius:var(--r-pill);font:inherit;font-size:12.5px;font-weight:500;color:var(--text);background:transparent;box-shadow:inset 0 0 0 1px var(--line2);
   transition:box-shadow var(--dur-1),background var(--dur-1)}
 .gb:hover,.gb.on{background:var(--hover);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--text) 20%,transparent)}
 .gb b{display:grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:var(--r-pill);font:650 11.5px/1 var(--font-ui);font-variant-numeric:tabular-nums;color:var(--muted);background:var(--chip)}
@@ -266,6 +280,61 @@ button.gs.on b svg{transform:rotate(180deg)}
 .ge{display:flex;flex-direction:column;align-items:center;gap:4px;padding:34px 16px;font-size:12.5px;color:var(--faint)}
 .ge b{font:600 13.5px/1.3 var(--font-display);color:var(--text)}
 .gn{align-self:center;margin-left:10px;font:500 12px/1.3 var(--font-ui);color:var(--faint)}
+/* the strip's title and chart open the day-by-day history */
+.gl .gt{display:inline-flex;align-items:center;gap:4px;padding:2px 6px 2px 0;border-radius:6px;cursor:pointer;transition:color var(--dur-1)}
+.gl .gt svg{width:12px;height:12px;color:var(--faint);transition:transform var(--dur-2) var(--ease-out),color var(--dur-1)}
+.gl .gt:hover{color:var(--accent-ink)} .gl .gt:hover svg{color:var(--accent-ink);transform:translateX(2px)}
+button.gs.chart{cursor:pointer;transition:background var(--dur-1),box-shadow var(--dur-1)}
+button.gs.chart:hover{background:var(--hover);box-shadow:inset 0 0 0 1px var(--line)}
+
+/* commit history sheet */
+.hist[hidden]{display:none}
+.hist{position:absolute;inset:0;z-index:50;display:flex;flex-direction:column;background:var(--app-bg);animation:hIn .22s var(--ease-out)}
+@keyframes hIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.hist{animation:none}}
+.hh{display:flex;align-items:center;gap:10px;height:64px;padding:0 16px 0 14px;flex:none;border-bottom:1px solid var(--line)}
+.hh .back{display:grid;place-items:center;width:32px;height:32px;border:0;border-radius:10px;background:none;color:var(--muted);cursor:pointer}
+.hh .back:hover{background:var(--hover);color:var(--text)}
+.hh .back svg{width:16px;height:16px}
+.hh h2{margin:0 6px 0 0;font:650 15px/1.2 var(--font-display);letter-spacing:var(--track-title);white-space:nowrap}
+.hh .sp{flex:1}
+.hsel,.hq{height:30px;border:0;border-radius:var(--r-pill);background:var(--chip);box-shadow:inset 0 0 0 1px var(--line);font:500 12.5px/1 var(--font-ui);color:var(--text);outline:none}
+.hsel{appearance:none;-webkit-appearance:none;max-width:190px;padding:0 28px 0 12px;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23888' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 6.5 3 3 3-3'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 9px center;background-size:13px}
+.hq{width:180px;padding:0 12px}
+.hq::placeholder{color:var(--faint)}
+.hsel:focus,.hq:focus{box-shadow:inset 0 0 0 1px var(--accent),0 0 0 3px var(--accent-soft)}
+.hsum{display:flex;align-items:stretch;padding:12px 10px 0;flex:none}
+.hsum .gs b{font-size:23px}
+.hsum .gs b small{font:600 12px/1 var(--font-ui);color:var(--faint);letter-spacing:0;margin-left:2px}
+.hsum .gs.top b{font:600 15px/1.2 var(--font-display);letter-spacing:-.01em;max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+.hchart{display:flex;align-items:flex-end;gap:2px;height:64px;margin:12px 20px 0;padding-bottom:8px;border-bottom:1px solid var(--line);flex:none}
+.hchart i{flex:1;min-width:2px;max-width:26px;min-height:2px;border-radius:3px 3px 1px 1px;background:color-mix(in srgb,var(--accent-fill) 55%,transparent);cursor:pointer;transition:background var(--dur-1)}
+.hchart i.b-zero{background:var(--line2);cursor:default}
+.hchart i.b-next{background:none;box-shadow:inset 0 0 0 1px var(--line);cursor:default}
+.hchart i.b-today{background:var(--accent-fill)}
+.hchart i:not(.b-zero):not(.b-next):hover{background:var(--text)}
+.hlist{flex:1;min-height:0;overflow:auto;padding:8px 12px 16px}
+.hd{border-radius:14px;transition:background var(--dur-1)}
+.hd.open{background:var(--chip)}
+.hd.flash{animation:hFlash 1s var(--ease-out)}
+@keyframes hFlash{0%{box-shadow:inset 0 0 0 2px var(--accent)}100%{box-shadow:inset 0 0 0 2px transparent}}
+.hdh{display:flex;align-items:center;gap:12px;width:100%;padding:12px 12px;border:0;border-radius:14px;background:none;font:inherit;color:var(--text);text-align:left;cursor:pointer}
+.hdh:hover{background:var(--hover)}
+.hdh .dt{display:flex;flex-direction:column;gap:4px;min-width:170px}
+.hdh .dt b{font:600 13.5px/1.2 var(--font-display);letter-spacing:-.006em}
+.hdh .dt small{font:500 11.5px/1 var(--font-ui);color:var(--faint)}
+.hdh .cnt{font:650 12px/1 var(--font-ui);color:var(--muted);background:var(--chip);padding:5px 8px;border-radius:var(--r-pill);box-shadow:inset 0 0 0 1px var(--line);font-variant-numeric:tabular-nums;white-space:nowrap}
+.hdh .ln{display:flex;gap:8px;font:600 12px/1 var(--font-ui);font-variant-numeric:tabular-nums;white-space:nowrap}
+.hdh .ln .pl{color:var(--ok)} .hdh .ln .mi{color:var(--danger)}
+.hdh .rps{display:flex;gap:6px;min-width:0;flex:1;overflow:hidden}
+.hdh .rps span{flex:none;font:550 11.5px/1 var(--font-ui);color:var(--muted);padding:5px 8px;border-radius:var(--r-pill);box-shadow:inset 0 0 0 1px var(--line2);white-space:nowrap}
+.hdh > svg{flex:none;width:14px;height:14px;color:var(--faint);transition:transform var(--dur-2) var(--ease-out)}
+.hd.open .hdh > svg{transform:rotate(180deg)}
+.hdc{padding:0 6px 8px}
+.hdc .gp{padding:8px 10px}
+.hdc .gp .tm{font:500 11.5px/1 var(--font-mono);color:var(--faint)}
 .pv-text.mono,textarea.mono,code{font-variant-ligatures:none;font-feature-settings:"liga" 0,"calt" 0}
 </style>
 </head>
@@ -281,6 +350,7 @@ button.gs.on b svg{transform:rotate(180deg)}
     <button class="tb" id="closeBtn" type="button" aria-label="Kapat" data-tip="Kapat · Esc"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg></button>
   </header>
   <div class="today" id="gh" hidden></div>
+  <div class="hist" id="hist" hidden></div>
   <div class="bar">
     <div class="seg" id="kinds"></div>
     <div class="seg time" id="sorts"></div>
@@ -652,12 +722,18 @@ listEl.addEventListener('mousedown', e => {
 listEl.addEventListener('dblclick', e => { if (e.target.closest('.row') && !e.target.closest('.cp')) act('vscode'); });
 pvEl.addEventListener('mousedown', e => { const b = e.target.closest('[data-act]'); if (b) { e.preventDefault(); act(b.dataset.act); } });
 document.addEventListener('contextmenu', e => e.preventDefault());
-document.addEventListener('mousedown', e => { if (!e.target.closest('.pv-path code,.pv-name,.commit .s')) setTimeout(() => input.focus(), 0); });
+document.addEventListener('mousedown', e => { if (!histOpen && !e.target.closest('.pv-path code,.pv-name,.commit .s')) setTimeout(() => input.focus(), 0); });
 
 function hasTextSelection() { const s = window.getSelection(); return s && !s.isCollapsed && !input.contains(s.anchorNode); }
 
 document.addEventListener('keydown', e => {
   const k = e.key, m = e.metaKey;
+  // the history sheet owns the keyboard while it is open: Esc closes it, everything else types
+  if (histOpen) {
+    if (k === 'Escape') { e.preventDefault(); if (hQ) { hQ = ''; $('#hq').value = ''; renderHistoryBody(); } else closeHistory(); }
+    else if (m && lower(k) === 'f') { e.preventDefault(); $('#hq').focus(); }
+    return;
+  }
   if (k === 'ArrowDown') select(sel + 1);
   else if (k === 'ArrowUp') select(sel - 1);
   else if (k === 'PageDown') select(sel + 8);
@@ -703,6 +779,14 @@ const PULSE = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke
 // A stable colour per repository, so the same repo always gets the same avatar.
 const hue = s => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };
 const avatar = name => `<span class="av" style="--h:${hue(name)}">${esc(String(name || '?').replace(/^[^a-z0-9]+/i, '').charAt(0).toUpperCase() || '?')}</span>`;
+// Period shown in the strip; remembered per viewer (storage may be unavailable).
+const PERIODS = {
+  day:   { tab: 'Bugün', eyebrow: 'Bugün', title: 'Bugün Yaptıkların', opened: 'Bugün Açılan PR\'lar', commits: 'Bugünkü Commit\'ler', noPr: 'Bugün PR açılmadı.', noCommit: 'Bugün commit yok.' },
+  week:  { tab: 'Hafta', eyebrow: 'Bu Hafta', title: 'Bu Hafta Yaptıkların', opened: 'Bu Hafta Açılan PR\'lar', commits: 'Bu Haftaki Commit\'ler', noPr: 'Bu hafta PR açılmadı.', noCommit: 'Bu hafta commit yok.' },
+  month: { tab: 'Ay', eyebrow: 'Bu Ay', title: 'Bu Ay Yaptıkların', opened: 'Bu Ay Açılan PR\'lar', commits: 'Bu Ayki Commit\'ler', noPr: 'Bu ay PR açılmadı.', noCommit: 'Bu ay commit yok.' },
+};
+let ghPeriod = 'day';
+try { const v = localStorage.getItem('repostia.period'); if (PERIODS[v]) ghPeriod = v; } catch (e) {}
 const LISTS = {
   opened:  { title: 'Bugün Açılan PR\'lar', color: 'pr', empty: 'Bugün PR açılmadı.', all: 'https://github.com/pulls' },
   commits: { title: 'Bugünkü Commit\'ler', color: 'cm', empty: 'Bugün commit yok.' },
@@ -719,25 +803,58 @@ function commitRow(c) {
   const inner = `${avatar(c.repo)}<span class="gpm"><span class="pt">${esc(c.subject)}</span><span class="a"><code>${esc(String(c.sha).slice(0, 7))}</code><span class="rp">${esc(c.repo)}</span> · ${esc(rel(c.t))} · ${lines}</span></span>`;
   return c.url ? `<button class="gp" data-url="${esc(c.url)}" type="button" title="${esc(c.url)}">${inner}${GO}</button>` : `<div class="gp">${inner}</div>`;
 }
+// One bar per day: Monday–Sunday for the week, every day of the month; days still ahead are outlined.
+const ymd = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+function barsHTML(period) {
+  const byDay = {}; for (const d of gh.days || []) byDay[d.d] = d;
+  const now = new Date(), today = ymd(now);
+  let start, count;
+  if (period === 'week') { start = new Date(now); start.setDate(now.getDate() - (now.getDay() + 6) % 7); count = 7; }
+  else { start = new Date(now.getFullYear(), now.getMonth(), 1); count = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate(); }
+  const days = [];
+  for (let i = 0; i < count; i++) { const d = new Date(start); d.setDate(start.getDate() + i); days.push(d); }
+  const max = Math.max(1, ...days.map(d => (byDay[ymd(d)] || {}).commits || 0));
+  const n = v => Number(v || 0).toLocaleString('tr-TR');
+  const bars = days.map(d => {
+    const k = ymd(d), b = byDay[k] || {}, c = b.commits || 0, future = k > today;
+    const label = d.toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' });
+    const tip = future ? label : `${label} · ${n(c)} commit · +${n(b.added)} −${n(b.deleted)}`;
+    const h = future || !c ? 2 : Math.max(4, Math.round(25 * c / max));
+    return `<i class="${future ? 'b-next' : !c ? 'b-zero' : ''}${k === today ? ' b-today' : ''}" style="height:${h}px" title="${esc(tip)}"></i>`;
+  }).join('');
+  // about 90 px either way, so the strip keeps its layout when switching
+  const style = period === 'week' ? '--barw:10px;--barg:4px' : `--barw:${Math.max(2, Math.floor((90 - (count - 1)) / count))}px;--barg:1px`;
+  return `<button class="gs chart" type="button" data-hist title="Gün gün geçmiş"><span class="bars" style="${style}">${bars}</span>Günlük Commit</button>`;
+}
 function renderGitHub() {
   if (!gh) { ghEl.hidden = true; return; }
   ghEl.hidden = false;
   const n = v => Number(v || 0).toLocaleString('tr-TR');
+  // The week / month numbers come from `periods`; an older hub without them only has today.
+  const P = PERIODS[ghPeriod], pd = gh.periods && gh.periods[ghPeriod];
+  const cur = pd ? { commits: pd.commits, added: pd.added, deleted: pd.deleted, commitList: pd.commitList, prs: pd.prs, opened: pd.opened }
+    : { commits: gh.commits, added: gh.added, deleted: gh.deleted, commitList: gh.commitList, prs: gh.prsToday, opened: gh.opened };
+  LISTS.opened.title = P.opened; LISTS.opened.empty = P.noPr;
+  LISTS.commits.title = P.commits; LISTS.commits.empty = P.noCommit;
+  const seg = gh.periods ? `<span class="seg">${Object.keys(PERIODS).map(k => `<button type="button" data-period="${k}" class="${k === ghPeriod ? 'on' : ''}">${PERIODS[k].tab}</button>`).join('')}</span>`
+    : `<span class="eyebrow">${P.eyebrow}${gh.org ? ' · ' + esc(gh.org) : ''}</span>`;
   // PR and commit numbers open their own list; line counts are plain numbers.
   const stat = (cls, v, label, key) => key
     ? `<button class="gs ${cls}${ghOpen === key ? ' on' : ''}" data-gh="${key}" type="button"><b>${v}${CHEV}</b>${label}</button>`
     : `<span class="gs ${cls}"><b>${v}</b>${label}</span>`;
   const btn = (key, label, count) => count == null ? '' :
     `<button class="gb${ghOpen === key ? ' on' : ''}${key === 'review' && count > 0 ? ' hot' : ''}" data-gh="${key}" type="button">${label}<b>${n(count)}</b>${CHEV}</button>`;
-  let html = `<span class="gl"><span class="eyebrow">Bugün${gh.org ? ' · ' + esc(gh.org) : ''}</span><b>Bugün Yaptıkların</b></span>` +
-    stat('pr', gh.prsToday == null ? '–' : n(gh.prsToday), 'Açılan PR', gh.opened ? 'opened' : null) +
-    stat('cm', n(gh.commits), 'Commit', 'commits') +
-    stat('add', '+' + n(gh.added), 'Eklenen Satır') + stat('del', '−' + n(gh.deleted), 'Silinen Satır') +
+  const NEXT = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m6.5 4 4 4-4 4"/></svg>';
+  let html = `<span class="gl">${seg}<b class="gt" data-hist role="button" title="Gün gün geçmiş">${P.title}${NEXT}</b></span>` +
+    stat('pr', cur.prs == null ? '–' : n(cur.prs), 'Açılan PR', cur.opened ? 'opened' : null) +
+    stat('cm', n(cur.commits), 'Commit', 'commits') +
+    stat('add', '+' + n(cur.added), 'Eklenen Satır') + stat('del', '−' + n(cur.deleted), 'Silinen Satır') +
+    (ghPeriod !== 'day' && gh.days ? barsHTML(ghPeriod) : '') +
     `<span class="sp"></span>` + btn('review', 'İnceleme Bekleyen', gh.reviewCount) + btn('open', 'Açık PR\'larım', gh.openCount);
   if (ghOpen && LISTS[ghOpen]) {
     const L = LISTS[ghOpen];
-    const list = (ghOpen === 'commits' ? gh.commitList : gh[ghOpen]) || [];
-    const total = { opened: gh.prsToday, commits: gh.commits, review: gh.reviewCount, open: gh.openCount }[ghOpen] || list.length;
+    const list = (ghOpen === 'commits' ? cur.commitList : ghOpen === 'opened' ? cur.opened : gh[ghOpen]) || [];
+    const total = { opened: cur.prs, commits: cur.commits, review: gh.reviewCount, open: gh.openCount }[ghOpen] || list.length;
     const side = ghOpen === 'opened' || ghOpen === 'commits' ? 'left' : 'right';
     html += `<div class="gpop ${side} ${L.color || ''}"><div class="gph"><b>${L.title}</b><small>${n(total)}</small><span class="sp"></span>` +
       (L.all ? `<button data-url="${L.all}" type="button">GitHub'da Gör${GO}</button>` : '') + `</div><div class="gpl">` +
@@ -748,6 +865,14 @@ function renderGitHub() {
   ghEl.innerHTML = html;
 }
 ghEl.addEventListener('mousedown', e => {
+  if (e.target.closest('[data-hist]')) { e.preventDefault(); e.stopPropagation(); ghOpen = null; renderGitHub(); openHistory(); return; }
+  const pb = e.target.closest('[data-period]');
+  if (pb) {
+    e.preventDefault(); e.stopPropagation();
+    ghPeriod = pb.dataset.period; ghOpen = null;
+    try { localStorage.setItem('repostia.period', ghPeriod); } catch (err) {}
+    renderGitHub(); return;
+  }
   const b = e.target.closest('[data-gh]'), u = e.target.closest('[data-url]');
   // stopPropagation: re-rendering detaches the clicked button, so the document 'click outside' handler
   // below would otherwise mistake this click for an outside one and close the list straight away.
@@ -756,7 +881,124 @@ ghEl.addEventListener('mousedown', e => {
 });
 document.addEventListener('mousedown', e => { if (ghOpen && !e.target.closest('#gh')) { ghOpen = null; renderGitHub(); } });
 
+// ---------- commit history: every pushed commit of the last 90 days, day by day, with filters
+const histEl = $('#hist');
+let hist = null, histOpen = false, hRange = 'week', hRepo = '', hQ = '', hOpen = new Set(), hFlash = null;
+const H_RANGES = { week: 'Bu Hafta', month: 'Bu Ay', last: 'Geçen Ay', d90: 'Son 90 Gün' };
+const H_EMPTY = { week: 'Bu hafta commit yok.', month: 'Bu ay commit yok.', last: 'Geçen ay commit yok.', d90: 'Son 90 günde commit yok.' };
+const dayStart = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+function hBounds(r) {
+  const today = dayStart(new Date()), tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
+  if (r === 'week') { const s = new Date(today); s.setDate(today.getDate() - (today.getDay() + 6) % 7); const e = new Date(s); e.setDate(s.getDate() + 7); return [s, e]; }
+  if (r === 'month') return [new Date(today.getFullYear(), today.getMonth(), 1), new Date(today.getFullYear(), today.getMonth() + 1, 1)];
+  if (r === 'last') return [new Date(today.getFullYear(), today.getMonth() - 1, 1), new Date(today.getFullYear(), today.getMonth(), 1)];
+  const s = new Date(today); s.setDate(today.getDate() - 89); return [s, tomorrow];
+}
+function dayLabel(d) {
+  const t = ymd(new Date()), y = new Date(); y.setDate(y.getDate() - 1);
+  const k = ymd(d), long = d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' });
+  const wd = d.toLocaleDateString('tr-TR', { weekday: 'long' });
+  return k === t ? ['Bugün', `${long} ${wd}`] : k === ymd(y) ? ['Dün', `${long} ${wd}`] : [long, wd];
+}
+function openHistory() {
+  histOpen = true;
+  hRange = ghPeriod === 'month' ? 'month' : 'week';
+  hRepo = ''; hQ = ''; hOpen = new Set();
+  const BACK = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 3.5 5 8l4.5 4.5"/></svg>';
+  histEl.innerHTML = `<div class="hh"><button class="back" id="hback" type="button" title="Geri · Esc">${BACK}</button><h2>Commit Geçmişi</h2>` +
+    `<span class="seg" id="hrange"></span><span class="sp"></span><select class="hsel" id="hrepo" title="Repo"></select>` +
+    `<input class="hq" id="hq" placeholder="Commit ara…" autocomplete="off" spellcheck="false"></div>` +
+    `<div class="hsum" id="hsum"></div><div class="hchart" id="hchart"></div><div class="hlist" id="hlist"></div>`;
+  histEl.hidden = false;
+  $('#hback').addEventListener('mousedown', e => { e.preventDefault(); closeHistory(); });
+  $('#hrange').addEventListener('mousedown', e => {
+    const b = e.target.closest('[data-r]'); if (!b) return;
+    e.preventDefault(); hRange = b.dataset.r; hOpen = new Set(); renderHistoryBody(); $('#hlist').scrollTop = 0;
+  });
+  $('#hrepo').addEventListener('change', e => { hRepo = e.target.value; hOpen = new Set(); renderHistoryBody(); });
+  $('#hq').addEventListener('input', e => { hQ = e.target.value.trim(); renderHistoryBody(); });
+  $('#hchart').addEventListener('mousedown', e => {
+    const b = e.target.closest('[data-day]'); if (!b) return;
+    e.preventDefault(); hOpen.add(b.dataset.day); hFlash = b.dataset.day; renderHistoryBody();
+  });
+  $('#hlist').addEventListener('mousedown', e => {
+    const u = e.target.closest('[data-url]'), h = e.target.closest('[data-hday]');
+    if (u) { e.preventDefault(); post({ action: 'url', url: u.dataset.url }); }
+    else if (h) { e.preventDefault(); const k = h.dataset.hday; hOpen.has(k) ? hOpen.delete(k) : hOpen.add(k); renderHistoryBody(); }
+  });
+  renderHistoryBody();
+  post({ action: 'history' });
+}
+function closeHistory() { histOpen = false; histEl.hidden = true; histEl.innerHTML = ''; input.focus(); }
+function renderHistoryBody() {
+  if (!histOpen) return;
+  const n = v => Number(v || 0).toLocaleString('tr-TR');
+  $('#hrange').innerHTML = Object.keys(H_RANGES).map(k => `<button type="button" data-r="${k}" class="${k === hRange ? 'on' : ''}">${H_RANGES[k]}</button>`).join('');
+  const sumEl = $('#hsum'), chartEl = $('#hchart'), listEl2 = $('#hlist');
+  if (!hist) {
+    sumEl.innerHTML = ''; chartEl.innerHTML = '';
+    listEl2.innerHTML = `<div class="ge"><b>Yükleniyor…</b></div>`;
+    return;
+  }
+  const [s, e] = hBounds(hRange), t0 = s.getTime() / 1000, t1 = e.getTime() / 1000;
+  const inRange = (hist.commits || []).filter(c => c.t >= t0 && c.t < t1);
+  // repo menu: every repository of the range, busiest first
+  const repoCount = {}; for (const c of inRange) repoCount[c.repo] = (repoCount[c.repo] || 0) + 1;
+  const repos = Object.keys(repoCount).sort((a, b) => repoCount[b] - repoCount[a] || a.localeCompare(b));
+  if (hRepo && !repoCount[hRepo]) hRepo = '';
+  $('#hrepo').innerHTML = `<option value="">Tüm Repolar</option>` + repos.map(r => `<option value="${esc(r)}"${r === hRepo ? ' selected' : ''}>${esc(r)} (${n(repoCount[r])})</option>`).join('');
+  const ql = hQ.toLocaleLowerCase('tr-TR');
+  const list = inRange.filter(c => (!hRepo || c.repo === hRepo) &&
+    (!ql || `${c.subject} ${c.repo} ${c.sha}`.toLocaleLowerCase('tr-TR').includes(ql)));
+  // group by local day, newest first
+  const byDay = new Map();
+  for (const c of list) { const k = ymd(new Date(c.t * 1000)); if (!byDay.has(k)) byDay.set(k, []); byDay.get(k).push(c); }
+  const days = [...byDay.keys()].sort().reverse();
+  const added = list.reduce((a, c) => a + (c.added || 0), 0), deleted = list.reduce((a, c) => a + (c.deleted || 0), 0);
+  const topRepo = (() => { const m = {}; for (const c of list) m[c.repo] = (m[c.repo] || 0) + 1; return Object.keys(m).sort((a, b) => m[b] - m[a])[0]; })();
+  const cell = (cls, v, label) => `<span class="gs ${cls}"><b>${v}</b>${label}</span>`;
+  sumEl.innerHTML = cell('cm', n(list.length), 'Commit') + cell('add', '+' + n(added), 'Eklenen Satır') + cell('del', '−' + n(deleted), 'Silinen Satır') +
+    cell('', n(days.length), 'Aktif Gün') + cell('', days.length ? n(Math.round(list.length / days.length)) : '0', 'Günlük Ortalama') +
+    (topRepo && !hRepo ? `<span class="gs top"><b title="${esc(topRepo)}">${esc(topRepo)}</b>En Çok Commit</span>` : '');
+  // one bar per day of the range
+  const today = ymd(new Date()), max = Math.max(1, ...days.map(k => byDay.get(k).length));
+  let bars = '';
+  for (let d = new Date(s); d < e; d.setDate(d.getDate() + 1)) {
+    const k = ymd(d), cs = byDay.get(k) || [], c = cs.length, future = k > today;
+    const [a, b] = dayLabel(d);
+    const tip = future ? `${a} ${b}` : `${a} · ${b} · ${n(c)} commit · +${n(cs.reduce((x, y) => x + (y.added || 0), 0))} −${n(cs.reduce((x, y) => x + (y.deleted || 0), 0))}`;
+    const h = future || !c ? 2 : Math.max(5, Math.round(54 * c / max));
+    bars += `<i class="${future ? 'b-next' : !c ? 'b-zero' : ''}${k === today ? ' b-today' : ''}" style="height:${h}px" title="${esc(tip)}"${c ? ` data-day="${k}"` : ''}></i>`;
+  }
+  chartEl.innerHTML = bars;
+  if (!days.length) {
+    listEl2.innerHTML = `<div class="ge"><b>${hQ || hRepo ? 'Bu filtrelerle commit yok.' : H_EMPTY[hRange]}</b>${hQ || hRepo ? 'Aramayı ya da repoyu değiştirmeyi dene.' : ''}</div>`;
+    return;
+  }
+  // the newest day starts open; a search opens every matching day
+  if (!hOpen.size) hOpen.add(days[0]);
+  const CHEV2 = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 6.5 3 3 3-3"/></svg>';
+  listEl2.innerHTML = days.map(k => {
+    const cs = byDay.get(k), open = !!hQ || hOpen.has(k);
+    const [y, m, d] = k.split('-').map(Number), [a, b] = dayLabel(new Date(y, m - 1, d));
+    const rc = {}; for (const c of cs) rc[c.repo] = (rc[c.repo] || 0) + 1;
+    const rtop = Object.keys(rc).sort((p, q) => rc[q] - rc[p]);
+    const chips = rtop.slice(0, 3).map(r => `<span>${esc(r)}${rc[r] > 1 ? ' · ' + n(rc[r]) : ''}</span>`).join('') + (rtop.length > 3 ? `<span>+${rtop.length - 3}</span>` : '');
+    const add = cs.reduce((x, c) => x + (c.added || 0), 0), del = cs.reduce((x, c) => x + (c.deleted || 0), 0);
+    const rows = open ? `<div class="hdc">${cs.sort((p, q) => q.t - p.t).map(c => {
+      const tm = new Date(c.t * 1000).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+      const inner = `${avatar(c.repo)}<span class="gpm"><span class="pt">${esc(c.subject)}</span><span class="a"><span class="tm">${tm}</span> · <code>${esc(String(c.sha).slice(0, 7))}</code><span class="rp">${esc(c.repo)}</span> · <span class="pl">+${n(c.added)}</span><span class="mi">−${n(c.deleted)}</span></span></span>`;
+      return c.url ? `<button class="gp" data-url="${esc(c.url)}" type="button" title="${esc(c.url)}">${inner}${GO}</button>` : `<div class="gp">${inner}</div>`;
+    }).join('')}</div>` : '';
+    return `<section class="hd${open ? ' open' : ''}${hFlash === k ? ' flash' : ''}" id="hd-${k}"><button class="hdh" type="button" data-hday="${k}">` +
+      `<span class="dt"><b>${esc(a)}</b><small>${esc(b)}</small></span><span class="cnt">${n(cs.length)} commit</span>` +
+      `<span class="ln"><span class="pl">+${n(add)}</span><span class="mi">−${n(del)}</span></span><span class="rps">${chips}</span>${CHEV2}</button>${rows}</section>`;
+  }).join('');
+  if (hFlash) { const el = document.getElementById('hd-' + hFlash); if (el) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); hFlash = null; }
+}
+
 window.Projects = {
+  history(h) { hist = h && typeof h === 'object' ? h : { commits: [] }; renderHistoryBody(); },
   setGitHub(g) { gh = g && typeof g === 'object' ? g : null; renderGitHub(); },
   setItems(data) {
     items = Array.isArray(data.items) ? data.items : [];
@@ -778,6 +1020,7 @@ window.Projects = {
   open() {
     input.value = q = ''; kind = 'all'; sort = 'recent'; selPath = null;
     if (ghOpen) { ghOpen = null; renderGitHub(); } // lists start closed on every open
+    if (histOpen) closeHistory();
     refresh();
     listEl.scrollTop = 0;
     app.classList.remove('show');
