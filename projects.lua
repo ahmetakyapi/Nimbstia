@@ -239,6 +239,10 @@ local function validPath(path)
   return a ~= nil and a.mode == "directory"
 end
 
+local function shellQuote(s) return "'" .. s:gsub("'", "'\\''") .. "'" end
+-- An AppleScript string literal.
+local function asString(s) return '"' .. s:gsub('\\', '\\\\'):gsub('"', '\\"') .. '"' end
+
 local function run(args)
   -- No print() here: async callbacks must not write to a possibly dead hs.ipc client.
   Keep.task(OPEN, nil, args)
@@ -282,6 +286,12 @@ local function handle(p, msg)
     if msg.dirty then fetchWorktree(path) end
   elseif a == "vscode" then
     launch(p, path, { "-b", "com.microsoft.VSCode", path })
+  elseif a == "claude" then
+    -- a new Terminal window in the repo with Claude Code started in it
+    recordOpen(path)
+    p:hide(false)
+    local cmd = "cd " .. shellQuote(path) .. " && claude"
+    hs.osascript.applescript('tell application "Terminal"\n  activate\n  do script ' .. asString(cmd) .. '\nend tell')
   elseif a == "terminal" then
     launch(p, path, { "-a", "Terminal", path })
   elseif a == "github" then

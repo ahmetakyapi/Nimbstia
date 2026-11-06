@@ -149,7 +149,7 @@ lightshotWatcher = hs.application.watcher.new(function(_, ev, app)
   if Shot and ev == hs.application.watcher.launched and app and app:bundleID() == LIGHTSHOT then stopLightshot(app) end
 end):start()
 
--- ⌃⇧P: proje açıcı (~/Projects altındaki depolar; ↩ VS Code, ⌘↩ Terminal). Ayrıntı: projects.lua / projects.html.
+-- ⌃⇧P: proje açıcı (~/Projects altındaki repolar; ↩ VS Code, ⌘↩ Terminal). Ayrıntı: projects.lua / projects.html.
 Projects = load("projects")
 if Projects then hs.hotkey.bind({ "ctrl", "shift" }, "p", Projects.toggle) end
 

@@ -377,6 +377,7 @@ const ICONS = {
   main:   P('<circle cx="4.8" cy="12.2" r="1.7"/><circle cx="11.2" cy="6.2" r="1.7"/>', '<path d="M4.8 5.6v4.8M11.2 7.9c0 2.2-2.2 2.6-4.7 3.3"/><circle cx="4.8" cy="12.2" r="1.7"/><circle cx="11.2" cy="6.2" r="1.7"/>' + DOT(4.8, 3.8, 1.9)),
   copy:   P('<circle cx="4.8" cy="12.6" r="1.7"/><circle cx="11.2" cy="12.6" r="1.7"/>', '<path d="M8 5.3v2.1M8 7.4c0 2.1-3.2 1.7-3.2 3.5M8 7.4c0 2.1 3.2 1.7 3.2 3.5"/><circle cx="4.8" cy="12.6" r="1.7"/><circle cx="11.2" cy="12.6" r="1.7"/>' + DOT(8, 3.4, 1.9)),
   code:   P('<rect x="5" y="3" width="6" height="10" rx="1.5"/>', '<path d="M6 3H4.6c-.6 0-1.1.5-1.1 1.1v7.8c0 .6.5 1.1 1.1 1.1H6M10 3h1.4c.6 0 1.1.5 1.1 1.1v7.8c0 .6-.5 1.1-1.1 1.1H10"/>' + DOT(8, 8, 1)),
+  spark:  P('<path d="M8 2.2c.5 3 1.3 3.8 4.3 4.3-3 .5-3.8 1.3-4.3 4.3-.5-3-1.3-3.8-4.3-4.3 3-.5 3.8-1.3 4.3-4.3z"/>', '<path d="M8 2.2c.5 3 1.3 3.8 4.3 4.3-3 .5-3.8 1.3-4.3 4.3-.5-3-1.3-3.8-4.3-4.3 3-.5 3.8-1.3 4.3-4.3zM12.4 10.6v3M10.9 12.1h3"/>'),
   term:   P('<path d="M1.8 5.4V4.8c0-1.1.9-2 2-2h8.4c1.1 0 2 .9 2 2v.6z"/>', '<rect x="1.8" y="2.8" width="12.4" height="10.4" rx="2"/><path d="m4.8 7.6 1.8 1.5-1.8 1.5M8.4 10.8h2.6"/>'),
   gh:     P('<circle cx="8" cy="8" r="2.6"/>', '<circle cx="8" cy="8" r="2.6"/><path d="M1.8 8h3.6M10.6 8h3.6"/>'),
   folder: P('<path d="M2 4.8c0-.9.7-1.6 1.6-1.6h2.3c.4 0 .7.1.9.4l.9 1.1h4.7c.9 0 1.6.7 1.6 1.6v.7H2z"/>', '<path d="M2 4.8c0-.9.7-1.6 1.6-1.6h2.3c.4 0 .7.1.9.4l.9 1.1h4.7c.9 0 1.6.7 1.6 1.6v5.3c0 .9-.7 1.6-1.6 1.6H3.6c-.9 0-1.6-.7-1.6-1.6z"/>'),
@@ -462,10 +463,10 @@ const titleOf = p => p.branch || p.name;
 // and old clean copies that could go. Whether a folder is the main clone or a copy stays a tag.
 const KINDS = [
   { key: 'all',    label: 'Tümü',            icon: 'all',   tip: 'Bütün projeler',                                         test: () => true },
-  { key: 'dirty',  label: 'Commit’lenmemiş', icon: 'dirty', tip: 'Commit’lenmemiş değişikliği ya da yeni dosyası olanlar',  test: p => p.dirty > 0 },
-  { key: 'ahead',  label: 'Push Bekleyen',   icon: 'up',    tip: 'Uzak dala gönderilmemiş commit’i olanlar',                test: p => p.ahead > 0 },
-  { key: 'behind', label: 'Geride',          icon: 'down',  tip: 'Uzak dalda henüz çekilmemiş commit olanlar',             test: p => p.behind > 0 },
-  { key: 'stale',  label: 'Temizlenebilir',  icon: 'broom', tip: '7+ gündür hareketsiz, temiz çalışma kopyaları (bilgi amaçlı, hiçbir şey silinmez)', test: p => isStale(p) },
+  { key: 'dirty',  label: 'Değişiklik Var',  icon: 'dirty', tip: 'Henüz commit’lenmemiş değişikliği ya da yeni dosyası olan repolar', test: p => p.dirty > 0 },
+  { key: 'ahead',  label: 'Push Bekleyen',   icon: 'up',    tip: 'Commit’lenmiş ama GitHub’a gönderilmemiş commit’i olan repolar',  test: p => p.ahead > 0 },
+  { key: 'behind', label: 'Pull Bekleyen',   icon: 'down',  tip: 'GitHub’da yeni commit’i olan, henüz çekilmemiş repolar',           test: p => p.behind > 0 },
+  { key: 'stale',  label: 'Hareketsiz',      icon: 'broom', tip: '7+ gündür dokunulmamış, değişikliği olmayan kopyalar (yalnız bilgi, hiçbir şey silinmez)', test: p => isStale(p) },
 ];
 const SORTS = [{ key: 'recent', label: 'Son Kullanılan' }, { key: 'name', label: 'Ad' }];
 const isDefault = () => kind === 'all';
@@ -592,13 +593,13 @@ function renderPreview() {
   const p = view[sel];
   if (!p) { pvEl.innerHTML = ''; return; }
   selPath = p.path;
-  const acts = btn('vscode', 'code', 'VS Code\'da Aç', '↩', 'primary') + btn('terminal', 'term', 'Terminal', '') + btn('github', 'gh', 'GitHub Desktop', '') + btn('reveal', 'folder', 'Finder', '') +
+  const acts = btn('vscode', 'code', 'VS Code\'da Aç', '↩', 'primary') + btn('claude', 'spark', 'Claude', '⌥↩') + btn('terminal', 'term', 'Terminal', '⌘↩') + btn('github', 'gh', 'GitHub Desktop', '') + btn('reveal', 'folder', 'Finder', '') +
     '<span class="sp"></span>' + btn('pin', p.pinned ? 'pin' : 'pinO', p.pinned ? 'Sabitli' : 'Sabitle', '');
   const tags = [];
-  if (p.dirty > 0) tags.push(`<span class="tag warn">${num(p.dirty)} Commit’lenmemiş</span>`);
+  if (p.dirty > 0) tags.push(`<span class="tag warn">${num(p.dirty)} Değişiklik</span>`);
   if (p.ahead > 0) tags.push(`<span class="tag main">${num(p.ahead)} Push Bekliyor</span>`);
-  if (p.behind > 0) tags.push(`<span class="tag">${num(p.behind)} Geride</span>`);
-  if (isStale(p)) tags.push('<span class="tag stale" title="Yalnız bilgi: 7+ gündür hareketsiz, temiz bir çalışma kopyası. Hiçbir şey silinmez.">Temizlenebilir</span>');
+  if (p.behind > 0) tags.push(`<span class="tag">${num(p.behind)} Pull Bekliyor</span>`);
+  if (isStale(p)) tags.push('<span class="tag stale" title="Yalnız bilgi: 7+ gündür dokunulmamış, değişikliği olmayan bir kopya. Hiçbir şey silinmez.">Hareketsiz</span>');
 
   const lg = logs[p.path];
   let commits = '', commitSum = '';
@@ -674,7 +675,7 @@ function wantLog(p) {
 }
 
 function renderFooter() {
-  const h = ['<span><kbd>↩</kbd>VS Code</span>', '<span><kbd>⌘↩</kbd>Terminal</span>', '<span><kbd>⌘C</kbd>Yolu Kopyala</span>'];
+  const h = ['<span><kbd>↩</kbd>VS Code</span>', '<span><kbd>⌥↩</kbd>Claude</span>', '<span><kbd>⌘↩</kbd>Terminal</span>', '<span><kbd>⌘C</kbd>Yolu Kopyala</span>'];
   footEl.innerHTML = h.join('') + `<span class="sp"></span><span class="cnt"><b>${num(view.length)}</b>Proje</span>`;
 }
 
@@ -739,7 +740,7 @@ document.addEventListener('keydown', e => {
   else if (k === 'PageDown') select(sel + 8);
   else if (k === 'PageUp') select(sel - 8);
   else if (m && k === 'ArrowUp') select(0);
-  else if (k === 'Enter') act(m ? 'terminal' : 'vscode');
+  else if (k === 'Enter') act(m ? 'terminal' : e.altKey ? 'claude' : 'vscode');
   else if (k === 'Escape') {
     if (q) { input.value = q = ''; refresh(); }
     else if (!isDefault()) clearAll();
