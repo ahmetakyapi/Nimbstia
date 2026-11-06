@@ -108,19 +108,121 @@ local function vpnService()
   return vpnName or nil
 end
 
--- Connect or disconnect through macOS (scutil), then re-check right away.
+-- "scutil --nc status" → status word ("Connected", "Disconnected", "Connecting", …) and, while
+-- connected, the epoch second the tunnel came up (LastStatusChangeTime, local "MM/DD/YYYY HH:MM:SS").
+local function parseNcStatus(out)
+  out = out or ""
+  local status = out:match("^%s*(%a+)")
+  local since
+  local mo, dd, yy, hh, mi, ss = out:match("LastStatusChangeTime%s*:%s*(%d+)/(%d+)/(%d+)%s+(%d+):(%d+):(%d+)")
+  if status == "Connected" and mo then
+    since = os.time({ year = tonumber(yy), month = tonumber(mo), day = tonumber(dd),
+      hour = tonumber(hh), min = tonumber(mi), sec = tonumber(ss) })
+  end
+  return status, since
+end
+
+local function ncStatus(svc, cb)
+  return Keep.task("/usr/sbin/scutil", function(_, out) cb(parseNcStatus(out)) end, { "--nc", "status", svc })
+end
+
+local function applyNc(status, since)
+  if status == "Connected" then state.vpnSince = since or state.vpnSince or os.time()
+  elseif status == "Disconnected" or status == "Invalid" then state.vpnSince = nil end
+  state.ncStatus = status
+end
+
+-- FortiClient's tunnel only starts when FortiTray opens the session (it holds the saved login);
+-- "scutil --nc start" alone brings the extension up and it exits at once. So for a FortiClient
+-- service, press "Connect to <profile>" in FortiTray's menu bar menu through Accessibility.
+local function fortiConnect(done)
+  local tray
+  for _, a in ipairs(hs.application.runningApplications()) do
+    if (a:bundleID() or ""):match("^com%.fortinet%..*[Tt]ray") or a:name() == "FortiTray" then tray = a; break end
+  end
+  if not tray then return done(false) end
+  local ok, item = pcall(function()
+    return hs.axuielement.applicationElementForPID(tray:pid()):attributeValue("AXExtrasMenuBar"):attributeValue("AXChildren")[1]
+  end)
+  if not ok or not item then return done(false) end
+  item:performAction("AXPress")
+  local tries = 0
+  local function pick()
+    tries = tries + 1
+    local menu = (item:attributeValue("AXChildren") or {})[1]
+    if not menu then
+      if tries < 10 then return Keep.after(0.1, pick) end
+      return done(false)
+    end
+    for _, m in ipairs(menu:attributeValue("AXChildren") or {}) do
+      if (m:attributeValue("AXTitle") or ""):match("^Connect to ") and m:attributeValue("AXEnabled") then
+        m:performAction("AXPress")
+        return done(true)
+      end
+    end
+    menu:performAction("AXCancel")
+    done(false)
+  end
+  Keep.after(0.15, pick)
+end
+
+local function isForti(svc)
+  local out = hs.execute("/usr/sbin/scutil --nc list") or ""
+  for line in out:gmatch("[^\n]+") do
+    if line:find('"' .. svc .. '"', 1, true) then return line:find("fortinet", 1, true) ~= nil end
+  end
+  return false
+end
+
+-- Poll the service until it reaches the wanted state (or gives up), then refresh the card at once
+-- instead of waiting for the next periodic check.
+local settleTimer
+local function settle(svc, connect)
+  local deadline = os.time() + (connect and 25 or 8)
+  local function finish(reached)
+    state.vpnBusy = nil
+    if not reached then hs.alert.show(connect and "VPN bağlanamadı" or "VPN bağlantısı kesilemedi", 2) end
+    state.vpn = state.ncStatus == "Connected"
+    render()
+    checking = false -- the next check must run now, not be skipped by an older one
+    M.check(false)
+  end
+  local function poll()
+    ncStatus(svc, function(status, since)
+      applyNc(status, since)
+      if (connect and status == "Connected") or (not connect and status == "Disconnected") then return finish(true) end
+      if os.time() >= deadline then return finish(false) end
+      settleTimer = Keep.after(0.5, poll)
+    end)
+  end
+  poll()
+end
+
+-- Connect or disconnect, then follow the service until it settles.
 function M.vpn(connect)
   local svc = vpnService()
   if not svc then hs.alert.show("VPN hizmeti bulunamadı", 1.5); return end
+  if state.vpnBusy then return end
   state.vpnBusy = connect and "Bağlanıyor…" or "Bağlantı Kesiliyor…"
   if M.pushPopover then M.pushPopover() end
-  Keep.task("/usr/sbin/scutil", function(code)
-    if code ~= 0 then hs.alert.show(connect and "VPN bağlanamadı" or "VPN bağlantısı kesilemedi", 1.5) end
-    -- NetworkExtension needs a moment; check a few times until the state settles.
-    for _, t in ipairs({ 1.5, 4, 8 }) do
-      Keep.after(t, function() M.check(false); if t == 8 then state.vpnBusy = nil; render() end end)
-    end
-  end, { "--nc", connect and "start" or "stop", svc })
+  local function viaScutil()
+    Keep.task("/usr/sbin/scutil", function() settle(svc, connect) end, { "--nc", connect and "start" or "stop", svc })
+  end
+  if connect and isForti(svc) then
+    -- FortiTray's menu takes focus and the hub closes on focus loss; bring it back to show progress.
+    local wasOpen = M.popover and M.popover.visible
+    fortiConnect(function(pressed)
+      if wasOpen then Keep.after(0.3, function() if not M.popover.visible then M.popover:show() end end) end
+      if pressed then return settle(svc, true) end
+      -- FortiTray not reachable: hand over to the FortiClient window.
+      state.vpnBusy = nil
+      render()
+      hs.application.launchOrFocusByBundleID("com.fortinet.FortiClient")
+      hs.alert.show("FortiClient açıldı · bağlantıyı oradan başlatın", 2)
+    end)
+  else
+    viaScutil()
+  end
 end
 
 local checkStarted = 0
@@ -129,6 +231,8 @@ function M.check(manual)
   -- A check that never reported back (task failed to start or hung) must not freeze the dot.
   if checking and os.time() - checkStarted < 15 then return end
   checking, checkStarted = true, os.time()
+  local svc = vpnService()
+  if svc then ncStatus(svc, applyNc) end -- keeps the connected-since time for the hub
   local t0 = hs.timer.secondsSinceEpoch()
   local started = Keep.task("/sbin/route", function(_, out)
     local iface = (out or ""):match("interface:%s*(%S+)")
