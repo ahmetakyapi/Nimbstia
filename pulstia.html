@@ -492,6 +492,9 @@ function renderMain() {
         ? `<button class="vbtn" data-act="vpn" data-v="disconnect" type="button">${power}Bağlantıyı Kes</button>`
         : `<button class="vbtn solid" data-act="vpn" data-v="connect" type="button">${power}Bağlan</button>`;
     const tip = 'Yeniden Kontrol Et' + (dev.checkedAgo ? ' · ' + dev.checkedAgo : '');
+    // How long the tunnel has been up; macOS reports the moment it connected.
+    const upMin = v && v.connected && !v.busy && typeof v.since === 'number' ? Math.max(1, Math.floor((Date.now() / 1000 - v.since) / 60)) : null;
+    const upVal = upMin == null ? '' : upMin < 60 ? `${upMin}<em>dk</em>` : `${Math.floor(upMin / 60)}<em>sa</em> ${upMin % 60}<em>dk</em>`;
     const vTitle = esc(dev.title || 'VPN Bağlantısı'), vChip = `<span class="vchip"><i></i>${esc(label)}</span>`;
     const vMeta = `${dev.host ? `<span class="mono">${esc(dev.host)}</span>` : ''}${tone === 'ok' && ms != null ? `<span>${ms} ms</span>` : ''}${dev.checkedAgo ? `<span>${esc(dev.checkedAgo)}</span>` : ''}`;
     const vRefresh = `<button class="ib sm" data-act="check" type="button" data-tip="${esc(tip)}" aria-label="Yeniden Kontrol Et">${ICONS.refresh}</button>`;
@@ -503,6 +506,7 @@ function renderMain() {
     row1.push(`<section class="w vpn ${tone}">
       <div class="vtr"><span class="vic">${ICONS.shield}</span><div class="vt">${esc(dev.title || 'VPN Bağlantısı')}</div>${vChip}</div>
       <div class="vbody">
+        ${upVal ? `<div class="vlat"><span>Bağlantı Süresi</span><span class="sp"></span><b>${upVal}</b></div>` : ''}
         <div class="vlat"><span>Gecikme${quality ? ` · <i>${quality}</i>` : ''}</span><span class="sp"></span>${sig}<b>${latVal}</b></div>
         <div class="vfoot">${dev.host ? `<span class="mono" title="${esc(dev.host)}">${esc(dev.host)}</span>` : ''}${dev.checkedAgo ? `<span class="ago">${esc(dev.checkedAgo)}</span>` : ''}<span class="sp"></span>${vRefresh}</div>
       </div>

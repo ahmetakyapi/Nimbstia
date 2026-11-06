@@ -486,7 +486,7 @@ local function popoverData()
       checkedAgo = state.checkedAt > 0 and ago(state.checkedAt) or "", ms = state.devMs,
       state = state.vpnBusy and "busy" or h }
     d.forti = hs.application.pathForBundleID("com.fortinet.FortiClient") ~= nil
-    if vpnService() then d.vpn = { connected = state.vpn == true, busy = state.vpnBusy } end
+    if vpnService() then d.vpn = { connected = state.vpn == true, busy = state.vpnBusy, since = state.vpn and state.vpnSince or nil } end
   end
   local u = Claude.usage()
   local peak

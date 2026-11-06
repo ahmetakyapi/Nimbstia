@@ -39,7 +39,7 @@ exports.GH = { commits: 12, added: 1840, deleted: 412, prsToday: 2, updatedAgo: 
   openCount: 2, open: [{ owner: 'ahmetakyapi', repo: 'Nimbstia', number: 14, title: 'feat: control center hub', author: 'ahmetakyapi', url: G }, { owner: 'acme', repo: 'website', number: 88, title: 'docs: refresh landing copy', author: 'ahmetakyapi', url: G, draft: true }] };
 exports.POP = { health: 'ok', status: { text: 'Her Şey Yolunda', tone: 'ok' },
   dev: { name: 'DEV', title: 'Office VPN', host: '10.0.0.10', status: 'Bağlı · 18 ms', checkedAgo: 'az önce', ms: 18 },
-  vpn: { connected: true }, github: exports.GH, forti: false,
+  vpn: { connected: true, since: Math.floor(Date.now() / 1000) - 4520 }, github: exports.GH, forti: false,
   ports: [{ port: 3000, cmd: 'node', folder: 'Nimbstia-site' }, { port: 5173, cmd: 'node', folder: 'design-system' }, { port: 8000, cmd: 'Python', folder: 'api-server' }],
   claude: { plan: 'Max', updatedAgo: '2 dk önce', limits: [{ label: 'Haftalık Limit', percent: 33, resets: 'Cumartesi 12:00', today: 7 }, { label: 'Oturum Limiti', percent: 71, resets: '14:20' }],
     sessions: [{ name: 'Nimbstia docs', busy: true, url: 'https://claude.ai' }, { name: 'api-server', busy: true, url: 'https://claude.ai' }, { name: 'website', busy: false, url: 'https://claude.ai' }] },
