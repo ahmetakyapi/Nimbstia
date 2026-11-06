@@ -308,7 +308,20 @@ button.ss:hover .go{color:var(--text);transform:translate(2px,-2px)}
 .vtr{gap:8px!important}
 .vic{flex:none;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;color:var(--vc);background:color-mix(in srgb,var(--vc) 14%,transparent)}
 .vic svg{width:14px;height:14px}
-.vtr .vt{flex:1;font-size:15.5px}
+.vtr .vt{flex:1;font-family:inherit;font-size:13px;font-weight:650;letter-spacing:-.01em}
+.vbody{flex:1;display:flex;flex-direction:column;justify-content:center;gap:9px;margin-top:12px;min-width:0}
+.vlat{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:550;color:var(--faint);min-width:0}
+.vlat i{font-style:normal;color:color-mix(in srgb,var(--vc) 75%,var(--text))}
+.vlat .sp{flex:1}
+.vlat .sig{height:13px}
+.vlat b{font:560 15px/1 var(--font-display);letter-spacing:-.02em;color:var(--text);font-variant-numeric:tabular-nums;white-space:nowrap}
+.vlat b em{font-style:normal;font-size:11.5px;font-weight:600;color:var(--faint);margin-left:2px}
+.vfoot{display:flex;align-items:center;gap:6px;min-width:0;font-size:11px;color:var(--faint);white-space:nowrap}
+.vfoot .mono{font:450 11px/1.4 var(--font-mono);overflow:hidden;text-overflow:ellipsis;min-width:0}
+.vfoot .ago{flex:none}
+.vfoot .ago::before{content:"·";margin-right:6px;opacity:.6}
+.vfoot .sp{flex:1}
+.vfoot .ib{margin:-4px -6px -4px 0}
 .vmeta{display:flex;align-items:center;gap:6px;margin:8px 0 0;min-width:0}
 .vmeta .vh{flex-wrap:nowrap;overflow:hidden}
 .vmeta .vh span:last-child{overflow:hidden;text-overflow:ellipsis}
@@ -484,10 +497,16 @@ function renderMain() {
     const vRefresh = `<button class="ib sm" data-act="check" type="button" data-tip="${esc(tip)}" aria-label="Yeniden Kontrol Et">${ICONS.refresh}</button>`;
     const vMetaShort = `${dev.host ? `<span class="mono">${esc(dev.host)}</span>` : ''}${tone === 'ok' && ms != null ? `<span>${ms} ms</span>` : (dev.checkedAgo ? `<span>${esc(dev.checkedAgo)}</span>` : '')}`;
     parts.vpn = { tone, title: vTitle, chip: vChip, meta: vMetaShort, refresh: vRefresh, action, connected: !!(v && v.connected), label };
+    // Same rhythm as the Claude card next to it: a labelled value with its meter, then a small meta row.
+    const quality = tone !== 'ok' ? '' : ms == null ? '' : ms < 60 ? 'Çok İyi' : ms < 150 ? 'İyi' : 'Yavaş';
+    const latVal = tone === 'ok' && ms != null ? `${ms}<em>ms</em>` : '–';
     row1.push(`<section class="w vpn ${tone}">
-      <div class="vtr"><span class="vic">${ICONS.shield}</span><div class="vt">${esc(dev.title || 'VPN Bağlantısı')}</div><span class="vchip"><i></i>${esc(label)}</span></div>
-      <div class="vmeta"><div class="vh">${dev.host ? `<span class="mono">${esc(dev.host)}</span>` : ''}${tone === 'ok' && ms != null ? `<span>${ms} ms</span>` : ''}${dev.checkedAgo ? `<span>${esc(dev.checkedAgo)}</span>` : ''}</div><button class="ib sm" data-act="check" type="button" data-tip="${esc(tip)}" aria-label="Yeniden Kontrol Et">${ICONS.refresh}</button></div>
-      <span style="flex:1"></span>${action}</section>`);
+      <div class="vtr"><span class="vic">${ICONS.shield}</span><div class="vt">${esc(dev.title || 'VPN Bağlantısı')}</div>${vChip}</div>
+      <div class="vbody">
+        <div class="vlat"><span>Gecikme${quality ? ` · <i>${quality}</i>` : ''}</span><span class="sp"></span>${sig}<b>${latVal}</b></div>
+        <div class="vfoot">${dev.host ? `<span class="mono" title="${esc(dev.host)}">${esc(dev.host)}</span>` : ''}${dev.checkedAgo ? `<span class="ago">${esc(dev.checkedAgo)}</span>` : ''}<span class="sp"></span>${vRefresh}</div>
+      </div>
+      ${action}</section>`);
   }
   if (d.claude) {
     const c = d.claude, lims = Array.isArray(c.limits) ? c.limits : [], lim = lims[0], sess = Array.isArray(c.sessions) ? c.sessions : [];

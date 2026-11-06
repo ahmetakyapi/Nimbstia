@@ -144,6 +144,8 @@
     'Değişiklik Var': 'Changed', 'Pull Bekleyen': 'Needs Pull', 'Hareketsiz': 'Idle', 'Claude': 'Claude', 'Henüz commit’lenmemiş değişikliği ya da yeni dosyası olan repolar': 'Repos with uncommitted changes or new files', 'Commit’lenmiş ama GitHub’a gönderilmemiş commit’i olan repolar': 'Repos with commits not pushed to GitHub yet', 'GitHub’da yeni commit’i olan, henüz çekilmemiş repolar': 'Repos with new commits on GitHub not pulled yet', '7+ gündür dokunulmamış, değişikliği olmayan kopyalar (yalnız bilgi, hiçbir şey silinmez)': 'Clean copies untouched for 7+ days (info only, nothing is deleted)',
     // hub: CPU gauge and its detail
     'İşlemci': 'CPU', 'İşlemci Kullanımı': 'CPU Usage', 'Neyin ne kadar işlemci kullandığını gör': 'See what uses the CPU',
+    // hub: VPN card
+    'Gecikme': 'Latency', 'Çok İyi': 'Excellent', 'İyi': 'Good', 'Yavaş': 'Slow',
     "Etkinlik İzleyicisi'nde Aç": 'Open in Activity Monitor', 'Çalışıyor': 'Running', 'Boşta': 'Idle',
     "claude.ai'de aç": 'Open on claude.ai', 'Claude Oturumları': 'Claude Sessions', 'Açık oturum yok.': 'No open sessions.',
     "Bir oturuma tıklayınca claude.ai'de açılır.": 'Click a session to open it on claude.ai.',
