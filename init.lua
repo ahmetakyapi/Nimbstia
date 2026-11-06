@@ -67,7 +67,7 @@ if Layouts then hs.hotkey.bind({ "ctrl" }, "space", Layouts.toggle) end
 -- Window snapping (like Win+arrow): ⌃⌥← / ⌃⌥→ cycle the width ½ → ⅓ → ⅔ on repeated presses,
 -- ⌃⌥↑ top half, ⌃⌥↓ bottom half, ⌃⌥↩ full, ⌃⌥C center, ⌃⌥⌘←/→ other screen, ⌃⌥Z undo.
 hs.window.animationDuration = 0
--- A hung app must not freeze ⌃. or ⌃Space while we ask it for its windows (Accessibility timeout, seconds).
+-- A hung app must not freeze ⌘. or ⌃Space while we ask it for its windows (Accessibility timeout, seconds).
 hs.window.timeout(0.5)
 local MOD = { "ctrl", "alt" }
 local WIDTHS = { 1 / 2, 1 / 3, 2 / 3 }
@@ -123,15 +123,17 @@ hs.hotkey.bind({ "ctrl", "alt", "cmd" }, "left",  toScreen("prev"))
 
 
 
--- ⌃.: ekran görüntüsü (Lightshot yerine, Apple Silicon'a yerel). Alan seç, çiz, ⌘S kaydet, ⌘C/⌃C/↩ kaydet + kopyala.
+-- ⌘.: ekran görüntüsü (Lightshot yerine, Apple Silicon'a yerel). Alan seç, çiz, ⌘S kaydet, ⌘C/⌃C/↩ kaydet + kopyala.
 -- Ayrıntı: shot.lua / shot.html. Görüntüler ~/Documents/Screenshots'a kaydedilir; ⌃V panelinde de görünür.
 Shot = load("shot")
--- ⌃. (Ctrl+period) opens Clipstia. An event tap sees the key before any app or open menu, so it also
--- works while a menu is open (and the menu ends up in the shot). ⌘. was dropped: it is macOS' cancel
--- key and VS Code's Quick Fix.
+-- ⌘. (Cmd+period) opens Clipstia; ⌃. still works as the old shortcut. An event tap sees the key before
+-- any app or open menu, so it also works while a menu is open (and the menu ends up in the shot).
+-- This takes ⌘. away from apps (macOS cancel key, VS Code Quick Fix) — chosen on purpose.
 if Shot then
   shotTap = hs.eventtap.new({ hs.eventtap.event.types.keyDown }, function(e)
-    if hs.keycodes.map[e:getKeyCode()] ~= "." or not e:getFlags():containExactly({ "ctrl" }) then return false end
+    if hs.keycodes.map[e:getKeyCode()] ~= "." then return false end
+    local f = e:getFlags()
+    if not (f:containExactly({ "cmd" }) or f:containExactly({ "ctrl" })) then return false end
     local ok, err = pcall(Shot.trigger) -- heavy work runs after the tap returns
     if not ok then print("shot: " .. tostring(err)) end
     return true
@@ -178,7 +180,7 @@ end
 local HELP = {
   { keys = "⌃V", label = "Pastia · Pano Geçmişi" },
   { keys = "⌃Space", label = "Panestia · Pencere Düzenleri" },
-  { keys = "⌃.", label = "Clipstia · Ekran Görüntüsü (⌘S Kaydet, ⌃C Kopyala)" },
+  { keys = "⌘.", label = "Clipstia · Ekran Görüntüsü (⌘S Kaydet, ⌃C Kopyala)" },
   { keys = "⌃⇧P", label = "Repostia · Projeler" },
   { keys = "⌃⌥← / →", label = "Sola / Sağa Yasla (Tekrar Bas: ⅓ · ⅔)" },
   { keys = "⌃⌥↑ / ↓ / ↩", label = "Üst Yarı / Alt Yarı / Tam Ekran" },

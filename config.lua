@@ -15,7 +15,7 @@ local C = {
   jiraBase = nil,
   -- Status menu reachability check over the VPN: { name, host, port }. nil = no VPN/DEV indicator.
   devCheck = nil,
-  -- Where screenshots (⌃.) are saved; the clipboard panel lists this folder too.
+  -- Where screenshots (⌘.) are saved; the clipboard panel lists this folder too.
   screenshotDir = HOME .. "/Documents/Screenshots",
 }
 

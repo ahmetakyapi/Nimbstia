@@ -1,6 +1,6 @@
 -- Clipstia: Lightshot-style screenshot tool. Freezes the screen under the mouse, the user drags a region
 -- and annotates it (shot.html does all UI/drawing), then a full-resolution PNG is saved and optionally copied.
--- API: M.trigger() (⌃.), M.start() (toggle), M.close(), M.webview, M.visible, M.lastOpenMs, M.destroy()
+-- API: M.trigger() (⌘.), M.start() (toggle), M.close(), M.webview, M.visible, M.lastOpenMs, M.destroy()
 --
 -- Memory: encoding a full-screen hs.image (saveToFile / encodeAsURLString) leaks ~270 MB of native memory
 -- per call in Hammerspoon 1.1, and loading a full-screen TIFF with hs.image.imageFromPath leaks ~58 MB.
@@ -231,7 +231,7 @@ function M.menuOpen()
   return false
 end
 
--- Entry point for ⌃. : if a menu is open, freeze the screen right now (the menu stays in the
+-- Entry point for ⌘. : if a menu is open, freeze the screen right now (the menu stays in the
 -- shot), close the menu with Escape and open the editor a moment later, so that Escape can
 -- never reach the overlay.
 function M.trigger()
