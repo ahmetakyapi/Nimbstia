@@ -75,10 +75,15 @@ end
 function M.usage()
   local d = readState()
   if not d then return nil end
+  -- Both sources can exist at once: ~/.claude.json is refreshed only now and then, while the status
+  -- line rewrites rate-limits.json after every response. Take whichever was fetched last.
   local u = d.cachedUsageUtilization or d.cachedUsage or d.usageUtilization
-  if type(u) ~= "table" then
-    local rl = readRateLimits()
-    if rl then u = { utilization = rl.rate_limits, fetchedAtMs = tonumber(rl.fetchedAt) and rl.fetchedAt * 1000 } end
+  if type(u) ~= "table" then u = nil end
+  local rl = readRateLimits()
+  if rl then
+    local rlMs = (tonumber(rl.fetchedAt) or 0) * 1000
+    local uMs = u and tonumber(u.fetchedAtMs or u.fetched_at_ms) or 0
+    if not u or rlMs >= uMs then u = { utilization = rl.rate_limits, fetchedAtMs = rlMs > 0 and rlMs or nil } end
   end
   local acc = d.oauthAccount or {}
   local out = { plan = acc.planDisplayName, limits = {},
