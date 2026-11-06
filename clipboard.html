@@ -570,7 +570,7 @@ function renderPreview() {
   if (c === 'image' || c === 'shot') acts += btn('editImage', 'edit', 'Düzenle', '⌘E', 'primary-soft');
   if (c === 'image' || c === 'shot') acts += btn('reveal', 'open', 'Finder', '⌘O');
   acts += '<span class="sp"></span>';
-  if (c !== 'shot') acts += btn('pin', it.pinned ? 'pin' : 'pinO', it.pinned ? 'Sabitli' : 'Sabitle', '');
+  acts += btn('pin', it.pinned ? 'pin' : 'pinO', it.pinned ? 'Sabitli' : 'Sabitle', '');
   acts += btn('delete', 'trash', 'Sil', '⌘⌫', 'danger');
 
   if (c === 'image' || c === 'shot') {
@@ -625,7 +625,6 @@ function toast(msg) {
 
 function act(a, it = view[sel]) {
   if (!it) return;
-  if (a === 'pin' && it.kind === 'shot') return;
   if (a === 'editImage') { if (it.kind === 'shot' || it.kind === 'image') post({ action: 'editImage', id: it.id }); return; }
   if (a === 'reveal' && it.kind === 'text' && classify(it) !== 'link') return;
   if (a === 'edit') { if (it.kind !== 'text') return; if (it.truncated) { toast('Bu metin düzenlemek için çok uzun'); return; } editing = it.id; renderPreview(); renderFooter(); return; }

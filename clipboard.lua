@@ -13,6 +13,9 @@ local HTML_FILE = BASE .. "/clipboard.html"
 local SETTINGS_KEY = "clip.v2"
 
 local TEXT_MAX, IMAGE_MAX, SHOT_MAX = 300, 40, 150
+-- Screenshots nobody pinned go to the Trash after this many days (recoverable from there).
+local SHOT_KEEP_DAYS = 30
+local K_SHOT_PINS = "clip.shotPins.v1" -- file name -> true
 -- Texts larger than this are not recorded: the whole history is re-serialised on every copy,
 -- so one 30 MB log would make every later copy and panel open stall.
 local TEXT_BYTES_MAX = 512 * 1024
@@ -109,6 +112,8 @@ local function findEntry(id)
 end
 
 local shots = {}
+local shotPins = (function() local v = hs.settings.get(K_SHOT_PINS); return type(v) == "table" and v or {} end)()
+local function saveShotPins() hs.settings.set(K_SHOT_PINS, shotPins) end
 local function findShot(id)
   for _, s in ipairs(shots) do if s.id == id then return s end end
 end
@@ -190,9 +195,42 @@ local function scanShots()
     end
   end
   table.sort(list, function(a, b) return a.t > b.t end)
-  while #list > SHOT_MAX do table.remove(list) end
-  shots = list
+  -- keep the newest SHOT_MAX, plus every pinned one however old
+  local keep = {}
+  for i, s in ipairs(list) do if i <= SHOT_MAX or shotPins[s.name] then table.insert(keep, s) end end
+  shots = keep
 end
+
+-- Move a file to the Trash under a free name. Returns true on success.
+local function toTrash(path)
+  local name = path:match("[^/]+$")
+  local base, ext = name:match("^(.*)(%.[^.]+)$")
+  local dest, n = HOME .. "/.Trash/" .. name, 2
+  while hs.fs.attributes(dest) do dest = HOME .. "/.Trash/" .. (base or name) .. " " .. n .. (ext or ""); n = n + 1 end
+  return os.rename(path, dest) and true or false
+end
+
+-- Unpinned screenshots older than SHOT_KEEP_DAYS go to the Trash. Pins of files that no longer exist
+-- are dropped. Returns how many files were moved.
+local function pruneShots()
+  local cutoff, moved, seen = os.time() - SHOT_KEEP_DAYS * 86400, 0, {}
+  local ok, iter, dirObj = pcall(hs.fs.dir, M.shotDir)
+  if not ok or not iter then return 0 end
+  for f in iter, dirObj do
+    local ext = f:match("%.(%w+)$")
+    if f:sub(1, 1) ~= "." and ext and SHOT_EXT[ext:lower()] then
+      seen[f] = true
+      local p = M.shotDir .. "/" .. f
+      local a = hs.fs.attributes(p)
+      if a and a.mode == "file" and a.modification < cutoff and not shotPins[f] and toTrash(p) then moved = moved + 1 end
+    end
+  end
+  local changed = false
+  for f in pairs(shotPins) do if not seen[f] then shotPins[f] = nil; changed = true end end
+  if changed then saveShotPins() end
+  return moved
+end
+M.pruneShots = pruneShots
 
 -- ---------------------------------------------------------------- items sent to the page
 
@@ -220,7 +258,7 @@ local function buildItems()
   end
   for _, s in ipairs(shots) do
     table.insert(list, { id = s.id, kind = "shot", t = s.t, name = s.name, size = s.size,
-      src = s.path, thumb = thumbPathFor(s.path), pinned = false })
+      src = s.path, thumb = thumbPathFor(s.path), pinned = shotPins[s.name] == true })
   end
   for _, it in ipairs(list) do
     local d = it.thumb and dims[it.thumb]
@@ -345,11 +383,8 @@ local function handle(p, msg)
     if Shot and Shot.editFile then Keep.after(0.2, function() Shot.editFile(e.path) end) end
   elseif a == "delete" and e.kind == "shot" then
     -- Screenshot files go to the Trash (recoverable), never straight to deletion.
-    local name = e.path:match("[^/]+$")
-    local base, ext = name:match("^(.*)(%.[^.]+)$")
-    local dest, n = HOME .. "/.Trash/" .. name, 2
-    while hs.fs.attributes(dest) do dest = HOME .. "/.Trash/" .. (base or name) .. " " .. n .. (ext or ""); n = n + 1 end
-    if os.rename(e.path, dest) then
+    if toTrash(e.path) then
+      if shotPins[e.name] then shotPins[e.name] = nil; saveShotPins() end
       scanShots()
       pushItems(false)
       p:js("Clip.toast('Çöp Sepeti\\'ne taşındı')")
@@ -360,6 +395,11 @@ local function handle(p, msg)
     table.remove(history, idx)
     if e.kind == "image" and e.path then os.remove(e.path) end
     save()
+    pushItems(false)
+  elseif a == "pin" and e.kind == "shot" then
+    -- a pinned screenshot is never cleaned up after SHOT_KEEP_DAYS
+    shotPins[e.name] = (not shotPins[e.name]) or nil
+    saveShotPins()
     pushItems(false)
   elseif a == "pin" and idx then
     e.pinned = not e.pinned or nil
@@ -459,8 +499,14 @@ M.shotWatcher = hs.pathwatcher.new(M.shotDir, function()
   end)
 end):start()
 
+-- Clean up old unpinned screenshots at start and then a few times a day.
+M.pruneTimer = hs.timer.doEvery(6 * 3600, function()
+  if pruneShots() > 0 then scanShots(); if panel.visible then pushItems(false) end end
+end)
+
 -- Build missing thumbnails in the background and drop ones nothing points to any more.
 Keep.after(1, function()
+  pruneShots()
   scanShots()
   local live = {}
   local function want(path)
