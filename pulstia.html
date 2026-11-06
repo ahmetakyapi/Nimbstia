@@ -357,10 +357,13 @@ button.ss:hover .go{color:var(--text);transform:translate(2px,-2px)}
 .cwide .plan{font-size:11px;font-weight:650;color:var(--muted);padding:3px 8px;border-radius:999px;background:var(--chip)}
 .vtr .vchip{padding:0 9px 0 8px}
 /* Claude bar view */
-.cbars{flex:1;min-width:0;display:flex;flex-direction:column;gap:9px}
+.cbars{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px}
 .cbt{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:12px;color:var(--faint);font-weight:550}
 .cbt b{font:560 15px/1 var(--font-display);letter-spacing:-.02em;color:var(--text);font-variant-numeric:tabular-nums}
-.cbm{display:flex;height:8px;margin-top:6px;border-radius:5px;background:var(--chip);overflow:hidden}
+.cbm{display:flex;height:6px;margin-top:7px;border-radius:999px;background:var(--chip);overflow:hidden}
+.cbm i:last-child{border-radius:0 999px 999px 0}
+.cbr.warn .cbt b{color:var(--warn)} .cbr.bad .cbt b{color:var(--danger)}
+.cbr .cbx{margin-top:6px}
 .cbm i{display:block;height:100%;background:linear-gradient(90deg,#f0a183,#d9623f);transform-origin:left;animation:grow .8s var(--ease-out) both}
 .cbm.b2 i{background:linear-gradient(90deg,#fcd581,#ef9a1a)}
 .cbm i.tday{background:#f7c4ae;animation-delay:.15s}
@@ -521,9 +524,13 @@ function renderMain() {
     const pct = l => l && typeof l.percent === 'number' ? Math.max(0, Math.min(100, Math.round(l.percent))) : null;
     const fmtP = v => v == null ? '–' : (pctAfter() ? v + '%' : '%' + v);
     // Bar view: one thick meter per limit; today's share drawn as a lighter tail at the end.
-    const barRow = (l, k) => { const v = pct(l); const t = typeof l.today === 'number' ? Math.min(v, Math.max(0, Math.round(l.today))) : 0;
-      return `<div class="cbr"><div class="cbt"><span>${esc(short(l))}</span><b data-roll="b${k}">${fmtP(v)}</b></div><div class="cbm b${k}"><i style="width:${Math.max(2, v - t)}%"></i>${t ? `<i class="tday" style="width:${t}%"></i>` : ''}</div></div>`; };
-    const barBody = lim ? `<div class="cbars">${barRow(lim, 1)}${lims[1] ? barRow(lims[1], 2) : ''}<div class="cbx">${lim.resets ? `<span>↻ ${esc(lim.resets)}</span>` : ''}${typeof lim.today === 'number' ? `<span class="td">Bugün +%${lim.today}</span>` : ''}</div></div>` : '';
+    // One meter per limit, each with its own reset time; today's share is a lighter tail at the end.
+    const barRow = (l, k) => {
+      const v = pct(l), t = typeof l.today === 'number' ? Math.min(v, Math.max(0, Math.round(l.today))) : 0;
+      const sub = (l.resets ? `<span>↻ ${esc(l.resets)}</span>` : '') + (typeof l.today === 'number' ? `<span class="td">Bugün +%${l.today}</span>` : '');
+      return `<div class="cbr ${limTone(v)}"><div class="cbt"><span>${esc(short(l))}</span><b data-roll="b${k}">${fmtP(v)}</b></div><div class="cbm b${k}"><i style="width:${Math.max(2, v - t)}%"></i>${t ? `<i class="tday" style="width:${t}%"></i>` : ''}</div>${sub ? `<div class="cbx">${sub}</div>` : ''}</div>`;
+    };
+    const barBody = lim ? `<div class="cbars">${barRow(lim, 1)}${lims[1] ? barRow(lims[1], 2) : ''}</div>` : '';
     parts.claude = {
       plan: c.plan ? `<span class="plan">${esc(c.plan)}</span>` : '',
       body: lim ? barBody : `<div class="cnone"><b>Kullanım verisi yok</b><small>Claude Code açıkken güncellenir</small></div>`,
