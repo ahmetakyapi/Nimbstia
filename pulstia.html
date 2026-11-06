@@ -543,8 +543,8 @@ function renderMain() {
   const tg = d.toggles || {};
   const rt = (id, label, icon, color, states) => `<button class="rt${tg[id] ? ' on' : ''}" role="switch" aria-checked="${tg[id] ? 'true' : 'false'}" data-act="toggle" data-id="${id}" style="--q:${color}"><span class="rc">${ICONS[icon]}</span><span><span class="rn">${label}</span><small>${(states || ['Açık', 'Kapalı'])[tg[id] ? 0 : 1]}</small></span></button>`;
   let q = `<section class="w quick"><div class="rw">` +
-    rt('awake', 'Her Zaman Uyanık', 'cup', '#f59e0b') + rt('mic', 'Mikrofon', 'mic', '#f43f5e', ['Sessiz', 'Açık']) +
-    rt('meetings', 'Toplantılar', 'cal', '#8b5cf6') + rt('appearance', 'Koyu Görünüm', 'moonf', '#6366f1') + `</div>`;
+    rt('awake', 'Her Zaman Uyanık', 'cup', '#f59e0b') + rt('saver', 'Ekran Koruyucu', 'moonf', '#6366f1', ['Açık', 'Başlat']) +
+    rt('mic', 'Mikrofon', 'mic', '#f43f5e', ['Sessiz', 'Açık']) + rt('meetings', 'Toplantılar', 'cal', '#8b5cf6') + `</div>`;
   const meets = Array.isArray(d.meetings) ? d.meetings : [];
   if (tg.meetings && meets.length) {
     q += `<div class="meets">` + meets.slice(0, 3).map(m => {

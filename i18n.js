@@ -123,7 +123,7 @@
 
     // Pulstia hub (pulstia.html, status.lua, claude.lua)
     'Günlük Durum Paneli': 'Daily Status Panel', 'Her Zaman Uyanık': 'Always Awake', 'Daralt': 'Collapse', 'Genişlet': 'Expand', 'Geliştirme Sunucuları': 'Dev Servers', 'Durdur': 'Stop',
-    'Koyu Görünüm': 'Dark Mode', 'Açık Görünüm': 'Light Mode', 'Sıfırlanma': 'Resets', 'Son kontrol': 'Checked', 'Son Kontrol': 'Checked', 'Çevrimiçi': 'Online', 'Her Şey Yolunda': 'All Good',
+    'Koyu Görünüm': 'Dark Mode', 'Ekran Koruyucu': 'Screen Saver', 'Açık Görünüm': 'Light Mode', 'Sıfırlanma': 'Resets', 'Son kontrol': 'Checked', 'Son Kontrol': 'Checked', 'Çevrimiçi': 'Online', 'Her Şey Yolunda': 'All Good',
     'Bağlantı Yok': 'No Connection', 'Dikkat': 'Attention', 'Bağlı': 'Connected', 'Bağlı Değil': 'Not Connected',
     'Yanıt Vermiyor': 'Not Responding', 'Kontrol Ediliyor…': 'Checking…', 'Bağlantıyı Kes': 'Disconnect',
     'Bağlan': 'Connect', 'Bağlanıyor…': 'Connecting…', 'Bağlantı Kesiliyor…': 'Disconnecting…',

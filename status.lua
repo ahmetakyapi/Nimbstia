@@ -167,6 +167,9 @@ function M.toggleAwake()
   render()
 end
 
+-- Work-safe screen saver (saver.lua): the Mac keeps working behind it; any key or a real mouse move wakes it.
+local Saver = require("saver")
+
 local savedVolume
 function M.toggleMic()
   local d = hs.audiodevice.defaultInputDevice()
@@ -327,7 +330,7 @@ local githubData -- defined with the GitHub numbers below; popoverData only runs
 local function popoverData()
   local d = { errors = LOAD_ERRORS or {}, theme = Panel.theme(), shortcuts = M.help or {},
     toggles = { awake = hs.caffeinate.get("displayIdle") or false, mic = micMuted(), meetings = meetingsEnabled(),
-      appearance = hs.host.interfaceStyle() == "Dark" } }
+      saver = Saver.active } }
   d.portsFolded = hs.settings.get("nimbstia.portsFolded") == true
   if state.ports and #state.ports > 0 then
     d.ports = {}
@@ -563,10 +566,9 @@ local function onPopMessage(p, msg)
     if msg.id == "awake" then M.toggleAwake()
     elseif msg.id == "mic" then M.toggleMic()
     elseif msg.id == "meetings" then toggleMeetings()
-    elseif msg.id == "appearance" then
-      -- macOS appearance (asks once for Automation access to System Events); panels on "auto" follow it
-      hs.osascript.applescript('tell application "System Events" to tell appearance preferences to set dark mode to not dark mode')
-      Keep.after(0.4, pushPopover)
+    elseif msg.id == "saver" then
+      after(Saver.start, 0.3)
+      return
     end
     pushPopover()
   elseif a == "theme" and (msg.v == "auto" or msg.v == "light" or msg.v == "dark") then
