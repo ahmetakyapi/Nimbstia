@@ -67,8 +67,8 @@ main{flex:1;display:grid;grid-template-columns:400px 1fr;min-height:0}
 .row{position:relative;display:flex;align-items:center;gap:12px;padding:0 12px 0 10px;border-radius:var(--r-md);height:56px;transition:background var(--dur-1),box-shadow var(--dur-2) var(--ease-out)}
 .row+.row{margin-top:1px}
 .row:hover{background:var(--hover)}
-.row.sel{background:color-mix(in srgb,var(--accent-soft) 70%,transparent);box-shadow:inset 0 0 0 1px var(--accent-line)}
-.row.sel::before{content:"";position:absolute;left:-1px;top:16px;bottom:16px;width:3px;border-radius:0 3px 3px 0;background:var(--accent)}
+/* Selected row (Ribbon): sky-50 fill + 1px sky hairline, no one-sided stripe. */
+.row.sel{background:var(--sel-bg);box-shadow:inset 0 0 0 1px var(--sel-line)}
 .intro .row{animation:nb-rise .36s var(--ease-out) both;animation-delay:calc(min(var(--i,0),10) * 18ms)}
 /* kind tile: a soft gradient in the kind's colour, glyph in the full colour */
 :root{--t-top:19%;--t-bot:8%}

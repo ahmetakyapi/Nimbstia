@@ -30,7 +30,7 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 
 /* ---------------------------------------------------------------- header */
 .head{display:flex;align-items:center;gap:10px;padding:12px 4px 0 4px;flex:none}
-.mark{width:28px;height:28px;flex:none;filter:drop-shadow(0 3px 6px rgba(37,70,255,.28))}
+.mark{width:28px;height:28px;flex:none;filter:drop-shadow(0 2px 4px rgba(24,24,27,.18))}
 .ht{display:flex;align-items:baseline;gap:8px;min-width:0}
 .ht b{font:700 16px/1.05 var(--font-display);letter-spacing:-.02em}
 .ht small{font-size:12.5px;font-weight:500;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -242,7 +242,7 @@ button.ss:hover .go{color:var(--text);transform:translate(2px,-2px)}
 .msum b{font:560 28px/1 var(--font-display);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
 .msum span{font-size:12.5px;color:var(--faint)}
 .mbar{height:8px;border-radius:5px;background:var(--chip);overflow:hidden;margin-bottom:10px}
-.mbar i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,#60a5fa,#2563ff);transform-origin:left;animation:grow .7s var(--ease-out) both}
+.mbar i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,color-mix(in srgb,var(--accent) 55%,var(--card)),var(--accent));transform-origin:left;animation:grow .7s var(--ease-out) both}
 .prc{display:grid;grid-template-columns:minmax(0,1.3fr) 1fr 64px 56px;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
 .pn{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pb{height:5px;border-radius:3px;background:var(--chip);overflow:hidden}
@@ -251,12 +251,12 @@ button.ss:hover .go{color:var(--text);transform:translate(2px,-2px)}
 .pc2{font-size:11.5px;color:var(--faint);text-align:right;font-variant-numeric:tabular-nums}
 
 /* ---- premium pass: material, rings */
-.app{background:radial-gradient(70% 45% at 0% 0%,color-mix(in srgb,#5b8cff 14%,transparent),transparent 70%),radial-gradient(60% 40% at 100% 0%,color-mix(in srgb,#f472b6 10%,transparent),transparent 70%),radial-gradient(80% 40% at 50% 100%,color-mix(in srgb,#a78bfa 9%,transparent),transparent 70%),var(--app-bg)}
+/* Flat canvas (Ribbon round): the coloured tints and grain of the old premium pass are gone. */
+.app{background:var(--app-bg)}
 .app::before{display:none}
-.app::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background-image:var(--grain);background-size:160px;opacity:var(--grain-op);mix-blend-mode:overlay}
-.w{border-radius:22px;box-shadow:0 0 0 1px var(--line),inset 0 1px 0 rgba(255,255,255,.85),0 1px 2px rgba(20,24,40,.04),0 10px 28px -14px rgba(20,24,40,.22);transition:box-shadow var(--dur-2),transform var(--dur-2) var(--ease-out)}
-:root[data-theme="dark"] .w{box-shadow:0 0 0 1px var(--line),inset 0 1px 0 rgba(255,255,255,.06),0 12px 30px -14px rgba(0,0,0,.6)}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .w{box-shadow:0 0 0 1px var(--line),inset 0 1px 0 rgba(255,255,255,.06),0 12px 30px -14px rgba(0,0,0,.6)}}
+.w{border-radius:24px;box-shadow:var(--card-lift);transition:box-shadow var(--dur-2),transform var(--dur-2) var(--ease-out)}
+:root[data-theme="dark"] .w{box-shadow:0 0 0 1px var(--line)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .w{box-shadow:0 0 0 1px var(--line)}}
 .w > *{position:relative;z-index:1}
 .w.claude .rs{margin-top:10px}
 /* glassier app tiles */

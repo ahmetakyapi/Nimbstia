@@ -11,7 +11,7 @@ function UI.start()
   hs.alert.defaultStyle = {
     strokeWidth = 1,
     strokeColor = { white = 1, alpha = 0.12 },
-    fillColor = { red = 0.043, green = 0.043, blue = 0.059, alpha = 0.94 },
+    fillColor = { red = 0.149, green = 0.153, blue = 0.173, alpha = 0.95 }, -- graphite #26272c, the dark panel card (no near-black ink, #115)
     textColor = { white = 1, alpha = 0.96 },
     textFont = FONT,
     textSize = 14,

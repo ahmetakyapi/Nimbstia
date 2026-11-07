@@ -254,7 +254,12 @@ local function buildData(p)
   local win, winInfo = p.prevWin, nil
   if win and win:application() then
     local app = win:application()
-    winInfo = { app = app:name(), title = win:title(), icon = app:bundleID() and iconURI(app:bundleID()) }
+    -- key: which APPS entry is in front, so the panel can ring that window in each thumbnail.
+    local key
+    for k, a in pairs(APPS) do
+      if a.bid == app:bundleID() then key = k; break end
+    end
+    winInfo = { app = app:name(), key = key, title = win:title(), icon = app:bundleID() and iconURI(app:bundleID()) }
   end
   local screen = (win and win:screen()) or hs.screen.mainScreen()
   local f = screen:frame()

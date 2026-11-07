@@ -15,9 +15,9 @@
   --screen-line:rgba(40,36,70,.10); --menubar:rgba(255,255,255,.55); --menubar-ink:rgba(30,30,50,.45);
   --win:rgba(255,255,255,.93); --win-bar:rgba(246,246,248,.96); --win-line:rgba(30,30,50,.11);
   --win-shadow:0 0 0 .5px rgba(30,30,50,.14),0 1px 2px rgba(30,30,60,.08),0 6px 14px -6px rgba(40,40,80,.22);
-  --tint:14%; --dot-r:#ff5f57; --dot-y:#febc2e; --dot-g:#28c840;
+  --tint:8%; --dot-r:#ff5f57; --dot-y:#febc2e; --dot-g:#28c840;
   --lift:0 0 0 1px var(--line),0 1px 2px rgba(12,12,16,.04),0 14px 30px -14px rgba(12,12,16,.20);
-  --sel-ring:0 0 0 1.5px var(--accent),0 0 0 4px color-mix(in srgb,var(--accent) 12%,transparent),0 14px 30px -14px rgba(12,12,16,.20);
+  --sel-ring:0 0 0 2px var(--accent),0 1px 2px rgba(0,0,0,.05);
   --glass:rgba(255,255,255,.82);
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
@@ -25,9 +25,9 @@
   --screen-line:rgba(255,255,255,.08); --menubar:rgba(10,10,16,.32); --menubar-ink:rgba(255,255,255,.4);
   --win:rgba(48,50,60,.86); --win-bar:rgba(62,64,76,.92); --win-line:rgba(255,255,255,.07);
   --win-shadow:0 0 0 .5px rgba(255,255,255,.12),0 1px 2px rgba(0,0,0,.3),0 8px 16px -6px rgba(0,0,0,.55);
-  --tint:22%;
+  --tint:16%;
   --lift:0 0 0 1px var(--line2),inset 0 1px 0 rgba(255,255,255,.04),0 16px 34px -16px rgba(0,0,0,.7);
-  --sel-ring:0 0 0 1.5px var(--accent),0 0 0 4px color-mix(in srgb,var(--accent) 16%,transparent),0 16px 34px -16px rgba(0,0,0,.7);
+  --sel-ring:0 0 0 2px var(--accent);
   --glass:rgba(28,28,32,.82);
 }}
 :root[data-theme="dark"]{
@@ -35,9 +35,9 @@
   --screen-line:rgba(255,255,255,.08); --menubar:rgba(10,10,16,.32); --menubar-ink:rgba(255,255,255,.4);
   --win:rgba(48,50,60,.86); --win-bar:rgba(62,64,76,.92); --win-line:rgba(255,255,255,.07);
   --win-shadow:0 0 0 .5px rgba(255,255,255,.12),0 1px 2px rgba(0,0,0,.3),0 8px 16px -6px rgba(0,0,0,.55);
-  --tint:22%;
+  --tint:16%;
   --lift:0 0 0 1px var(--line2),inset 0 1px 0 rgba(255,255,255,.04),0 16px 34px -16px rgba(0,0,0,.7);
-  --sel-ring:0 0 0 1.5px var(--accent),0 0 0 4px color-mix(in srgb,var(--accent) 16%,transparent),0 16px 34px -16px rgba(0,0,0,.7);
+  --sel-ring:0 0 0 2px var(--accent);
   --glass:rgba(28,28,32,.82);
 }
 *{box-sizing:border-box}
@@ -71,10 +71,12 @@ h2 em{font-style:normal;color:var(--faint);text-transform:none;letter-spacing:0;
 .grid.small{grid-template-columns:repeat(8,minmax(0,1fr));gap:8px}
 
 /* card */
-.card{position:relative;border-radius:var(--r-lg);padding:8px 8px 14px;background:var(--card);box-shadow:var(--card-lift);
+.card{position:relative;border-radius:20px;padding:8px 8px 14px;background:var(--card);box-shadow:var(--card-lift);
   transition:box-shadow var(--dur-2) var(--ease-out),transform var(--dur-2) var(--ease-out),background var(--dur-2)}
 .card:hover{box-shadow:var(--lift)}
-.card.sel{background:linear-gradient(color-mix(in srgb,var(--accent-soft) 60%,transparent),color-mix(in srgb,var(--accent-soft) 60%,transparent)),var(--card);box-shadow:var(--sel-ring)}
+.card.sel{background:var(--sel-bg);box-shadow:var(--sel-ring)}
+/* Ribbon: exactly one focused window per thumbnail, the app that is in front right now. */
+.card.sel .cell.focus .win{box-shadow:0 0 0 2px var(--accent),var(--win-shadow)}
 #content.enter .card{animation:nb-rise .38s var(--ease-out) both;animation-delay:var(--d,0ms)}
 #content.enter h2{animation:nb-rise .38s var(--ease-out) both}
 
@@ -88,7 +90,7 @@ h2 em{font-style:normal;color:var(--faint);text-transform:none;letter-spacing:0;
 .card.has-last .name{padding-right:112px}
 
 /* the miniature screen */
-.screen{position:relative;width:100%;border-radius:10px;background:var(--screen);box-shadow:inset 0 0 0 1px var(--screen-line);overflow:hidden}
+.screen{position:relative;width:100%;border-radius:12px;background:var(--screen);box-shadow:inset 0 0 0 1px var(--screen-line);overflow:hidden}
 .screen::before{content:"";position:absolute;left:0;right:0;top:0;height:13px;background:var(--menubar);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);box-shadow:0 .5px 0 var(--screen-line)}
 .screen .mb{position:absolute;left:8px;right:8px;top:0;height:13px;display:flex;align-items:center;gap:5px;z-index:1;pointer-events:none}
 .screen .mb i{width:9px;height:3px;border-radius:2px;background:var(--menubar-ink);opacity:.55}
@@ -131,11 +133,12 @@ img.app-ic{background:none;box-shadow:none;filter:drop-shadow(0 1px 1.5px rgba(0
 .small .name{font:550 11.5px/1.2 var(--font-ui);letter-spacing:-.01em;margin:8px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;color:var(--muted)}
 .small .card.sel .name,.small .card:hover .name{color:var(--text)}
 .small .card:hover .win .body,.small .card.sel .win .body{background:color-mix(in srgb,var(--accent) 16%,transparent)}
-.cell.ghost .win{background:transparent;box-shadow:inset 0 0 0 1px var(--screen-line)}
+/* Ghost window: where a hidden app would go, dashed like Ribbon's incoming window. */
+.cell.ghost .win{background:transparent;box-shadow:none;outline:1.5px dashed color-mix(in srgb,var(--text) 28%,transparent);outline-offset:-1.5px}
 .arrow{position:absolute;inset:0;display:grid;place-items:center;color:var(--accent-ink);font:600 15px/1 var(--font-ui)}
 
 /* badges + ratio pill */
-.last{position:absolute;right:14px;bottom:34px;z-index:2;display:flex;align-items:center;height:20px;padding:0 8px;border-radius:var(--r-pill);font:600 11.5px/1 var(--font-ui);letter-spacing:-.003em;color:var(--accent-ink);background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent-line)}
+.last{position:absolute;right:14px;bottom:34px;z-index:2;display:flex;align-items:center;height:20px;padding:0 8px;border-radius:var(--r-pill);font:600 11.5px/1 var(--font-ui);letter-spacing:-.003em;color:var(--accent-ink);background:var(--accent-soft);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 35%,transparent)}
 .adj{position:absolute;left:50%;bottom:10px;transform:translate(-50%,4px);z-index:3;display:flex;align-items:center;gap:1px;opacity:0;pointer-events:none;
   background:var(--glass);-webkit-backdrop-filter:blur(14px) saturate(1.6);backdrop-filter:blur(14px) saturate(1.6);border-radius:var(--r-pill);padding:3px;
   box-shadow:0 0 0 .5px var(--line2),0 1px 0 rgba(255,255,255,.08) inset,0 8px 22px -6px rgba(0,0,0,.3);transition:opacity var(--dur-2) var(--ease-out),transform var(--dur-2) var(--ease-out)}
@@ -232,12 +235,16 @@ const appIcon = a => a.icon ? `<img class="app-ic" src="${a.icon}">` : `<span cl
 
 function layoutCard(L, i) {
   const big = L.cells.length <= 2;
+  let focused = false;
   const cells = L.cells.map(c => {
     const a = data.apps[c.app] || {};
+    // The window of the app in front gets the focus ring (once per card).
+    const focus = !focused && !!data.win && (data.win.key ? c.app === data.win.key : a.name === data.win.app);
+    if (focus) focused = true;
     const showPct = L.adjustable && c.rect[3] === 1;
     const roomy = big || c.rect[2] > 0.3;
     const inner = `${appIcon(a)}${roomy ? `<b>${esc(a.name)}</b>` : ''}${showPct ? `<em>${pct(c.rect[2])}</em>` : ''}`;
-    return cellHTML(c.rect, inner, a.color || '#888');
+    return cellHTML(c.rect, inner, a.color || '#888', focus ? 'focus' : '');
   });
   const tags = [];
   if (L.hideOthers) tags.push('Diğerlerini Gizler');

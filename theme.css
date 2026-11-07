@@ -3,9 +3,14 @@
    panel.lua (fonts as data URIs); file:// pages (shot.html, assets/*.html) load it as a file.
 
    Direction: bright, friendly and glanceable, like good macOS widgets. Soft neutral surfaces, white
-   cards in light and graphite (not black) in dark, one vivid blue for focus and the primary action,
+   cards in light and graphite (not black) in dark, one sky accent for focus and the primary action,
    colour where it carries meaning (status, app identity). Inter for everything people read (built for
-   screens, has Turkish and the ⌘⌥⌃⇧ key glyphs); Geist Mono only for code, hashes and hosts. */
+   screens, has Turkish and the ⌘⌥⌃⇧ key glyphs); Geist Mono only for code, hashes and hosts.
+
+   Ribbon round (2026-11): cool zinc page, flat cards (1px ring + small shadow, no wash or grain),
+   sky accent split three ways for contrast: --accent (#0ea5e9) for rings, lines and icons only
+   (2.77:1, never text), --accent-ink (#0369a1, 5.93:1) for text, --accent-fill (#0273b6, white
+   text 5.08:1) for fills. One selected recipe for every panel: --sel-bg + 1px --sel-line. */
 
 @font-face{font-family:"Inter";src:url("assets/fonts/InterVariable.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block}
 @font-face{font-family:"Geist Mono";src:url("assets/fonts/GeistMono-Variable.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block;unicode-range:U+0000-218F,U+2200-22FF,U+2400-FFFF}
@@ -26,22 +31,24 @@
   --dur-1:.12s; --dur-2:.22s; --dur-3:.42s;
 
   /* radii */
-  --r-xs:6px; --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:22px; --r-pill:999px;
+  --r-xs:6px; --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:24px; --r-pill:999px;
 
-  /* surfaces (light): warm paper neutrals (bencho-like ink scale), white cards */
-  --bg:#f6f6f5; --bg2:#efefed; --top:#fbfbfa; --pane:#ffffff; --ctl:#ffffff; --card:#ffffff;
-  --group-bg:#f8f8f7; --pv-bg:#f3f3f1; --pv-card:#ffffff;
-  --line:rgba(23,24,26,.08); --line2:rgba(23,24,26,.14);
-  --text:#17181a; --muted:#4a4945; --faint:#6b6a64;
-  --hover:rgba(23,24,26,.045); --chip:rgba(23,24,26,.055); --seg-on:#ffffff; --mark:rgba(255,200,0,.42);
+  /* surfaces (light): cool zinc neutrals, white cards (faint #66666e, not zinc-500: 5.18:1 on bg) */
+  --bg:#f4f4f5; --bg2:#ececee; --top:#fafafa; --pane:#ffffff; --ctl:#ffffff; --card:#ffffff;
+  --group-bg:#f7f7f8; --pv-bg:#f4f4f5; --pv-card:#ffffff;
+  --line:rgba(24,24,27,.10); --line2:rgba(24,24,27,.16);
+  --text:#18181b; --muted:#52525b; --faint:#66666e;
+  --hover:rgba(24,24,27,.045); --chip:rgba(24,24,27,.06); --seg-on:#ffffff; --mark:rgba(255,200,0,.42);
 
   /* ink: tooltips and toasts only (graphite, never pure black) */
   --ink:#24262f; --on-ink:#ffffff; --ink-hover:#30333d; --ink-shadow:0 1px 0 rgba(255,255,255,.1) inset,0 4px 12px -2px rgba(20,24,40,.25);
 
-  /* accent: focus, selection, links AND the primary action */
-  --accent:#2563ff; --accent-fill:#2563ff; --accent-hover:#1d55f0; --accent-press:#1846d4; --accent-ink:#1d4fe0;
-  --accent-soft:rgba(37,99,255,.085); --accent-line:rgba(37,99,255,.32); --accent-ring:rgba(37,99,255,.42); --on-accent:#ffffff;
-  --accent-grad:linear-gradient(180deg,#3d7bff 0%,#2563ff 100%); --accent-shadow:0 1px 0 rgba(255,255,255,.22) inset,0 1px 2px rgba(20,24,40,.18),0 2px 6px -2px rgba(37,99,255,.28);
+  /* accent (sky): rings/lines/icons, ink for text, fill for buttons; no coloured glow */
+  --accent:#0ea5e9; --accent-fill:#0273b6; --accent-hover:#0369a1; --accent-press:#075985; --accent-ink:#0369a1;
+  --accent-soft:#f0f9ff; --accent-line:#7dd3fc; --accent-ring:rgba(14,165,233,.55); --on-accent:#ffffff;
+  --accent-grad:linear-gradient(180deg,#0284c7 0%,#0369a1 100%); --accent-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 1px 2px rgba(24,24,27,.15);
+  --sel-bg:var(--accent-soft); --sel-line:var(--accent);
+  --kbd-bg:#fafafa; --kbd-line:#d4d4d8;
   --primary:var(--accent-grad); --on-primary:#ffffff; --primary-shadow:var(--accent-shadow);
 
   /* status */
@@ -49,12 +56,12 @@
   --ok-bar:#22c55e; --warn-bar:#f59e0b; --bad-bar:#f43f5e;
 
   /* content kinds and app identity */
-  --k-text:#5b6075; --k-code:#7c3aed; --k-link:#2563ff; --k-mail:#db2777; --k-path:#d97706; --k-number:#0d9488; --k-image:#e11d48; --k-shot:#16a34a; --k-pin:#ea580c;
+  --k-text:#5b6075; --k-code:#7c3aed; --k-link:var(--accent-ink); --k-mail:#db2777; --k-path:#d97706; --k-number:#0d9488; --k-image:#e11d48; --k-shot:#16a34a; --k-pin:#ea580c;
   --ink-code:#6d28d9;
   --tile-mix:11%; --tile-ring:26%; --glyph:90%;
 
   /* depth */
-  --card-lift:0 0 0 1px var(--line),0 1px 2px rgba(20,24,40,.04),0 2px 8px -2px rgba(20,24,40,.05);
+  --card-lift:0 0 0 1px var(--line),0 1px 2px rgba(0,0,0,.05);
   --card-shadow:0 1px 2px rgba(20,24,40,.05);
   --ctl-shadow:0 1px 1px rgba(20,24,40,.05);
   --shadow:0 0 0 .5px rgba(20,24,40,.18),0 1px 1px rgba(20,24,40,.04),0 12px 24px -8px rgba(20,24,40,.14),0 36px 72px -18px rgba(20,24,40,.28);
@@ -62,12 +69,12 @@
   --rim:inset 0 1px 0 rgba(255,255,255,.9);
 
   /* window canvas */
-  --app-bg:linear-gradient(180deg,#fbfbfa 0,#f3f3f1 100%);
-  --wash:radial-gradient(60% 80% at 10% 0%,rgba(37,99,255,.08),transparent 70%),radial-gradient(50% 70% at 100% 0%,rgba(168,85,247,.06),transparent 70%);
+  --app-bg:#f4f4f5;
+  --wash:none;
 
-  /* film grain, used at a few percent */
+  /* film grain: kept as a token for marketing pages (README hero); panels are flat */
   --grain:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-  --grain-op:.025;
+  --grain-op:0;
   color-scheme:light;
 }
 
@@ -75,17 +82,19 @@
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#1f2024; --bg2:#1a1b1f; --top:#26272c; --pane:#1b1c20; --ctl:rgba(255,255,255,.07); --card:#26272c;
   --group-bg:#222327; --pv-bg:#1b1c20; --pv-card:#26272c;
-  --line:rgba(255,255,255,.075); --line2:rgba(255,255,255,.13);
+  --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.14);
   --text:#f3f4f7; --muted:#b9bcc8; --faint:#9094a3;
   --hover:rgba(255,255,255,.055); --chip:rgba(255,255,255,.075); --seg-on:rgba(255,255,255,.14); --mark:rgba(255,196,0,.3);
   --ink:#3a3c45; --on-ink:#ffffff; --ink-hover:#454852; --ink-shadow:0 1px 0 rgba(255,255,255,.12) inset,0 6px 16px -4px rgba(0,0,0,.5);
-  --accent:#5b9dff; --accent-fill:#2f6fec; --accent-hover:#3b7cf5; --accent-press:#255fd6; --accent-ink:#8bb8ff;
-  --accent-soft:rgba(91,157,255,.14); --accent-line:rgba(91,157,255,.45); --accent-ring:rgba(91,157,255,.55); --on-accent:#ffffff;
-  --accent-grad:linear-gradient(180deg,#4a86ff 0%,#2f6fec 100%); --accent-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 1px 2px rgba(0,0,0,.35),0 2px 8px -2px rgba(47,111,236,.3);
+  --accent:#38bdf8; --accent-fill:#0273b6; --accent-hover:#0284c7; --accent-press:#0369a1; --accent-ink:#7dd3fc;
+  --accent-soft:rgba(56,189,248,.12); --accent-line:rgba(56,189,248,.45); --accent-ring:rgba(56,189,248,.6); --on-accent:#ffffff;
+  --accent-grad:linear-gradient(180deg,#0284c7 0%,#0369a1 100%); --accent-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 1px 2px rgba(0,0,0,.35);
+  --sel-bg:var(--accent-soft); --sel-line:var(--accent);
+  --kbd-bg:rgba(255,255,255,.06); --kbd-line:rgba(255,255,255,.14);
   --primary:var(--accent-grad); --on-primary:#ffffff; --primary-shadow:var(--accent-shadow);
   --ok:#4ade80; --danger:#ff7a8a; --warn:#fbbf24; --warn-soft:rgba(251,191,36,.14);
   --ok-bar:#34d399; --warn-bar:#fbbf24; --bad-bar:#fb7185;
-  --k-text:#a7abb8; --k-code:#a78bfa; --k-link:#60a5fa; --k-mail:#f472b6; --k-path:#fbbf24; --k-number:#2dd4bf; --k-image:#fb7185; --k-shot:#4ade80; --k-pin:#fb923c;
+  --k-text:#a7abb8; --k-code:#a78bfa; --k-link:var(--accent-ink); --k-mail:#f472b6; --k-path:#fbbf24; --k-number:#2dd4bf; --k-image:#fb7185; --k-shot:#4ade80; --k-pin:#fb923c;
   --ink-code:#c4b5fd;
   --tile-mix:18%; --tile-ring:30%; --glyph:100%;
   --card-lift:0 0 0 1px var(--line),inset 0 1px 0 rgba(255,255,255,.04);
@@ -94,24 +103,26 @@
   --pop-shadow:0 0 0 .5px rgba(255,255,255,.16),0 16px 40px -8px rgba(0,0,0,.55);
   --rim:inset 0 1px 0 rgba(255,255,255,.06);
   --app-bg:linear-gradient(180deg,#25262b 0,#1d1e22 100%);
-  --wash:radial-gradient(60% 80% at 10% 0%,rgba(91,157,255,.12),transparent 70%),radial-gradient(50% 70% at 100% 0%,rgba(168,85,247,.08),transparent 70%);
-  --grain-op:.035;
+  --wash:none;
+  --grain-op:0;
   color-scheme:dark;
 }}
 :root[data-theme="dark"]{
   --bg:#1f2024; --bg2:#1a1b1f; --top:#26272c; --pane:#1b1c20; --ctl:rgba(255,255,255,.07); --card:#26272c;
   --group-bg:#222327; --pv-bg:#1b1c20; --pv-card:#26272c;
-  --line:rgba(255,255,255,.075); --line2:rgba(255,255,255,.13);
+  --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.14);
   --text:#f3f4f7; --muted:#b9bcc8; --faint:#9094a3;
   --hover:rgba(255,255,255,.055); --chip:rgba(255,255,255,.075); --seg-on:rgba(255,255,255,.14); --mark:rgba(255,196,0,.3);
   --ink:#3a3c45; --on-ink:#ffffff; --ink-hover:#454852; --ink-shadow:0 1px 0 rgba(255,255,255,.12) inset,0 6px 16px -4px rgba(0,0,0,.5);
-  --accent:#5b9dff; --accent-fill:#2f6fec; --accent-hover:#3b7cf5; --accent-press:#255fd6; --accent-ink:#8bb8ff;
-  --accent-soft:rgba(91,157,255,.14); --accent-line:rgba(91,157,255,.45); --accent-ring:rgba(91,157,255,.55); --on-accent:#ffffff;
-  --accent-grad:linear-gradient(180deg,#4a86ff 0%,#2f6fec 100%); --accent-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 1px 2px rgba(0,0,0,.35),0 2px 8px -2px rgba(47,111,236,.3);
+  --accent:#38bdf8; --accent-fill:#0273b6; --accent-hover:#0284c7; --accent-press:#0369a1; --accent-ink:#7dd3fc;
+  --accent-soft:rgba(56,189,248,.12); --accent-line:rgba(56,189,248,.45); --accent-ring:rgba(56,189,248,.6); --on-accent:#ffffff;
+  --accent-grad:linear-gradient(180deg,#0284c7 0%,#0369a1 100%); --accent-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 1px 2px rgba(0,0,0,.35);
+  --sel-bg:var(--accent-soft); --sel-line:var(--accent);
+  --kbd-bg:rgba(255,255,255,.06); --kbd-line:rgba(255,255,255,.14);
   --primary:var(--accent-grad); --on-primary:#ffffff; --primary-shadow:var(--accent-shadow);
   --ok:#4ade80; --danger:#ff7a8a; --warn:#fbbf24; --warn-soft:rgba(251,191,36,.14);
   --ok-bar:#34d399; --warn-bar:#fbbf24; --bad-bar:#fb7185;
-  --k-text:#a7abb8; --k-code:#a78bfa; --k-link:#60a5fa; --k-mail:#f472b6; --k-path:#fbbf24; --k-number:#2dd4bf; --k-image:#fb7185; --k-shot:#4ade80; --k-pin:#fb923c;
+  --k-text:#a7abb8; --k-code:#a78bfa; --k-link:var(--accent-ink); --k-mail:#f472b6; --k-path:#fbbf24; --k-number:#2dd4bf; --k-image:#fb7185; --k-shot:#4ade80; --k-pin:#fb923c;
   --ink-code:#c4b5fd;
   --tile-mix:18%; --tile-ring:30%; --glyph:100%;
   --card-lift:0 0 0 1px var(--line),inset 0 1px 0 rgba(255,255,255,.04);
@@ -120,31 +131,31 @@
   --pop-shadow:0 0 0 .5px rgba(255,255,255,.16),0 16px 40px -8px rgba(0,0,0,.55);
   --rim:inset 0 1px 0 rgba(255,255,255,.06);
   --app-bg:linear-gradient(180deg,#25262b 0,#1d1e22 100%);
-  --wash:radial-gradient(60% 80% at 10% 0%,rgba(91,157,255,.12),transparent 70%),radial-gradient(50% 70% at 100% 0%,rgba(168,85,247,.08),transparent 70%);
-  --grain-op:.035;
+  --wash:none;
+  --grain-op:0;
   color-scheme:dark;
 }
 
 /* Smooth theme switch: the colour tokens are typed so they interpolate. */
-@property --bg{syntax:"<color>";inherits:true;initial-value:#f6f6f5}
-@property --bg2{syntax:"<color>";inherits:true;initial-value:#efefec}
-@property --top{syntax:"<color>";inherits:true;initial-value:#fbfbfa}
+@property --bg{syntax:"<color>";inherits:true;initial-value:#f4f4f5}
+@property --bg2{syntax:"<color>";inherits:true;initial-value:#ececee}
+@property --top{syntax:"<color>";inherits:true;initial-value:#fafafa}
 @property --pane{syntax:"<color>";inherits:true;initial-value:#ffffff}
 @property --ctl{syntax:"<color>";inherits:true;initial-value:#ffffff}
 @property --card{syntax:"<color>";inherits:true;initial-value:#ffffff}
-@property --line{syntax:"<color>";inherits:true;initial-value:rgba(12,12,16,.075)}
-@property --line2{syntax:"<color>";inherits:true;initial-value:rgba(12,12,16,.13)}
-@property --text{syntax:"<color>";inherits:true;initial-value:#0b0b0f}
-@property --muted{syntax:"<color>";inherits:true;initial-value:#4f4f58}
-@property --faint{syntax:"<color>";inherits:true;initial-value:#71717a}
-@property --chip{syntax:"<color>";inherits:true;initial-value:rgba(12,12,16,.055)}
-@property --hover{syntax:"<color>";inherits:true;initial-value:rgba(12,12,16,.04)}
-@property --accent-soft{syntax:"<color>";inherits:true;initial-value:rgba(10,114,239,.075)}
-@property --accent-fill{syntax:"<color>";inherits:true;initial-value:#0a72ef}
-@property --accent-ink{syntax:"<color>";inherits:true;initial-value:#0860d0}
-@property --group-bg{syntax:"<color>";inherits:true;initial-value:#f8f8f6}
+@property --line{syntax:"<color>";inherits:true;initial-value:rgba(24,24,27,.10)}
+@property --line2{syntax:"<color>";inherits:true;initial-value:rgba(24,24,27,.16)}
+@property --text{syntax:"<color>";inherits:true;initial-value:#18181b}
+@property --muted{syntax:"<color>";inherits:true;initial-value:#52525b}
+@property --faint{syntax:"<color>";inherits:true;initial-value:#66666e}
+@property --chip{syntax:"<color>";inherits:true;initial-value:rgba(24,24,27,.06)}
+@property --hover{syntax:"<color>";inherits:true;initial-value:rgba(24,24,27,.045)}
+@property --accent-soft{syntax:"<color>";inherits:true;initial-value:#f0f9ff}
+@property --accent-fill{syntax:"<color>";inherits:true;initial-value:#0273b6}
+@property --accent-ink{syntax:"<color>";inherits:true;initial-value:#0369a1}
+@property --group-bg{syntax:"<color>";inherits:true;initial-value:#f7f7f8}
 @property --seg-on{syntax:"<color>";inherits:true;initial-value:#ffffff}
-@property --ink{syntax:"<color>";inherits:true;initial-value:#0b0b0f}
+@property --ink{syntax:"<color>";inherits:true;initial-value:#24262f}
 @property --on-ink{syntax:"<color>";inherits:true;initial-value:#ffffff}
 :root{transition:--bg .24s ease,--bg2 .24s ease,--top .24s ease,--pane .24s ease,--ctl .24s ease,--card .24s ease,--line .24s ease,--line2 .24s ease,--text .24s ease,--muted .24s ease,--faint .24s ease,--chip .24s ease,--hover .24s ease,--accent-soft .24s ease,--accent-fill .24s ease,--accent-ink .24s ease,--group-bg .24s ease,--seg-on .24s ease,--ink .24s ease,--on-ink .24s ease}
 @media (prefers-reduced-motion:reduce){:root{transition:none}}
@@ -169,11 +180,14 @@ input::placeholder,textarea::placeholder{color:var(--faint);opacity:.85}
 .duo{letter-spacing:var(--track-display);font-weight:680}
 .duo span{color:var(--faint)}
 
-/* Keycap: a little physical depth, mono legend. */
+/* Keycap: flat zinc cap with a hairline (Ribbon); also used inline in hint text. */
 kbd,.kbd{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:6px;
   font:600 11px/1 var(--font-ui);letter-spacing:.01em;color:var(--muted);white-space:nowrap;
-  background:linear-gradient(180deg,var(--pane),color-mix(in srgb,var(--pane) 92%,var(--text)));
-  box-shadow:0 0 0 1px var(--line2),0 1.5px 0 color-mix(in srgb,var(--text) 14%,transparent)}
+  background:var(--kbd-bg);box-shadow:inset 0 0 0 1px var(--kbd-line),0 1px 0 rgba(24,24,27,.05)}
+p kbd,.hint kbd,.empty kbd{vertical-align:1px;margin:0 1px}
+
+/* Keyboard focus: one visible ring everywhere (lists use .sel as their focus indicator). */
+:focus-visible{outline:2px solid var(--accent-ring);outline-offset:2px}
 
 /* Grain overlay: add class="grain" to a positioned container. */
 .grain::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background-image:var(--grain);background-size:160px;opacity:var(--grain-op);mix-blend-mode:overlay;z-index:50}
