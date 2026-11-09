@@ -13,4 +13,7 @@ return {
   -- githubOrg = "your-org",
 
   -- screenshotDir = os.getenv("HOME") .. "/Documents/Screenshots",
+
+  -- Lid closed + external display on battery (macOS allows it only on AC). Run scripts/clamshell-setup.sh once.
+  -- batteryClamshell = true,
 }

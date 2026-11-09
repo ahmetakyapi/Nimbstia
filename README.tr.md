@@ -154,11 +154,13 @@ return {
   devCheck = { name = "DEV", host = "10.0.0.10", port = 22 },          -- bağlantı kartı
   language = "en",                                                    -- arayüz dili (varsayılan "tr")
   screenshotDir = os.getenv("HOME") .. "/Documents/Screenshots",
+  batteryClamshell = true,                                            -- pilde kapalı kapak + harici ekran
 }
 ```
 
 - **Şablonlar:** `snippets.lua`, düz bir `{ key, label, text }` listesi; `text` bir fonksiyon da olabilir (tarihler için).
 - **Düzenler ve uygulama tuşları:** `layouts.lua` ve `tools.lua` dosyalarının başındaki tablolar.
+- **Pilde kapalı kapak:** macOS, kapağı kapalı MacBook'un harici ekranı sürmesine yalnız şarjdayken izin verir. `batteryClamshell = true` ile Nimbstia harici ekran bağlıyken uykuyu kapatır, ekran çıkarıldığı (ya da Hammerspoon kapandığı) anda geri açar; Mac çantada yine uyur. Bir kez `scripts/clamshell-setup.sh` çalıştır: yalnız `pmset disablesleep 0|1` komutuna izin veren bir sudoers kuralı kurar (`--uninstall` kaldırır).
 - **Tema:** her panelin ve merkezin başlığındaki güneş/ay butonu.
 - **Kısayol çakışmaları:** <kbd>Ctrl</kbd> <kbd>V</kbd> Vim'in blok seçim tuşunun, <kbd>Ctrl</kbd> <kbd>Space</kbd> macOS'un "önceki giriş kaynağı" kısayolunun yerini alır. Bunlara ihtiyacın varsa `init.lua` içindeki atamaları değiştir.
 

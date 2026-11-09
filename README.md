@@ -161,11 +161,13 @@ return {
   devCheck = { name = "DEV", host = "10.0.0.10", port = 22 },          -- connection card
   language = "en",                                                    -- interface language ("tr" by default)
   screenshotDir = os.getenv("HOME") .. "/Documents/Screenshots",
+  batteryClamshell = true,                                            -- closed lid + external display on battery
 }
 ```
 
 - **Snippets:** `snippets.lua` — a plain list of `{ key, label, text }`; `text` may be a function (dates).
 - **Layouts and app keys:** the tables at the top of `layouts.lua` and `tools.lua`.
+- **Closed lid on battery:** macOS keeps a closed MacBook driving an external display only on AC power. With `batteryClamshell = true`, Nimbstia disables sleep while an external display is connected and restores it the moment the display is unplugged (or Hammerspoon quits), so the Mac still sleeps in a bag. Run `scripts/clamshell-setup.sh` once: it installs a sudoers rule that allows only `pmset disablesleep 0|1` (`--uninstall` removes it).
 - **Theme:** the sun/moon button in the header of every panel and of the hub.
 - **Shortcut clashes:** <kbd>Ctrl</kbd> <kbd>V</kbd> replaces Vim's visual-block key and <kbd>Ctrl</kbd> <kbd>Space</kbd> replaces macOS "previous input source". Change the bindings in `init.lua` if you rely on them.
 

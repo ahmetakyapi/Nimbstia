@@ -198,6 +198,15 @@ if Status then
   if not ok then table.insert(LOAD_ERRORS, "status.start: " .. tostring(err)) end
 end
 
+-- Battery clamshell: keeps a closed Mac awake on battery while an external display is connected
+-- (opt-in: batteryClamshell = true + scripts/clamshell-setup.sh). Ayrıntı: clamshell.lua.
+Clamshell = load("clamshell")
+if Clamshell then
+  local ok, err = pcall(Clamshell.start)
+  if not ok then table.insert(LOAD_ERRORS, "clamshell.start: " .. tostring(err)) end
+  hs.shutdownCallback = function() pcall(Clamshell.stop) end
+end
+
 -- Nimbstia.app (Applications / Dock) opens the hub through this URL: hammerspoon://nimbstia
 hs.urlevent.bind("nimbstia", function()
   if Status and Status.togglePopover then

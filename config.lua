@@ -17,6 +17,8 @@ local C = {
   devCheck = nil,
   -- Where screenshots (⌘.) are saved; the clipboard panel lists this folder too.
   screenshotDir = HOME .. "/Documents/Screenshots",
+  -- Keep a closed MacBook driving the external display on battery too (needs scripts/clamshell-setup.sh).
+  batteryClamshell = false,
 }
 
 local path = HOME .. "/.hammerspoon/config.local.lua"
