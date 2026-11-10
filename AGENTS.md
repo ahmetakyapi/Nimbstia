@@ -49,6 +49,7 @@ Open `~/.hammerspoon/config.local.lua` and uncomment only what the user wants:
 | `jiraBase`, `jiraProjects` | "Do you use Jira? What is the browse URL and which project keys?" | <kbd>Ctrl Opt J</kbd> opens an issue key |
 | `devCheck = { name, title, host, port }` | "Is there a VPN host you want a connection card for?" | Connection card in the hub |
 | `language = "en"` | "Turkish or English interface?" (default Turkish) | Panel language |
+| `updateCheck = false` | Only if they do not want the hub to offer updates | Switches off the six-hourly check and the one-click update card |
 | `screenshotDir` | Only if they want screenshots somewhere other than `~/Documents/Screenshots` | Clipstia save folder |
 
 Leave everything else commented. After editing, reload: `hs -c 'hs.reload()'` (or the menu bar icon ›
