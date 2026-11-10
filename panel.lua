@@ -64,6 +64,14 @@ function Panel.i18nJS()
   return i18nJS
 end
 
+local motionJS
+function Panel.motionJS()
+  if motionJS == nil then
+    motionJS = (readFile(BASE .. "motion.js") or ""):gsub("</script", "<\\/script")
+  end
+  return motionJS
+end
+
 function Panel.inline(html)
   html = html:gsub('<link rel="stylesheet" href="theme%.css">', function()
     return "<style>" .. Panel.themeCSS() .. "</style>"
@@ -74,6 +82,11 @@ function Panel.inline(html)
     local out = '<script>window.NB_LANG="' .. Panel.lang() .. '";</script>'
     if js ~= "" then out = out .. "<script>" .. js .. "</script>" end
     return out
+  end, 1)
+  -- motion.js (shared motion helpers) is inlined the same way; a missing file leaves the tag out.
+  html = html:gsub('<script src="motion%.js"></script>', function()
+    local js = Panel.motionJS()
+    return js ~= "" and ("<script>" .. js .. "</script>") or ""
   end, 1)
   return html
 end
@@ -147,6 +160,7 @@ function Panel:show()
   self.prevWin = hs.window.focusedWindow()
   self.prevApp = hs.application.frontmostApplication()
   self.visible = true
+  self.hideSeq = (self.hideSeq or 0) + 1 -- cancels a pending delayed hide
   if self.ready then self:_present() else self.pendingOpen = true end
 end
 
@@ -155,7 +169,13 @@ function Panel:hide(restoreFocus)
   self.visible = false
   self.pendingOpen = false
   self:js("window.Panel && Panel.close && Panel.close()")
-  self.wv:hide()
+  -- Let the exit animation play (theme.css --dur-exit, 120 ms) before the window goes away. The
+  -- sequence number cancels this hide when the panel is shown again in the meantime.
+  self.hideSeq = (self.hideSeq or 0) + 1
+  local seq = self.hideSeq
+  self.hideTimer = hs.timer.doAfter(0.12, function()
+    if self.hideSeq == seq and not self.visible then self.wv:hide() end
+  end)
   if restoreFocus then
     if self.prevWin and self.prevWin:application() then self.prevWin:focus()
     elseif self.prevApp then self.prevApp:activate() end

@@ -24,11 +24,14 @@
   --track-title:-.014em;    /* card and row titles */
   --track-label:0;          /* section labels are sentence case now */
 
-  /* motion */
-  --ease-out:cubic-bezier(.16,1,.3,1);
-  --ease-in-out:cubic-bezier(.65,0,.35,1);
-  --ease-spring:cubic-bezier(.34,1.4,.64,1);
-  --dur-1:.12s; --dur-2:.22s; --dur-3:.42s;
+  /* motion: see the MOTION SYSTEM block at the end of this file */
+  --ease-out:cubic-bezier(.16,1,.3,1);        /* enter, settle */
+  --ease-in:cubic-bezier(.4,0,1,1);           /* exit: leave quickly, no settle */
+  --ease-in-out:cubic-bezier(.65,0,.35,1);    /* things that stay on screen and change place */
+  --ease-glide:cubic-bezier(.2,.9,.3,1);      /* the moving selection: quick start, soft landing, no overshoot */
+  --ease-spring:cubic-bezier(.34,1.36,.64,1); /* Safari 16.4 fallback for the spring below */
+  --dur-1:.12s; --dur-2:.22s; --dur-3:.32s; --dur-4:.42s; --dur-exit:.12s;
+  --stagger:28ms;                             /* list entrance step, capped at 6 steps */
 
   /* radii */
   --r-xs:6px; --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:24px; --r-pill:999px;
@@ -40,7 +43,9 @@
   --text:#18181b; --muted:#52525b; --faint:#66666e;
   --hover:rgba(24,24,27,.045); --chip:rgba(24,24,27,.06); --seg-on:#ffffff; --mark:rgba(255,200,0,.42);
 
-  /* ink: tooltips and toasts only (graphite, never pure black) */
+  /* tooltips and toasts: a white card in light, graphite ink in dark (no near-black fills in light) */
+  --tt-bg:#ffffff; --tt-fg:var(--text); --tt-shadow:0 0 0 .5px rgba(20,24,40,.14),0 8px 24px -6px rgba(20,24,40,.22);
+  /* ink: dark-theme tooltips and toasts (graphite, never pure black) */
   --ink:#24262f; --on-ink:#ffffff; --ink-hover:#30333d; --ink-shadow:0 1px 0 rgba(255,255,255,.1) inset,0 4px 12px -2px rgba(20,24,40,.25);
 
   /* accent (sky): rings/lines/icons, ink for text, fill for buttons; no coloured glow */
@@ -86,6 +91,7 @@
   --text:#f3f4f7; --muted:#b9bcc8; --faint:#9094a3;
   --hover:rgba(255,255,255,.055); --chip:rgba(255,255,255,.075); --seg-on:rgba(255,255,255,.14); --mark:rgba(255,196,0,.3);
   --ink:#3a3c45; --on-ink:#ffffff; --ink-hover:#454852; --ink-shadow:0 1px 0 rgba(255,255,255,.12) inset,0 6px 16px -4px rgba(0,0,0,.5);
+  --tt-bg:var(--ink); --tt-fg:var(--on-ink); --tt-shadow:var(--ink-shadow),0 16px 36px -10px rgba(0,0,0,.45);
   --accent:#38bdf8; --accent-fill:#0273b6; --accent-hover:#0284c7; --accent-press:#0369a1; --accent-ink:#7dd3fc;
   --accent-soft:rgba(56,189,248,.12); --accent-line:rgba(56,189,248,.45); --accent-ring:rgba(56,189,248,.6); --on-accent:#ffffff;
   --accent-grad:linear-gradient(180deg,#0284c7 0%,#0369a1 100%); --accent-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 1px 2px rgba(0,0,0,.35);
@@ -114,6 +120,7 @@
   --text:#f3f4f7; --muted:#b9bcc8; --faint:#9094a3;
   --hover:rgba(255,255,255,.055); --chip:rgba(255,255,255,.075); --seg-on:rgba(255,255,255,.14); --mark:rgba(255,196,0,.3);
   --ink:#3a3c45; --on-ink:#ffffff; --ink-hover:#454852; --ink-shadow:0 1px 0 rgba(255,255,255,.12) inset,0 6px 16px -4px rgba(0,0,0,.5);
+  --tt-bg:var(--ink); --tt-fg:var(--on-ink); --tt-shadow:var(--ink-shadow),0 16px 36px -10px rgba(0,0,0,.45);
   --accent:#38bdf8; --accent-fill:#0273b6; --accent-hover:#0284c7; --accent-press:#0369a1; --accent-ink:#7dd3fc;
   --accent-soft:rgba(56,189,248,.12); --accent-line:rgba(56,189,248,.45); --accent-ring:rgba(56,189,248,.6); --on-accent:#ffffff;
   --accent-grad:linear-gradient(180deg,#0284c7 0%,#0369a1 100%); --accent-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 1px 2px rgba(0,0,0,.35);
@@ -136,7 +143,7 @@
   color-scheme:dark;
 }
 
-/* Smooth theme switch: the colour tokens are typed so they interpolate. */
+/* Theme switch cross-fade: the colour tokens are typed so they interpolate. */
 @property --bg{syntax:"<color>";inherits:true;initial-value:#f4f4f5}
 @property --bg2{syntax:"<color>";inherits:true;initial-value:#ececee}
 @property --top{syntax:"<color>";inherits:true;initial-value:#fafafa}
@@ -172,10 +179,10 @@ input::placeholder,textarea::placeholder{color:var(--faint);opacity:.85}
 
 /* shared pieces ------------------------------------------------------------------------ */
 
-/* Uppercase mono label above a section (Shoji's "HOW IT WORKS"). */
+/* Section label: sentence case, never uppercase or tracked (design memory, mistake #115). */
 .eyebrow{font:600 11.5px/1.2 var(--font-ui);letter-spacing:0;text-transform:none;color:var(--faint)}
-/* Zero-padded index, mono, in the accent: 01 02 03 */
-.idx{font:600 11px/1 var(--font-ui);color:var(--accent);font-variant-numeric:tabular-nums}
+/* Index number in the text sky (--accent-ink; --accent itself is 2.77:1 and never carries text) */
+.idx{font:600 11px/1 var(--font-ui);color:var(--accent-ink);font-variant-numeric:tabular-nums}
 /* Two-tone title: strong first clause, quiet second. <h1 class="duo">Pano. <span>Her şey burada.</span></h1> */
 .duo{letter-spacing:var(--track-display);font-weight:680}
 .duo span{color:var(--faint)}
@@ -185,6 +192,11 @@ kbd,.kbd{display:inline-flex;align-items:center;justify-content:center;min-width
   font:600 11px/1 var(--font-ui);letter-spacing:.01em;color:var(--muted);white-space:nowrap;
   background:var(--kbd-bg);box-shadow:inset 0 0 0 1px var(--kbd-line),0 1px 0 rgba(24,24,27,.05)}
 p kbd,.hint kbd,.empty kbd{vertical-align:1px;margin:0 1px}
+
+/* Tooltip on icon buttons (.tb, .ib) with data-tip: appears after a short rest, so sweeping the pointer shows nothing. */
+.tb[data-tip]:hover::after,.ib[data-tip]:hover::after{content:attr(data-tip);position:absolute;top:calc(100% + 6px);right:0;z-index:80;white-space:nowrap;pointer-events:none;
+  padding:6px 9px;border-radius:8px;font:500 11.5px/1 var(--font-ui);letter-spacing:0;color:var(--tt-fg);background:var(--tt-bg);box-shadow:var(--tt-shadow);
+  animation:nb-fade var(--dur-1) ease-out .28s both}
 
 /* Keyboard focus: one visible ring everywhere (lists use .sel as their focus indicator). */
 :focus-visible{outline:2px solid var(--accent-ring);outline-offset:2px}
@@ -206,8 +218,89 @@ p kbd,.hint kbd,.empty kbd{vertical-align:1px;margin:0 1px}
 .ink-btn .go{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.22);color:#fff}
 .ink-btn .go svg{width:11px;height:11px}
 
-/* Panel entrance: rise, unblur, settle. */
-@keyframes nb-in{from{opacity:0;transform:translateY(8px) scale(.985);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+/* MOTION SYSTEM ------------------------------------------------------------------------
+   Every motion says one thing; nothing moves for decoration. Only transform, opacity and filter are
+   animated, 120-420 ms, exits faster than entrances, nothing loops except real work in progress.
+   Two paint-only exceptions, neither touches layout: the ring stroke (stroke-dashoffset) and the
+   theme colour tokens. With prefers-reduced-motion everything lands instantly and the state is still shown
+   (selection, check mark, final number, full ring).
+
+   Tokens
+     --dur-1 120ms  feedback (hover, press, keycap)        --ease-out     enter and settle
+     --dur-2 220ms  state change (thumb, row rise, toast)  --ease-in      exit
+     --dur-3 320ms  panel entrance                         --ease-glide   moving selection
+     --dur-4 420ms  draw (ring, bar, count-up)             --ease-spring  3% overshoot: linear() where
+     --dur-exit 120ms  anything leaving                                   supported (Safari 17.2+),
+     --stagger 28ms x at most 6 steps (388 ms in total)                   cubic-bezier before that
+
+   What each one communicates
+     .app/.show        panel rises 10px and scales .975 to 1: "this came from your shortcut"; leaves in 120 ms
+     .nb-in + --i      rows and cards arrive in reading order (first six only), so the top is ready first
+     .nb-glide         one highlight glides between rows/cards: selection is one object that moves
+     .seg-thumb        the segment thumb slides to the new filter: same control, new position
+     kbd.hit           the keycap dips when its shortcut fires: "that key did this"
+     .nb-pop           a check pops where you copied: confirmation at the place of the action
+     .nb-draw/.nb-grow rings and bars draw from zero on first show: a value, read as a quantity
+     NB.count()        a number counts to its new value: the stat changed, and in which direction
+     .nb-skel          shimmer only while something is really loading
+     .nb-press         pressed controls sink 3%: the click registered
+     :root transition  theme tokens cross-fade (typed with @property) instead of flashing
+   The JS side (glide, thumb, count, keycap) lives in motion.js. */
+
+@supports (transition-timing-function:linear(0,1)){:root{
+  --ease-spring:linear(0,.075,.24,.429,.605,.751,.861,.937,.985,1.013,1.025,1.028,1.026,1.021,1.016,1.011,1.007,1.004,1.002,1,1);
+}}
+
+@keyframes nb-in{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
 @keyframes nb-rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-@keyframes nb-shimmer{from{background-position:-200% 0}to{background-position:200% 0}}
-@media (prefers-reduced-motion:reduce){*{animation-duration:.001s!important;animation-delay:0s!important}}
+@keyframes nb-fade{from{opacity:0}to{opacity:1}}
+@keyframes nb-shimmer{from{background-position:120% 0}to{background-position:-120% 0}}
+@keyframes nb-pop{0%{opacity:0;transform:scale(.6)}60%{opacity:1;transform:scale(1.08)}100%{opacity:1;transform:none}}
+@keyframes nb-key{0%{transform:none}40%{transform:translateY(1px) scale(.94)}100%{transform:none}}
+@keyframes nb-grow{from{transform:scaleX(0)}}
+@keyframes nb-draw{from{stroke-dashoffset:var(--len,200)}}
+@keyframes nb-spin{to{transform:rotate(360deg)}}
+@keyframes nb-float{0%,100%{transform:translateY(0) rotate(var(--rot,0deg))}50%{transform:translateY(-3px) rotate(var(--rot,0deg))}}
+
+/* Panel open and close. Entering takes --dur-3 on the spring, leaving --dur-exit on ease-in. */
+.app{opacity:0;transform:translateY(10px) scale(.975);transform-origin:50% 0;
+  transition:opacity var(--dur-exit) var(--ease-in),transform var(--dur-exit) var(--ease-in)}
+.app.show{opacity:1;transform:none;transition:opacity .16s ease-out,transform var(--dur-3) var(--ease-spring)}
+
+/* Entrance stagger: add .nb-in and --i (index). Six steps at most, so it never costs more than 388 ms. */
+.nb-in{animation:nb-rise var(--dur-2) var(--ease-out) both;animation-delay:calc(min(var(--i,0),6) * var(--stagger))}
+
+/* Moving selection (motion.js NB.glide): one element, moved with transform. A held arrow key
+   shortens --glide-dur so it never lags behind. */
+.nb-glide{position:absolute;left:0;top:0;z-index:0;pointer-events:none;border-radius:var(--r-md);
+  background:var(--sel-bg);box-shadow:inset 0 0 0 1px var(--sel-line);
+  transition:transform var(--glide-dur,.18s) var(--ease-glide);will-change:transform}
+.nb-glide.ring{z-index:3;background:none;box-shadow:0 0 0 2px var(--accent)}
+
+/* Segmented control thumb (motion.js NB.thumb). */
+.seg-thumb{position:absolute;z-index:0;pointer-events:none;border-radius:var(--r-pill);transform-origin:0 50%;
+  background:var(--seg-on);box-shadow:0 0 0 .5px var(--line2),0 1px 2px rgba(12,12,16,.08),0 2px 6px -2px rgba(12,12,16,.08)}
+.has-thumb{position:relative}
+.has-thumb>:not(.seg-thumb){position:relative;z-index:1}
+
+/* Keycap feedback (motion.js NB.press): dips and takes the accent for a moment. */
+kbd.hit,.kbd.hit{animation:nb-key var(--dur-2) var(--ease-out);color:var(--accent-ink);background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent-line)}
+
+/* Pressed and confirmed. */
+.nb-press{transition:transform var(--dur-1) var(--ease-out)}
+.nb-press:active{transform:scale(.97)}
+.nb-pop{animation:nb-pop var(--dur-2) var(--ease-spring) both}
+
+/* Draw on first show: bars grow from the left, rings draw their stroke (set --len to the dash length). */
+.nb-grow{transform-origin:0 50%;animation:nb-grow var(--dur-4) var(--ease-out) both}
+.nb-draw{animation:nb-draw var(--dur-4) var(--ease-out) both}
+
+/* Skeleton: only for content that is really loading; the one motion besides spinners that may loop. */
+.nb-skel{border-radius:6px;background:linear-gradient(100deg,var(--chip) 35%,var(--line2) 50%,var(--chip) 65%) 0 0/240% 100%;animation:nb-shimmer 1.3s linear infinite}
+.nb-spin{animation:nb-spin .9s linear infinite}
+
+/* Reduced motion: everything is instant, nothing loops; states are still drawn. */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001s!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.001s!important;transition-delay:0s!important}
+  .nb-skel{animation:none;background:var(--chip)}
+}
