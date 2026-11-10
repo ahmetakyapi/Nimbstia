@@ -338,6 +338,7 @@ end
 -- ---------------------------------------------------------------- popover (pulstia.html)
 
 local Panel = require("panel")
+local Update = require("update")
 local POP_W = 500 -- 480 px card + 10 px transparent inset on each side for the shadow
 local pop
 
@@ -526,6 +527,7 @@ local function popoverData()
     end
   end
   d.system = systemData()
+  d.update = Update.data()
   d.status = overall(peak)
   return d
 end
@@ -738,6 +740,8 @@ local function onPopMessage(p, msg)
     after(function() hs.urlevent.openURL(msg.url) end)
   elseif a == "console" then
     after(function() hs.openConsole() end)
+  elseif a == "update" then
+    Update.apply() -- the hub stays open: it shows the progress, then the reload closes it
   elseif a == "reload" then
     after(hs.reload, 0.1)
   end
@@ -760,9 +764,11 @@ function M.start(help)
       p:js("Pulse.set(" .. hs.json.encode(popoverData()) .. ");Pulse.open()")
       M.fetchDevStats(false)
       M.fetchPorts()
+      Update.check(false)
     end,
   })
   M.popover = pop
+  Update.start(function() if pop and pop.visible then pushPopover() end end)
   Panel.onThemeChange = function() pushPopover() end
   bar:setClickCallback(function() pop:toggle() end)
   render()

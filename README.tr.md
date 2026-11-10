@@ -139,6 +139,8 @@ cp ~/.hammerspoon/config.example.lua ~/.hammerspoon/config.local.lua
 open -a Hammerspoon
 ```
 
+**Güncelleme.** Nimbstia altı saatte bir `main` dalında yeni commit var mı diye bakar. Varsa merkezde "Yeni Sürüm Hazır" afişi çıkar; **Güncelle** düğmesi değişiklikleri çeker (yalnız fast-forward) ve yeniden yükler. Hiçbir şeyin üzerine yazmaz: izlenen dosyalarda yerel değişiklik varsa durur ve nedenini söyler, `config.local.lua` dosyana dokunmaz. Kapatmak için `updateCheck = false`.
+
 Kurulum Applications klasörüne **Nimbstia.app** de ekler; Dock'ta tutarsan tek tıkla merkezi açar (`scripts/build-app.sh` yeniden üretir).
 
 Ardından **Sistem Ayarları › Gizlilik ve Güvenlik** altında Hammerspoon'a iki izin ver: **Erişilebilirlik** (kısayollar, pencereler, şablonlar) ve **Ekran Kaydı** (ekran görüntüsü, metin tanıma). Nimbstia Mac açılınca kendiliğinden başlar.

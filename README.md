@@ -146,6 +146,8 @@ cp ~/.hammerspoon/config.example.lua ~/.hammerspoon/config.local.lua
 open -a Hammerspoon
 ```
 
+**Updates.** Nimbstia looks for new commits on `main` every six hours. When there are some, the hub shows a "New Version Ready" banner; **Update** pulls them (fast-forward only) and reloads. It never overwrites anything: with local edits to tracked files it stops and says so, and `config.local.lua` is untouched. Switch it off with `updateCheck = false`.
+
 It also builds **Nimbstia.app** in Applications — keep it in the Dock and one click opens the hub (`scripts/build-app.sh` rebuilds it).
 
 Then give Hammerspoon two permissions in **System Settings › Privacy & Security**: **Accessibility** (hotkeys, windows, snippets) and **Screen Recording** (screenshots, text recognition). Nimbstia starts with your Mac.

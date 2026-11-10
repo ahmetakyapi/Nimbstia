@@ -57,6 +57,25 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .banner svg{width:16px;height:16px}
 .banner .go{margin-left:auto;font-size:12px;font-weight:600;opacity:.85}
 .banner:hover{background:color-mix(in srgb,var(--bad-bar) 16%,var(--card))}
+/* update banner: the one sky surface in the hub, shown only while a newer version waits on origin/main */
+.upd{display:flex;align-items:center;gap:11px;width:100%;padding:10px 10px 10px 13px;border-radius:14px;background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent-line);flex:none;animation:upd-in var(--dur-3,.32s) var(--ease-out,ease-out) both}
+.upd .ui{display:grid;place-items:center;width:28px;height:28px;border-radius:9px;background:var(--card);box-shadow:inset 0 0 0 1px var(--accent-line);color:var(--accent-ink);flex:none}
+.upd .ui svg{width:15px;height:15px}
+.upd .ut{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1}
+.upd .ut b{font-size:13px;font-weight:600;color:var(--text)}
+.upd .ut small{display:flex;gap:5px;font-size:11.5px;color:var(--muted);min-width:0}
+.upd .ut small .us{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.upd .ut small .un{flex:none}
+.upd.err{background:color-mix(in srgb,var(--bad-bar) 9%,var(--card));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--bad-bar) 30%,transparent)}
+.upd.err .ut small{color:var(--danger)}
+.ubtn{display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 13px;border-radius:10px;font-size:12.5px;font-weight:600;color:var(--on-primary);background:var(--primary);box-shadow:var(--primary-shadow);flex:none;transition:filter var(--dur-1),transform var(--dur-1) var(--ease-out)}
+.ubtn:hover{filter:brightness(1.06)}
+.ubtn:active{transform:scale(.97)}
+.ubtn[disabled]{opacity:.75;pointer-events:none}
+.ubtn .spin{width:12px;height:12px;border-radius:50%;border:1.6px solid color-mix(in srgb,var(--on-primary) 35%,transparent);border-top-color:var(--on-primary);animation:upd-spin .8s linear infinite}
+@keyframes upd-in{from{opacity:0;transform:translateY(-4px)}}
+@keyframes upd-spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.upd{animation:none}.ubtn .spin{animation-duration:2.4s}}
 
 /* ---------------------------------------------------------------- widgets */
 .w{position:relative;border-radius:20px;background:var(--card);box-shadow:var(--card-lift);padding:14px;overflow:hidden;min-width:0}
@@ -410,6 +429,7 @@ const ICONS = {
   play:   P('<path d="M5.6 3.8v8.4L12.4 8z"/>', '<path d="M5.6 3.8v8.4L12.4 8z"/>'),
   keys:   P('<rect x="1.8" y="3.8" width="12.4" height="8.4" rx="2"/>', '<rect x="1.8" y="3.8" width="12.4" height="8.4" rx="2"/><path d="M4.6 6.6h.01M7 6.6h.01M9.4 6.6h.01M11.6 6.6h.01M5 9.4h6"/>'),
   term:   P('<rect x="1.8" y="2.8" width="12.4" height="10.4" rx="2"/>', '<rect x="1.8" y="2.8" width="12.4" height="10.4" rx="2"/><path d="m4.8 6.4 2 1.7-2 1.7M8.4 10h2.8"/>'),
+  update: P('', '<path d="M8 2.6v7.2"/><path d="M5 7l3 3 3-3"/><path d="M3 12.9h10"/>'),
   reload: P('', '<path d="M13.2 8A5.2 5.2 0 1 1 11.6 4.3"/><path d="M13.3 2.4v2.6h-2.6"/>'),
   sun:    '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3" fill="currentColor" fill-opacity=".28" stroke="none"/><circle cx="8" cy="8" r="3"/><path d="M8 1.6v1.4M8 13v1.4M1.6 8H3M13 8h1.4M3.5 3.5l1 1M11.5 11.5l1 1M12.5 3.5l-1 1M4.5 11.5l-1 1"/></svg>',
   moon:   '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 9.4A5.6 5.6 0 0 1 6.6 3a5.6 5.6 0 1 0 6.4 6.4z" fill="currentColor" fill-opacity=".28" stroke="none"/><path d="M13 9.4A5.6 5.6 0 0 1 6.6 3a5.6 5.6 0 1 0 6.4 6.4z"/></svg>',
@@ -485,6 +505,17 @@ function renderMain() {
 
   const errs = Array.isArray(d.errors) ? d.errors : [];
   if (errs.length) out.push(`<button class="banner" data-act="console">${ICONS.warn}<span>${errs.length} modül yüklenemedi</span><span class="go">Konsol</span></button>`);
+
+  const up = d.update;
+  if (up && (up.behind > 0 || up.updating || up.error)) {
+    const subj = Array.isArray(up.subjects) && up.subjects[0];
+    const sub = up.error ? `<span class="us">${esc(up.error)}</span>`
+      : up.updating ? `<span class="us">İndiriliyor, Ardından Yeniden Yüklenecek</span>`
+      : `<span class="un">${up.behind} değişiklik</span>${subj ? `<span class="un">·</span><span class="us" title="${esc(up.subjects.join('\n'))}">${esc(subj)}</span>` : ''}`;
+    const btn = up.updating ? `<button class="ubtn" type="button" disabled><span class="spin"></span><span>Güncelleniyor…</span></button>`
+      : `<button class="ubtn" data-act="update" type="button"><span>${up.error ? 'Yeniden Dene' : 'Güncelle'}</span></button>`;
+    out.push(`<div class="upd${up.error ? ' err' : ''}" role="status"><span class="ui">${ICONS.update}</span><span class="ut"><b>${up.error ? 'Güncellenemedi' : 'Yeni Sürüm Hazır'}</b><small>${sub}</small></span>${btn}</div>`);
+  }
 
   // ---- row 1: connection + Claude
   const row1 = [], parts = {};

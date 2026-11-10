@@ -162,6 +162,14 @@
     "Bir oturuma tıklayınca claude.ai'de açılır.": 'Click a session to open it on claude.ai.',
     'Kısayollar': 'Shortcuts', 'Henüz kısayol yok.': 'No shortcuts yet.', 'Konsol': 'Console', 'Yeniden Yükle': 'Reload',
     'modül yüklenemedi': 'module failed to load',
+    // hub: update banner (update.lua)
+    'Yeni Sürüm Hazır': 'New Version Ready', 'Güncelle': 'Update', 'Güncelleniyor…': 'Updating…',
+    'İndiriliyor, Ardından Yeniden Yüklenecek': 'Downloading, Then Reloading', 'Güncellenemedi': 'Update Failed',
+    'Yeniden Dene': 'Try Again', 'Güncelleme Yalnız main Dalında Yapılır': 'Updates Only Run on the main Branch',
+    'Depo Durumu Okunamadı': 'Could Not Read the Repository State',
+    "Yerel Değişiklik Var · Önce Commit'le ya da Geri Al": 'Local Changes Found · Commit or Revert Them First',
+    'Bağlantı Yok · Sonra Yeniden Dene': 'No Connection · Try Again Later',
+    'Güncelleme Uygulanamadı · Ayrıntı Konsolda': 'Update Could Not Be Applied · Details in the Console',
     'Takvim izni yok · Sistem Ayarları › Gizlilik › Takvimler': 'No calendar access · System Settings › Privacy › Calendars',
     // shortcut labels (init.lua HELP, tools.lua bind), shown in the hub's shortcuts view
     'Pano Geçmişi': 'Clipboard History', 'Pencere Düzenleri': 'Window Layouts',
@@ -221,6 +229,7 @@
     R('^' + NUM + ' çalışıyor$', function (m) { return m[1] + ' running'; }),
     R('^' + NUM + ' araç$', function (m) { return pl(m[1], 'tool', 'tools'); }),
     R('^' + NUM + ' kısayol$', function (m) { return pl(m[1], 'shortcut', 'shortcuts'); }),
+    R('^' + NUM + ' değişiklik$', function (m) { return pl(m[1], 'change', 'changes'); }),
     R('^' + NUM + ' modül yüklenemedi$', function (m) { return pl(m[1], 'module', 'modules') + ' failed to load'; }),
     R('^' + NUM + ' Modül Yüklenemedi$', function (m) { return pl(m[1], 'Module', 'Modules') + ' Failed to Load'; }),
     R('^' + NUM + ' dosya$', function (m) { return pl(m[1], 'file', 'files'); }),

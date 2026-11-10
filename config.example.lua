@@ -14,6 +14,9 @@ return {
 
   -- screenshotDir = os.getenv("HOME") .. "/Documents/Screenshots",
 
+  -- The hub offers a one-click update when origin/main has new commits (checked every 6 hours).
+  -- updateCheck = false,   -- switch the check and the banner off
+
   -- Lid closed + external display on battery (macOS allows it only on AC). Run scripts/clamshell-setup.sh once.
   -- batteryClamshell = true,
 }
