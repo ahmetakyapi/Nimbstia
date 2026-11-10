@@ -16,7 +16,7 @@ button:focus{outline:none}
 button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-ring);outline-offset:2px}
 
 /* ---------------------------------------------------------------- window */
-.app{position:relative;display:flex;flex-direction:column;max-height:980px;border-radius:22px;background:var(--app-bg);box-shadow:var(--shadow);overflow:hidden;outline:0;transform-origin:100% 0}
+.app{position:relative;display:flex;flex-direction:column;max-height:min(980px,calc(100vh - 20px));border-radius:22px;background:var(--app-bg);box-shadow:var(--shadow);overflow:hidden;outline:0;transform-origin:100% 0}
 .app::before{content:"";position:absolute;inset:0 0 auto 0;height:220px;background:var(--wash);pointer-events:none}
 .app:focus,.app:focus-visible{outline:0;box-shadow:var(--shadow)}
 .scroll{position:relative;overflow-y:auto;overflow-x:hidden;padding:0 12px;display:flex;flex-direction:column;gap:10px;min-height:0}
@@ -57,25 +57,65 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .banner svg{width:16px;height:16px}
 .banner .go{margin-left:auto;font-size:12px;font-weight:600;opacity:.85}
 .banner:hover{background:color-mix(in srgb,var(--bad-bar) 16%,var(--card))}
-/* update banner: the one sky surface in the hub, shown only while a newer version waits on origin/main */
-.upd{display:flex;align-items:center;gap:11px;width:100%;padding:10px 10px 10px 13px;border-radius:14px;background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent-line);flex:none;animation:upd-in var(--dur-3,.32s) var(--ease-out,ease-out) both}
-.upd .ui{display:grid;place-items:center;width:28px;height:28px;border-radius:9px;background:var(--card);box-shadow:inset 0 0 0 1px var(--accent-line);color:var(--accent-ink);flex:none}
-.upd .ui svg{width:15px;height:15px}
-.upd .ut{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1}
-.upd .ut b{font-size:13px;font-weight:600;color:var(--text)}
-.upd .ut small{display:flex;gap:5px;font-size:11.5px;color:var(--muted);min-width:0}
-.upd .ut small .us{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
-.upd .ut small .un{flex:none}
-.upd.err{background:color-mix(in srgb,var(--bad-bar) 9%,var(--card));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--bad-bar) 30%,transparent)}
-.upd.err .ut small{color:var(--danger)}
-.ubtn{display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 13px;border-radius:10px;font-size:12.5px;font-weight:600;color:var(--on-primary);background:var(--primary);box-shadow:var(--primary-shadow);flex:none;transition:filter var(--dur-1),transform var(--dur-1) var(--ease-out)}
-.ubtn:hover{filter:brightness(1.06)}
-.ubtn:active{transform:scale(.97)}
-.ubtn[disabled]{opacity:.75;pointer-events:none}
-.ubtn .spin{width:12px;height:12px;border-radius:50%;border:1.6px solid color-mix(in srgb,var(--on-primary) 35%,transparent);border-top-color:var(--on-primary);animation:upd-spin .8s linear infinite}
-@keyframes upd-in{from{opacity:0;transform:translateY(-4px)}}
+/* update card: the one sky surface in the hub, shown only while a newer version waits on origin/main.
+   Full card first (what changed + the button); "Sonra" folds it to one row. */
+.upd{position:relative;overflow:hidden;width:100%;border-radius:18px;background:var(--card);box-shadow:inset 0 0 0 1px var(--accent-line),var(--card-lift);flex:none;animation:upd-in var(--dur-4) var(--ease-out) both}
+.upd::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 90% at 0% 0%,color-mix(in srgb,var(--accent) 20%,transparent),transparent 62%),radial-gradient(70% 80% at 100% 100%,color-mix(in srgb,var(--accent) 9%,transparent),transparent 70%)}
+.upd::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;background-image:radial-gradient(color-mix(in srgb,var(--accent) 34%,transparent) 1px,transparent 1.2px);background-size:14px 14px;-webkit-mask-image:linear-gradient(115deg,#000,transparent 46%);mask-image:linear-gradient(115deg,#000,transparent 46%)}
+.upd>*{position:relative;z-index:1}
+.uhead{display:flex;align-items:center;gap:12px;padding:14px 14px 0}
+.uem{position:relative;display:grid;place-items:center;width:42px;height:42px;border-radius:13px;background:var(--primary);box-shadow:var(--primary-shadow);color:var(--on-primary);flex:none}
+.uem svg{width:19px;height:19px;stroke-width:1.9}
+.uem svg .ar{animation:upd-drop 2.2s var(--ease-out) infinite}
+.uem::before,.uem::after{content:"";position:absolute;inset:-1px;border-radius:14px;box-shadow:0 0 0 1.5px var(--accent);opacity:0;animation:upd-ring 2.6s ease-out infinite}
+.uem::after{animation-delay:1.3s}
+.uttl{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.uttl b{font-size:15px;font-weight:650;letter-spacing:-.01em;color:var(--text)}
+.uttl small{font-size:12px;color:var(--muted)}
+.ucount{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:999px;font-size:11.5px;font-weight:600;color:var(--accent-ink);background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent-line);flex:none;font-variant-numeric:tabular-nums}
+.ulist{display:flex;flex-direction:column;margin:12px 14px 0;border-radius:12px;background:color-mix(in srgb,var(--card) 72%,transparent);box-shadow:inset 0 0 0 1px var(--line)}
+.uli{display:flex;align-items:center;gap:9px;height:32px;padding:0 11px;min-width:0;animation:upd-row var(--dur-3) var(--ease-out) both;animation-delay:calc(var(--i)*55ms + 120ms)}
+.uli+.uli{box-shadow:inset 0 1px 0 var(--line)}
+.uli .ud{width:7px;height:7px;border-radius:50%;background:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 18%,transparent);flex:none}
+.uli .uk{font-size:11.5px;font-weight:600;color:var(--text);flex:none;min-width:62px}
+.uli .ux{font-size:12.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.uli.more .ux{font-size:11.5px}
+.uact{display:flex;align-items:center;gap:8px;padding:12px 14px 14px}
+.ubtn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:7px;height:36px;padding:0 16px;border-radius:12px;font-size:13px;font-weight:600;color:var(--on-primary);background:var(--primary);box-shadow:var(--primary-shadow);flex:1;transition:filter var(--dur-1),transform var(--dur-1) var(--ease-out)}
+.ubtn svg{width:15px;height:15px}
+.ubtn::after{content:"";position:absolute;top:0;bottom:0;left:-40%;width:34%;background:linear-gradient(100deg,transparent,color-mix(in srgb,var(--on-primary) 26%,transparent),transparent);animation:upd-sheen 3.4s ease-in-out infinite}
+.ubtn:hover{filter:brightness(1.07)}
+.ubtn:active{transform:scale(.98)}
+.ubtn[disabled]{pointer-events:none}
+.ubtn[disabled]::after{display:none}
+.ubtn .spin{width:13px;height:13px;border-radius:50%;border:1.7px solid color-mix(in srgb,var(--on-primary) 35%,transparent);border-top-color:var(--on-primary);animation:upd-spin .8s linear infinite}
+.ulater{height:36px;padding:0 14px;border-radius:12px;font-size:12.5px;font-weight:550;color:var(--muted);flex:none;transition:background var(--dur-1),color var(--dur-1)}
+.ulater:hover{color:var(--text);background:var(--hover)}
+.uprog{position:absolute;left:0;right:0;bottom:0;height:3px;background:color-mix(in srgb,var(--accent) 18%,transparent);overflow:hidden}
+.uprog::before{content:"";position:absolute;top:0;bottom:0;width:38%;border-radius:3px;background:var(--accent);animation:upd-bar 1.25s ease-in-out infinite}
+/* folded: one row */
+.upd.mini .uhead{padding:10px 10px 10px 12px}
+.upd.mini .uem{width:30px;height:30px;border-radius:10px}
+.upd.mini .uem svg{width:15px;height:15px}
+.upd.mini .uem::before,.upd.mini .uem::after{border-radius:11px}
+.upd.mini .uttl b{font-size:13px}
+.upd.mini .ubtn{flex:none;height:30px;padding:0 13px;border-radius:10px;font-size:12.5px}
+/* failed */
+.upd.err{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--bad-bar) 34%,transparent),var(--card-lift)}
+.upd.err::before{background:radial-gradient(120% 90% at 0% 0%,color-mix(in srgb,var(--bad-bar) 16%,transparent),transparent 62%)}
+.upd.err::after{display:none}
+.upd.err .uem{background:color-mix(in srgb,var(--bad-bar) 14%,var(--card));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--bad-bar) 34%,transparent);color:var(--danger)}
+.upd.err .uem::before,.upd.err .uem::after{display:none}
+.upd.err .uem svg .ar{animation:none}
+.upd.err .uttl small{color:var(--danger)}
+@keyframes upd-in{from{opacity:0;transform:translateY(-6px) scale(.985)}}
+@keyframes upd-row{from{opacity:0;transform:translateY(4px)}}
 @keyframes upd-spin{to{transform:rotate(360deg)}}
-@media (prefers-reduced-motion:reduce){.upd{animation:none}.ubtn .spin{animation-duration:2.4s}}
+@keyframes upd-ring{0%{opacity:.55;transform:scale(1)}70%,100%{opacity:0;transform:scale(1.32)}}
+@keyframes upd-drop{0%{transform:translateY(-3px);opacity:0}22%{opacity:1}55%,100%{transform:translateY(0);opacity:1}}
+@keyframes upd-sheen{0%,55%{left:-40%}100%{left:120%}}
+@keyframes upd-bar{0%{left:-38%}100%{left:100%}}
+@media (prefers-reduced-motion:reduce){.upd,.uli,.uem svg .ar,.uem::before,.uem::after,.ubtn::after{animation:none}.ubtn .spin,.uprog::before{animation-duration:2.6s}}
 
 /* ---------------------------------------------------------------- widgets */
 .w{position:relative;border-radius:20px;background:var(--card);box-shadow:var(--card-lift);padding:14px;overflow:hidden;min-width:0}
@@ -395,10 +435,57 @@ button.ss:hover .go{color:var(--text);transform:translate(2px,-2px)}
 .cbm.b2 i.tday{background:#fde3a7}
 .cbx{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;font-size:11px;color:var(--faint)}
 .cbx .td{font-size:10.5px;font-weight:650;color:var(--accent-ink);background:var(--accent-soft);padding:1px 6px;border-radius:999px}
+/* ---------------------------------------------------------------- ambient light + hero
+   The hub is the one panel that may glow: three slow blobs behind the top, tinted by the overall
+   state (sky when all is well, amber on a warning, rose when something is down). Transform-only
+   animation on already-blurred layers, so it costs one composite per frame and nothing in layout. */
+.amb{position:absolute;inset:0 0 auto 0;height:340px;pointer-events:none;overflow:hidden;border-radius:22px 22px 0 0;-webkit-mask-image:linear-gradient(180deg,#000 30%,transparent);mask-image:linear-gradient(180deg,#000 30%,transparent);opacity:var(--amb-o,.55)}
+.amb i{position:absolute;border-radius:50%;filter:blur(46px);will-change:transform}
+.amb i:nth-child(1){left:-70px;top:-90px;width:300px;height:240px;background:var(--a1);animation:amb-a 19s ease-in-out infinite alternate}
+.amb i:nth-child(2){right:-60px;top:-70px;width:260px;height:220px;background:var(--a2);animation:amb-b 23s ease-in-out infinite alternate}
+.amb i:nth-child(3){left:150px;top:40px;width:220px;height:170px;background:var(--a3);animation:amb-c 27s ease-in-out infinite alternate}
+.app{--a1:#38bdf8;--a2:#818cf8;--a3:#2dd4bf}
+.app[data-tone="warn"]{--a1:#fbbf24;--a2:#fb923c;--a3:#38bdf8}
+.app[data-tone="bad"]{--a1:#fb7185;--a2:#f472b6;--a3:#fbbf24}
+:root[data-theme="dark"] .amb{--amb-o:.34}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .amb{--amb-o:.34}}
+@keyframes amb-a{to{transform:translate(70px,34px) scale(1.14)}}
+@keyframes amb-b{to{transform:translate(-80px,46px) scale(.9)}}
+@keyframes amb-c{to{transform:translate(-60px,-30px) scale(1.2)}}
+.scroll>*{flex:none}
+.hero{display:flex;flex-direction:column;gap:14px;padding:16px 4px 4px 6px}
+.hero .mark{width:44px;height:44px;filter:drop-shadow(0 6px 12px rgba(2,132,199,.35))}
+.hbar{display:flex;align-items:flex-start;gap:4px}
+.hbar .hchips{flex:1;min-width:0}
+.hbar .ib{margin-top:-1px;flex:none}
+.hrow{display:flex;align-items:center;gap:12px}
+.hgreet{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.hgreet b{font:700 26px/1.05 var(--font-display);letter-spacing:-.035em;color:var(--text)}
+.hgreet small{font-size:12.5px;font-weight:500;color:var(--muted)}
+.hclock{font:650 36px/1 var(--font-display);letter-spacing:-.04em;padding-right:6px;color:var(--text);font-variant-numeric:tabular-nums;flex:none}
+.hclock i{font-style:normal;opacity:.45;margin:0 2px;position:relative;top:-3px;animation:hero-blink 2s steps(1) infinite}
+.hchips{display:flex;flex-wrap:wrap;gap:6px}
+.hchip{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 11px 0 9px;border-radius:var(--r-pill);font-size:12px;font-weight:600;color:var(--text);background:color-mix(in srgb,var(--card) 78%,transparent);box-shadow:inset 0 0 0 1px var(--line);white-space:nowrap;max-width:100%}
+.hchip svg{width:13px;height:13px;color:var(--muted);flex:none}
+.hchip span{overflow:hidden;text-overflow:ellipsis}
+.hchip .hd{width:7px;height:7px;margin:0 2px;border-radius:50%;background:var(--ok-bar);box-shadow:0 0 0 3px color-mix(in srgb,var(--ok-bar) 22%,transparent);flex:none}
+.hero .pill{box-shadow:inset 0 0 0 1px color-mix(in srgb,currentColor 22%,transparent)}
+.hero .pill.ok i::after{animation:ping 2.4s var(--ease-out) infinite}
+@keyframes hero-blink{50%{opacity:.12}}
+/* cards float on the light: a little translucent at rest, a hair of top light */
+.card{background:color-mix(in srgb,var(--card) 88%,transparent)}
+.wh .wi{background:linear-gradient(150deg,color-mix(in srgb,var(--wc,var(--accent)) 72%,#fff),var(--wc,var(--accent)));box-shadow:0 3px 8px -3px color-mix(in srgb,var(--wc,var(--accent)) 65%,transparent)}
+.gauge .val{filter:drop-shadow(0 0 3.5px color-mix(in srgb,var(--s) 60%,transparent))}
+.meter i{box-shadow:0 0 10px -1px color-mix(in srgb,#d97757 55%,transparent)}
+.ti .ico{background:linear-gradient(160deg,color-mix(in srgb,var(--k) 20%,var(--card)),color-mix(in srgb,var(--k) 8%,var(--card)));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--k) 26%,transparent),inset 0 1px 0 color-mix(in srgb,#fff 22%,transparent),0 6px 14px -8px color-mix(in srgb,var(--k) 70%,transparent)}
+.ti .ico::before{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(70% 60% at 30% 15%,color-mix(in srgb,var(--k) 26%,transparent),transparent 70%)}
+.ti:hover .ico{transform:translateY(-3px) scale(1.05);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--k) 40%,transparent),inset 0 1px 0 color-mix(in srgb,#fff 22%,transparent),0 12px 20px -8px color-mix(in srgb,var(--k) 75%,transparent)}
+@media (prefers-reduced-motion:reduce){.amb i,.hclock i,.hero .pill.ok i::after{animation:none}}
 </style>
 </head>
 <body>
 <div class="app" id="app" tabindex="-1">
+  <div class="amb" aria-hidden="true"><i></i><i></i><i></i></div>
   <div class="scroll" id="scroll"></div>
   <div class="foot" id="foot"></div>
 </div>
@@ -498,23 +585,46 @@ const today = () => { const s = new Date().toLocaleDateString('tr-TR', { weekday
 // Widget header: small coloured glyph + name, optional right side.
 const wh = (icon, label, right, color) => `<div class="wh"><span class="wi"${color ? ` style="--wc:${color}"` : ''}>${icon}</span><b>${label}</b><span class="sp"></span>${right || ''}</div>`;
 
+let updFolded = false; // "Sonra": the update card folds to one row until the hub reloads
 function renderMain() {
   const d = data, out = [];
   const st = overall();
-  out.push(`<div class="head">${MARK}<div class="ht"><b>Nimbstia</b><small>${esc(today())}</small></div><span class="sp"></span><button class="ib flip" data-act="flip" type="button"></button><button class="ib" data-act="close" type="button" aria-label="Kapat" data-tip="Kapat · Esc"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg></button></div>`);
+
+  // ---- hero: greeting, clock, and what is going on right now
+  const now = new Date(), hr = now.getHours();
+  const greet = hr >= 5 && hr < 11 ? 'Günaydın' : hr < 17 ? 'İyi Günler' : hr < 22 ? 'İyi Akşamlar' : 'İyi Geceler';
+  const two = n => String(n).padStart(2, '0');
+  const chips = [`<span class="pill ${st.tone}"><i></i><span>${esc(st.text)}</span></span>`];
+  const nPorts = Array.isArray(d.ports) ? d.ports.length : 0;
+  if (nPorts) chips.push(`<span class="hchip">${ICONS.term}<span>${nPorts} Sunucu</span></span>`);
+  const nBusy = d.claude && Array.isArray(d.claude.sessions) ? d.claude.sessions.filter(x => x.busy).length : 0;
+  if (nBusy) chips.push(`<span class="hchip"><i class="hd"></i><span>${nBusy} Aktif Oturum</span></span>`);
+  const nextM = Array.isArray(d.meetings) && d.meetings[0];
+  if (nextM) chips.push(`<span class="hchip">${ICONS.cal || ''}<span>${esc(nextM.time + ' · ' + nextM.title)}</span></span>`);
+  out.push(`<div class="hero"><div class="hrow">${MARK}<div class="hgreet"><b>${greet}</b><small>${esc(today())}</small></div><div class="hclock" aria-label="${two(hr)}:${two(now.getMinutes())}">${two(hr)}<i>:</i>${two(now.getMinutes())}</div></div><div class="hbar"><div class="hchips">${chips.join('')}</div><button class="ib flip" data-act="flip" type="button"></button><button class="ib" data-act="close" type="button" aria-label="Kapat" data-tip="Kapat · Esc"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg></button></div></div>`);
 
   const errs = Array.isArray(d.errors) ? d.errors : [];
   if (errs.length) out.push(`<button class="banner" data-act="console">${ICONS.warn}<span>${errs.length} modül yüklenemedi</span><span class="go">Konsol</span></button>`);
 
   const up = d.update;
   if (up && (up.behind > 0 || up.updating || up.error)) {
-    const subj = Array.isArray(up.subjects) && up.subjects[0];
-    const sub = up.error ? `<span class="us">${esc(up.error)}</span>`
-      : up.updating ? `<span class="us">İndiriliyor, Ardından Yeniden Yüklenecek</span>`
-      : `<span class="un">${up.behind} değişiklik</span>${subj ? `<span class="un">·</span><span class="us" title="${esc(up.subjects.join('\n'))}">${esc(subj)}</span>` : ''}`;
+    // "feat(hub): tek tuşla güncelleme" → kind + plain sentence
+    const KIND = { feat: ['Yeni', 'var(--accent)'], fix: ['Düzeltme', 'var(--ok-bar,#22c55e)'], perf: ['Hız', 'var(--k-path)'] };
+    const subjects = Array.isArray(up.subjects) ? up.subjects : [];
+    const rows = subjects.slice(0, 3).map((x, i) => {
+      const m = /^(\w+)(?:\([^)]*\))?!?:\s*(.+)$/.exec(x), k = KIND[m && m[1]] || ['İyileştirme', 'var(--k-code)'], t = m ? m[2] : x;
+      return `<div class="uli" style="--i:${i};--c:${k[1]}"><span class="ud"></span><span class="uk">${k[0]}</span><span class="ux">${esc(t.charAt(0).toLocaleUpperCase('tr') + t.slice(1))}</span></div>`;
+    });
+    if (up.behind > rows.length && rows.length) rows.push(`<div class="uli more" style="--i:${rows.length};--c:var(--line2)"><span class="ud"></span><span class="ux">+${up.behind - rows.length} değişiklik daha</span></div>`);
+    const mini = updFolded && !up.updating && !up.error;
+    const title = up.error ? 'Güncellenemedi' : up.updating ? 'Güncelleniyor…' : 'Yeni Sürüm Hazır';
+    const sub = up.error ? esc(up.error) : up.updating ? 'İndiriliyor, Ardından Yeniden Yüklenecek' : mini ? `${up.behind} değişiklik` : 'Tek Tıkla Kur, Ayarların Yerinde Kalır';
+    const arrow = ICONS.update.replace('<path d="M8 2.6v7.2"/><path d="M5 7l3 3 3-3"/>', '<g class="ar"><path d="M8 2.6v7.2"/><path d="M5 7l3 3 3-3"/></g>');
     const btn = up.updating ? `<button class="ubtn" type="button" disabled><span class="spin"></span><span>Güncelleniyor…</span></button>`
-      : `<button class="ubtn" data-act="update" type="button"><span>${up.error ? 'Yeniden Dene' : 'Güncelle'}</span></button>`;
-    out.push(`<div class="upd${up.error ? ' err' : ''}" role="status"><span class="ui">${ICONS.update}</span><span class="ut"><b>${up.error ? 'Güncellenemedi' : 'Yeni Sürüm Hazır'}</b><small>${sub}</small></span>${btn}</div>`);
+      : `<button class="ubtn" data-act="update" type="button">${ICONS.update}<span>${up.error ? 'Yeniden Dene' : 'Güncelle'}</span></button>`;
+    const head = `<div class="uhead"><span class="uem">${arrow}</span><span class="uttl"><b>${title}</b><small>${sub}</small></span>${mini ? btn : up.behind > 0 && !up.error ? `<span class="ucount">${up.behind} değişiklik</span>` : ''}</div>`;
+    out.push(mini ? `<div class="upd mini" role="status">${head}</div>`
+      : `<div class="upd${up.error ? ' err' : ''}" role="status">${head}${rows.length && !up.error ? `<div class="ulist">${rows.join('')}</div>` : ''}<div class="uact">${btn}${up.updating ? '' : `<button class="ulater" data-act="later" type="button">Sonra</button>`}</div>${up.updating ? '<span class="uprog"></span>' : ''}</div>`);
   }
 
   // ---- row 1: connection + Claude
@@ -754,6 +864,7 @@ function render() {
   // plays the entrance, a data change within the same view just swaps in place.
   if (html === lastHTML && lastView === view) return;
   scrollEl.classList.toggle('still', lastView === view);
+  app.dataset.tone = overall().tone;
   lastView = view; lastHTML = html;
   scrollEl.innerHTML = html;
   justToggled = null; // its pop has been rendered once
@@ -764,6 +875,8 @@ function render() {
   postSize();
 }
 let lastH = 0;
+// the hero clock: a re-render that changes nothing else is one text swap
+setInterval(() => { if (data && view === 'main' && !document.hidden) render(); }, 15000);
 // Values that changed since the last render roll: the old number slides up and out, the new one in.
 const lastRoll = {};
 function rollChanged() {
@@ -798,6 +911,7 @@ document.addEventListener('click', e => {
     case 'memory': case 'cpu': view = el.dataset.act; procs = null; scrollEl.scrollTop = 0; render(); post({ action: 'procs' }); break;
     case 'sys': post({ action: 'sys', id: el.dataset.id }); break;
     case 'back': view = 'main'; render(); break;
+    case 'later': updFolded = true; render(); break;
     default: post({ action: a });
   }
 });
