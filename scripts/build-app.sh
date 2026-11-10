@@ -61,5 +61,11 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
 </plist>
 PLIST
 
+# macOS 26 (Tahoe) shrinks a bundled .icns onto a grey plate unless the app ships an Icon Composer
+# asset (needs Xcode). An icon set on the bundle itself, as Finder's Get Info does, is shown as drawn,
+# on every macOS version. Best effort: the bundled .icns stays as the fallback.
+osascript -l JavaScript -e 'ObjC.import("AppKit"); function run(a) { var img = $.NSImage.alloc.initWithContentsOfFile(a[0]); return img.isNil() ? false : $.NSWorkspace.sharedWorkspace.setIconForFileOptions(img, a[1], 0); }' \
+  "$APP/Contents/Resources/Nimbstia.icns" "$APP" >/dev/null 2>&1 || true
+
 touch "$APP"   # refresh the Finder/Dock icon cache for this bundle
 echo "$APP"
