@@ -16,7 +16,7 @@ button:focus{outline:none}
 button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-ring);outline-offset:2px}
 
 /* ---------------------------------------------------------------- window */
-.app{position:relative;display:flex;flex-direction:column;max-height:min(980px,calc(100vh - 20px));border-radius:22px;background:var(--app-bg);box-shadow:var(--shadow);overflow:hidden;outline:0;transform-origin:100% 0}
+.app{position:relative;display:flex;flex-direction:column;max-height:var(--maxh,980px);border-radius:22px;background:var(--app-bg);box-shadow:var(--shadow);overflow:hidden;outline:0;transform-origin:100% 0}
 .app::before{content:"";position:absolute;inset:0 0 auto 0;height:220px;background:var(--wash);pointer-events:none}
 .app:focus,.app:focus-visible{outline:0;box-shadow:var(--shadow)}
 .scroll{position:relative;overflow-y:auto;overflow-x:hidden;padding:0 12px;display:flex;flex-direction:column;gap:10px;min-height:0}
@@ -481,6 +481,25 @@ button.ss:hover .go{color:var(--text);transform:translate(2px,-2px)}
 .ti .ico::before{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(70% 60% at 30% 15%,color-mix(in srgb,var(--k) 26%,transparent),transparent 70%)}
 .ti:hover .ico{transform:translateY(-3px) scale(1.05);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--k) 40%,transparent),inset 0 1px 0 color-mix(in srgb,#fff 22%,transparent),0 12px 20px -8px color-mix(in srgb,var(--k) 75%,transparent)}
 @media (prefers-reduced-motion:reduce){.amb i,.hclock i,.hero .pill.ok i::after{animation:none}}
+/* tight: the screen is shorter than the hub (render() adds it) */
+.app.tight .scroll{gap:8px}
+.app.tight .hero{padding-top:12px;gap:10px}
+.app.tight .hero .mark{width:38px;height:38px}
+.app.tight .hgreet b{font-size:22px}
+.app.tight .hclock{font-size:30px}
+.app.tight .ti{padding-bottom:6px}
+.app.tight .ti .ky{display:none}
+.app.tight .wh{margin-bottom:8px}
+.app.tight .foot{padding-top:6px;padding-bottom:8px}
+.app.tighter .scroll{gap:6px}
+.app.tighter .ti .wt{display:none}
+.app.tighter .ti{padding-bottom:2px}
+.app.tighter .ti .ico{width:42px;height:42px;border-radius:13px;margin-bottom:6px}
+.app.tighter .rt{padding:6px 10px 6px 8px}
+.app.tighter .rt .rc{width:30px;height:30px}
+.app.tighter .hero{padding-top:8px;gap:8px}
+.app.tighter .vbtn{margin-top:8px!important;height:30px!important}
+.app.tighter .gauge,.app.tighter .gauge svg{width:38px;height:38px}
 </style>
 </head>
 <body>
@@ -585,6 +604,7 @@ const today = () => { const s = new Date().toLocaleDateString('tr-TR', { weekday
 // Widget header: small coloured glyph + name, optional right side.
 const wh = (icon, label, right, color) => `<div class="wh"><span class="wi"${color ? ` style="--wc:${color}"` : ''}>${icon}</span><b>${label}</b><span class="sp"></span>${right || ''}</div>`;
 
+let updAuto = false; // folded by render() because the full card would not fit this screen
 let updFolded = false; // "Sonra": the update card folds to one row until the hub reloads
 function renderMain() {
   const d = data, out = [];
@@ -616,7 +636,7 @@ function renderMain() {
       return `<div class="uli" style="--i:${i};--c:${k[1]}"><span class="ud"></span><span class="uk">${k[0]}</span><span class="ux">${esc(t.charAt(0).toLocaleUpperCase('tr') + t.slice(1))}</span></div>`;
     });
     if (up.behind > rows.length && rows.length) rows.push(`<div class="uli more" style="--i:${rows.length};--c:var(--line2)"><span class="ud"></span><span class="ux">+${up.behind - rows.length} değişiklik daha</span></div>`);
-    const mini = updFolded && !up.updating && !up.error;
+    const mini = (updFolded || updAuto) && !up.updating && !up.error;
     const title = up.error ? 'Güncellenemedi' : up.updating ? 'Güncelleniyor…' : 'Yeni Sürüm Hazır';
     const sub = up.error ? esc(up.error) : up.updating ? 'İndiriliyor, Ardından Yeniden Yüklenecek' : mini ? `${up.behind} değişiklik` : 'Tek Tıkla Kur, Ayarların Yerinde Kalır';
     const arrow = ICONS.update.replace('<path d="M8 2.6v7.2"/><path d="M5 7l3 3 3-3"/>', '<g class="ar"><path d="M8 2.6v7.2"/><path d="M5 7l3 3 3-3"/></g>');
@@ -871,6 +891,15 @@ function render() {
   footEl.innerHTML = renderFoot();
   syncFlip();
   rollChanged();
+  // One screen, no inner scrolling: when the hub is taller than the screen allows, first fold the
+  // update card to one row, then tighten the spacing. Both stick until the hub opens again.
+  fitScreen();
+  const over = () => scrollEl.scrollHeight - scrollEl.clientHeight > 2;
+  if (view === 'main' && over()) {
+    if (!updAuto && scrollEl.querySelector('.upd:not(.mini):not(.err)') && !(data.update && data.update.updating)) { updAuto = true; lastHTML = ''; return render(); }
+    app.classList.add('tight');
+    if (over()) app.classList.add('tighter');
+  }
   scrollEl.scrollTop = top;
   postSize();
 }
@@ -889,7 +918,10 @@ function rollChanged() {
     setTimeout(() => { if (el.isConnected) el.textContent = v; }, 360);
   });
 }
-function postSize() { const h = Math.ceil(app.offsetHeight) + 20; if (h !== lastH) { lastH = h; post({ action: 'size', h }); } }
+// The panel sizes the window, never the other way round: its cap is the screen, not the current
+// viewport (capping at 100vh made the hub stay as small as the window it was about to resize).
+function fitScreen() { const a = window.screen && screen.availHeight; if (a > 0) document.documentElement.style.setProperty('--maxh', Math.max(420, a - 36) + 'px'); }
+function postSize() { fitScreen(); const h = Math.ceil(app.offsetHeight) + 20; if (h !== lastH) { lastH = h; post({ action: 'size', h }); } }
 
 document.addEventListener('click', e => {
   const el = e.target.closest('[data-act]');
@@ -938,7 +970,7 @@ window.Pulse = {
     if (view === 'memory' || view === 'cpu') render();
   },
   set(d) { data = d || {}; applyTheme(); render(); },
-  open() { view = 'main'; lastView = null; lastHTML = ''; render(); app.classList.remove('show'); void app.offsetWidth; requestAnimationFrame(() => app.classList.add('show')); try { app.focus({ preventScroll: true }); } catch (e) {} },
+  open() { view = 'main'; lastView = null; lastHTML = ''; updAuto = false; app.classList.remove('tight', 'tighter'); render(); app.classList.remove('show'); void app.offsetWidth; requestAnimationFrame(() => app.classList.add('show')); try { app.focus({ preventScroll: true }); } catch (e) {} },
   close() { app.classList.remove('show'); },
 };
 window.Panel = window.Pulse;
