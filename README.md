@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <img alt="macOS 13+" src="https://img.shields.io/badge/macOS-13%2B-0f1222?logo=apple&logoColor=white">
+  <img alt="macOS 13.3+" src="https://img.shields.io/badge/macOS-13.3%2B-0f1222?logo=apple&logoColor=white">
   <img alt="Apple Silicon native" src="https://img.shields.io/badge/Apple%20Silicon-native-2563ff">
   <img alt="Hammerspoon 1.0+" src="https://img.shields.io/badge/Hammerspoon-1.0%2B-d97706">
   <img alt="MIT license" src="https://img.shields.io/badge/license-MIT-16a34a">
@@ -184,9 +184,10 @@ return {
 ```
 init.lua            entry point: loads every module safely and binds the global shortcuts
 config.lua          defaults + config.local.lua override
-panel.lua           shared floating webview panel (focus, theme switch, inlines theme.css + i18n.js)
+panel.lua           shared floating webview panel (focus, theme switch, inlines theme.css + i18n.js + motion.js)
 i18n.js             English interface (language = "en"): one DOM translation table for every panel
-theme.css           design system shared by every panel: tokens, Inter type, keycaps, motion
+theme.css           design system shared by every panel: tokens, Inter type, keycaps, motion system
+motion.js           motion helpers shared by every panel: gliding selection, sliding thumb, count-up, keycap feedback
 ui.lua              shared style for toasts and pickers
 keep.lua            keeps fire-and-forget timers/tasks alive until they finish
 pb.lua              pasteboard helpers: secret detection, safe save/restore

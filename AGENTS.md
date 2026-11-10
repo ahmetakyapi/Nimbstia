@@ -18,7 +18,7 @@ where a step says so. Humans can follow it too.
 
 ```bash
 uname -s                                   # must print Darwin
-sw_vers -productVersion                    # macOS 13 or newer
+sw_vers -productVersion                    # macOS 13.3 or newer (the panels need Safari 16.4 WebKit: @property, color-mix)
 ls -d /Applications/Hammerspoon.app ~/Applications/Hammerspoon.app 2>/dev/null
 command -v brew git                        # brew is only needed when Hammerspoon is missing
 ls -A ~/.hammerspoon 2>/dev/null | head    # anything here will be backed up
