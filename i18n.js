@@ -76,7 +76,7 @@
     'Uzak dala gönderilmemiş commit’i olanlar': 'Commits not pushed to the remote yet',
     'Uzak dalda henüz çekilmemiş commit olanlar': 'The remote has commits not pulled yet',
     'Commit’lenmemiş Değişiklikler': 'Uncommitted Changes', 'Değişen Dosya': 'Changed Files', 'Yeni Dosya': 'New Files',
-    'Hesaplanıyor…': 'Calculating…', 'Değişiklik yok': 'No changes', 'Ana Klon': 'Main Clone', 'Klon (Kopya)': 'Clone (Copy)',
+    'Hesaplanıyor…': 'Calculating…', 'Değişiklik yok': 'No changes', 'Ana Klon': 'Main Clone', 'Klon (Kopya)': 'Clone (Copy)', 'Kopya': 'Copy',
     'Worktree': 'Worktree', 'Satır farkı yok (yalnız izin/mod değişikliği olabilir).': 'No line changes (maybe only mode changes).',
     'Yenileniyor…': 'Refreshing…', 'Tüm Projeler': 'All Projects', 'Değişiklik Var': 'Has Changes',
     'Ana Kopyalar': 'Main Clones', 'PR/Çalışma Kopyaları': 'PR/Work Copies', 'Son Kullanılan': 'Last Used',

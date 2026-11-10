@@ -4,11 +4,8 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="theme.css">
 <script src="i18n.js"></script>
+<script src="motion.js"></script>
 <style>
-/* tooltips and toasts: a white card in light, graphite ink in dark (no near-black fills in light) */
-:root{--tt-bg:#ffffff;--tt-fg:var(--text);--tt-shadow:0 0 0 .5px rgba(20,24,40,.14),0 8px 24px -6px rgba(20,24,40,.22)}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--tt-bg:var(--ink);--tt-fg:var(--on-ink);--tt-shadow:var(--ink-shadow),0 16px 36px -10px rgba(0,0,0,.45)}}
-:root[data-theme="dark"]{--tt-bg:var(--ink);--tt-fg:var(--on-ink);--tt-shadow:var(--ink-shadow),0 16px 36px -10px rgba(0,0,0,.45)}
 /* Panestia tokens: the miniature Mac screen (pastel wallpaper, glass menubar, little windows). */
 :root{
   --screen:radial-gradient(90% 120% at 0% 0%,#dfe7fb 0%,transparent 62%),radial-gradient(80% 110% at 100% 100%,#fbe4d8 0%,transparent 60%),radial-gradient(70% 90% at 85% 0%,#ece2f8 0%,transparent 70%),linear-gradient(140deg,#e6e8f8 0%,#efe6f4 50%,#f7e9e6 100%);
@@ -43,8 +40,7 @@
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:transparent;overflow:hidden}
 body{font:13px/1.45 var(--font-ui);color:var(--text);-webkit-user-select:none;cursor:default}
-.app{position:absolute;inset:16px;border-radius:16px;background:var(--app-bg);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;opacity:0;transform:scale(.985) translateY(-6px);transition:opacity .12s ease,transform .16s var(--ease-out)}
-.app.show{opacity:1;transform:none}
+.app{position:absolute;inset:16px;border-radius:16px;background:var(--app-bg);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden}
 svg{display:block}
 
 /* header: search + focused window + controls */
@@ -61,7 +57,7 @@ header>svg{width:18px;height:18px;color:var(--faint);flex:none}
 .target.none span{color:var(--faint)}
 
 /* content */
-#content{flex:1;overflow-y:auto;padding:0 20px 24px;scroll-padding:20px 0 20px}
+#content{position:relative;flex:1;overflow-y:auto;padding:0 20px 24px;scroll-padding:20px 0 20px}
 h2{margin:0;padding:24px 4px 12px;display:flex;gap:12px;align-items:center}
 h2.eyebrow{font:650 13px/1.2 var(--font-ui);letter-spacing:-.006em;color:var(--text)}
 h2::after{content:"";flex:1;height:1px;background:var(--line)}
@@ -73,12 +69,17 @@ h2 em{font-style:normal;color:var(--faint);text-transform:none;letter-spacing:0;
 /* card */
 .card{position:relative;border-radius:20px;padding:8px 8px 14px;background:var(--card);box-shadow:var(--card-lift);
   transition:box-shadow var(--dur-2) var(--ease-out),transform var(--dur-2) var(--ease-out),background var(--dur-2)}
-.card:hover{box-shadow:var(--lift)}
+.card:hover{box-shadow:var(--lift);transform:translateY(-1px)}
+.card:active{transform:scale(.985);transition-duration:var(--dur-1)}
 .card.sel{background:var(--sel-bg);box-shadow:var(--sel-ring)}
+/* with motion.js the 2px ring is one element that glides between cards (.nb-glide.ring); the tint stays on the card */
+.has-glide .card.sel{box-shadow:var(--card-lift)}
+.has-glide .card.sel:hover{box-shadow:var(--lift)}
 /* Ribbon: exactly one focused window per thumbnail, the app that is in front right now. */
 .card.sel .cell.focus .win{box-shadow:0 0 0 2px var(--accent),var(--win-shadow)}
-#content.enter .card{animation:nb-rise .38s var(--ease-out) both;animation-delay:var(--d,0ms)}
-#content.enter h2{animation:nb-rise .38s var(--ease-out) both}
+/* entrance: the first six cards arrive in reading order, 28 ms apart; the ring fades in with them */
+#content.enter .card{animation:nb-rise var(--dur-2) var(--ease-out) both;animation-delay:calc(min(var(--i,0),6) * var(--stagger))}
+#content.enter h2,#content.enter .nb-glide{animation:nb-fade var(--dur-2) ease-out both}
 
 .meta{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:8px;row-gap:4px;align-items:baseline;margin:12px 6px 0}
 .meta .idx{font-size:12px;font-weight:650;min-width:12px}
@@ -153,21 +154,22 @@ footer{display:flex;align-items:center;gap:18px;padding:0 20px;height:44px;flex:
 footer>span{display:flex;align-items:center;gap:7px}
 footer .sp{flex:1}
 footer kbd{min-width:20px}
-footer kbd+kbd{margin-left:-3px}
+footer kbd+kbd{margin-left:-4px}
 .ratio{font:600 12px/1 var(--font-ui);font-variant-numeric:tabular-nums;color:var(--text)}
 .ratio u{text-decoration:none;color:var(--faint);padding:0 4px}
 .fname{color:var(--text);font-weight:500}
 
 mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
 .empty{display:flex;flex-direction:column;align-items:center;gap:4px;padding:100px 0;text-align:center;color:var(--muted);font-size:12.5px}
-.empty svg{width:34px;height:34px;margin:0 0 12px;color:var(--faint)}
+.empty svg{width:34px;height:34px;margin:0 0 12px;color:var(--faint);animation:nb-pop var(--dur-3) var(--ease-spring) both .04s}
+.empty{animation:nb-rise var(--dur-2) var(--ease-out) both}
 .empty b{font:600 15px/1.3 var(--font-display);letter-spacing:var(--track-title);color:var(--text)}
 
 /* theme switch + close */
-.tb{position:relative;width:28px;height:28px;flex:none;border:0;padding:0;font:inherit;background:none;border-radius:var(--r-pill);display:grid;place-items:center;color:var(--muted);transition:background var(--dur-1),color var(--dur-1)}
+.tb{position:relative;width:30px;height:30px;flex:none;border:0;padding:0;font:inherit;background:none;border-radius:var(--r-pill);display:grid;place-items:center;color:var(--muted);transition:background var(--dur-1),color var(--dur-1),transform var(--dur-1) var(--ease-out)}
+.tb:active{transform:scale(.92)}
 .tb svg{width:16px;height:16px}
 .tb:hover{background:var(--hover);color:var(--text)}
-.tb[data-tip]:hover::after{content:attr(data-tip);position:absolute;top:calc(100% + 6px);right:0;white-space:nowrap;background:var(--tt-bg);color:var(--tt-fg);font:500 11.5px/1 var(--font-ui);padding:6px 9px;border-radius:var(--r-pill);pointer-events:none;z-index:9;box-shadow:var(--tt-shadow)}
 #closeBtn{color:var(--muted)}
 #closeBtn:hover{color:#fff;background:#e5484d}
 </style>
@@ -220,7 +222,6 @@ function descOf(L) {
 }
 
 const MENUBAR = '<div class="mb"><i></i><i></i><i></i><i></i><s></s><u></u></div>';
-const RET = '<svg viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5v3.2a1.8 1.8 0 0 1-1.8 1.8H2.5M4.8 5.2 2.5 7.5l2.3 2.3"/></svg>';
 const pctHTML = v => `%${Math.round(v * 100)}`;
 function screenHTML(cells, overlay = '') {
   const ratio = (1 / data.aspect) * 100;
@@ -251,7 +252,7 @@ function layoutCard(L, i) {
   if (L.custom) tags.push('Özel Oran');
   const last = data.last === L.id ? '<span class="last">Son Kullanılan</span>' : '';
   const adj = L.adjustable ? `<div class="adj"><div data-d="-1" title="Solu Daralt">−</div><span>${pct(L.ratio)}<u>/</u>${pct(1 - L.ratio)}</span><div data-d="1" title="Solu Genişlet">+</div></div>` : '';
-  return `<div class="card${last ? ' has-last' : ''}" data-i="${i}" style="--d:${Math.min(i * 20, 200)}ms">${last}${screenHTML(cells, adj)}
+  return `<div class="card${last ? ' has-last' : ''}" data-i="${i}" style="--i:${i}">${last}${screenHTML(cells, adj)}
     <div class="meta"><span class="idx${i < 9 ? '' : ' off'}">${i + 1}</span><div class="name">${hl(L.name)}</div><div class="desc">${esc(descOf(L))}${tags.length ? ` · <span class="tag">${tags.join(' · ')}</span>` : ''}</div></div></div>`;
 }
 
@@ -260,7 +261,7 @@ function actionCard(A, i) {
   let cells;
   if (A.nextScreen) cells = [cellHTML([0, 0, 1, 1], '', 'var(--accent)', 'ghost'), '<div class="arrow">→</div>'];
   else cells = [cellHTML(A.rect, icon, 'var(--accent)')];
-  return `<div class="card" data-i="${i}" style="--d:${Math.min(i * 12, 200)}ms">${screenHTML(cells)}<div class="name">${hl(A.name)}</div></div>`;
+  return `<div class="card" data-i="${i}" style="--i:6">${screenHTML(cells)}<div class="name">${hl(A.name)}</div></div>`;
 }
 
 function hl(str) {
@@ -306,21 +307,23 @@ function render(keepId) {
   targetEl.classList.toggle('none', !data.win);
   targetEl.innerHTML = data.win ? `${data.win.icon ? `<img src="${data.win.icon}">` : '<i class="live"></i>'}<span><b>${esc(data.win.app)}</b>${data.win.title ? ' · ' + esc(data.win.title) : ''}</span>` : '<i class="live"></i><span>Seçili Pencere Yok</span>';
   targetEl.style.display = 'flex';
-  mark(false);
+  mark(false, false);
 }
 
-function mark(scroll = true) {
+function mark(scroll = true, animate = true) {
   contentEl.querySelector('.card.sel')?.classList.remove('sel');
   const el = contentEl.querySelector(`.card[data-i="${sel}"]`);
   if (el) { el.classList.add('sel'); if (scroll) el.scrollIntoView({ block: 'nearest' }); }
+  if (window.NB) NB.glide(contentEl, el, { cls: 'ring', animate });
   footer();
 }
 
 function footer() {
-  const v = view[sel], h = ['<span><kbd>' + RET + '</kbd>Uygula</span>', '<span><kbd>1–9</kbd>Hızlı Seç</span>'];
-  if (v?.type === 'layout' && v.adjustable) h.push('<span><kbd>Opt ←→</kbd>Oran</span>');
-  if (v?.type === 'layout' && v.custom) h.push('<span><kbd>Opt 0</kbd>Sıfırla</span>');
-  if (data.canUndo) h.push('<span><kbd>Cmd Z</kbd>Geri Al</span>');
+  const v = view[sel], h = ['<span><kbd>↩</kbd>Uygula</span>', '<span><kbd>1–9</kbd>Hızlı Seç</span>'];
+  // the same key glyphs as Pastia and Repostia (⌥ ⌘), not spelled-out names
+  if (v?.type === 'layout' && v.adjustable) h.push('<span><kbd>⌥←</kbd><kbd>⌥→</kbd>Oran</span>');
+  if (v?.type === 'layout' && v.custom) h.push('<span><kbd>⌥0</kbd>Sıfırla</span>');
+  if (data.canUndo) h.push('<span><kbd>⌘Z</kbd>Geri Al</span>');
   let right = '';
   if (v?.type === 'layout' && v.adjustable) right = `<span><span class="fname">${esc(v.name)}</span><span class="ratio">${pct(v.ratio)}<u>/</u>${pct(1 - v.ratio)}</span></span>`;
   else if (v) right = `<span class="fname">${esc(v.name)}</span>`;
@@ -373,6 +376,10 @@ document.addEventListener('keydown', e => {
   else if (/^[1-9]$/.test(k) && (!q || e.metaKey)) apply(view[+k - 1]);
   else return;
   e.preventDefault();
+  // the keycap of the shortcut that just fired dips
+  const cap = e.altKey && k === 'ArrowLeft' ? '⌥←' : e.altKey && k === 'ArrowRight' ? '⌥→' : e.altKey && (e.code === 'Digit0' || k === '0') ? '⌥0'
+    : k === 'Enter' ? '↩' : e.metaKey && lower(k) === 'z' ? '⌘Z' : /^[1-9]$/.test(k) ? '1–9' : '';
+  if (cap && window.NB) NB.press(cap, footEl);
 });
 
 window.Layouts = {

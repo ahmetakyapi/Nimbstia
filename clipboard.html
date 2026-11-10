@@ -4,20 +4,15 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="theme.css">
 <script src="i18n.js"></script>
+<script src="motion.js"></script>
 <style>
-/* tooltips and toasts: a white card in light, graphite ink in dark (no near-black fills in light) */
-:root{--tt-bg:#ffffff;--tt-fg:var(--text);--tt-shadow:0 0 0 .5px rgba(20,24,40,.14),0 8px 24px -6px rgba(20,24,40,.22)}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--tt-bg:var(--ink);--tt-fg:var(--on-ink);--tt-shadow:var(--ink-shadow),0 16px 36px -10px rgba(0,0,0,.45)}}
-:root[data-theme="dark"]{--tt-bg:var(--ink);--tt-fg:var(--on-ink);--tt-shadow:var(--ink-shadow),0 16px 36px -10px rgba(0,0,0,.45)}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:transparent;overflow:hidden}
 body{font:13px/1.45 var(--font-ui);color:var(--text);-webkit-user-select:none;cursor:default}
 svg{display:block}
 /* Shared skeleton (Pastia + Repostia): search header, segmented filter bar, day-grouped list, paper preview, keycap footer, ink toast. */
-.app{position:absolute;inset:16px;border-radius:var(--r-lg);background:var(--app-bg);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;isolation:isolate;
-  opacity:0;transform:scale(.985) translateY(-6px);transition:opacity var(--dur-1) ease,transform var(--dur-2) var(--ease-out)}
+.app{position:absolute;inset:16px;border-radius:var(--r-lg);background:var(--app-bg);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;isolation:isolate}
 .app::before{content:"";position:absolute;inset:0 0 auto;height:180px;background:var(--wash);pointer-events:none;z-index:-1}
-.app.show{opacity:1;transform:none}
 
 /* header: a calm, large search field */
 header{display:flex;align-items:center;gap:12px;height:64px;padding:0 16px 0 20px;flex:none}
@@ -31,11 +26,11 @@ header:focus-within>svg{color:var(--text)}
 .reset{display:none;align-items:center;gap:6px;height:26px;padding:0 11px;border-radius:var(--r-pill);font:500 12px/1 var(--font-ui);color:var(--accent-ink);background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent-line);white-space:nowrap;transition:background var(--dur-1)}
 .reset.on{display:flex}
 .reset:hover{background:color-mix(in srgb,var(--accent) 14%,transparent)}
-.tb{position:relative;width:30px;height:30px;flex:none;border:0;padding:0;font:inherit;background:none;border-radius:var(--r-pill);display:grid;place-items:center;color:var(--muted);transition:background var(--dur-1),color var(--dur-1)}
+.tb{position:relative;width:30px;height:30px;flex:none;border:0;padding:0;font:inherit;background:none;border-radius:var(--r-pill);display:grid;place-items:center;color:var(--muted);transition:background var(--dur-1),color var(--dur-1),transform var(--dur-1) var(--ease-out)}
+.tb:active{transform:scale(.92)}
 .tb svg{width:16px;height:16px}
 .tb:hover{background:var(--hover);color:var(--text)}
-.tb[data-tip]:hover::after{content:attr(data-tip);position:absolute;top:calc(100% + 6px);right:0;white-space:nowrap;background:var(--tt-bg);color:var(--tt-fg);font:500 11.5px/1 var(--font-ui);padding:6px 9px;border-radius:var(--r-pill);pointer-events:none;z-index:60;box-shadow:var(--tt-shadow)}
-#closeBtn{color:#e5484d}
+#closeBtn{color:var(--muted)}
 #closeBtn:hover{color:#fff;background:#e5484d}
 
 /* filter bar: two pill segmented controls */
@@ -51,6 +46,8 @@ header:focus-within>svg{color:var(--text)}
 .f:hover:not(.on),.t:hover:not(.on){color:var(--text)}
 .f:hover:not(.on) svg{color:var(--muted)}
 .f.on,.t.on{background:var(--seg-on);color:var(--text);font-weight:600;box-shadow:0 0 0 .5px var(--line2),0 1px 2px rgba(12,12,16,.08),0 2px 6px -2px rgba(12,12,16,.08)}
+.has-thumb .f.on,.has-thumb .t.on{background:none;box-shadow:none}
+.f:active,.t:active{transform:scale(.97)}
 .f.on svg{color:var(--accent)}
 .f.on b{color:var(--accent-ink)}
 .f.zero:not(.on){color:var(--faint)}
@@ -58,18 +55,25 @@ header:focus-within>svg{color:var(--text)}
 
 /* list */
 main{flex:1;display:grid;grid-template-columns:400px 1fr;min-height:0}
-#list{overflow-y:auto;padding:0 10px 12px;background:var(--pane);border-right:1px solid var(--line);scroll-padding:40px 0 8px}
+#list{position:relative;overflow-y:auto;padding:0 10px 12px;background:var(--pane);border-right:1px solid var(--line);scroll-padding:40px 0 8px}
 .group{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:8px;margin:0 -10px 2px;padding:14px 20px 8px;
   font:600 12px/1 var(--font-ui);letter-spacing:-.003em;color:var(--muted);
   background:linear-gradient(180deg,var(--pane) 70%,color-mix(in srgb,var(--pane) 0%,transparent))}
 .group::after{content:"";flex:1;height:1px;background:var(--line);order:1}
 .group span{order:2;min-width:20px;height:18px;padding:0 6px;display:grid;place-items:center;border-radius:var(--r-pill);background:var(--chip);color:var(--faint);font:600 11px/1 var(--font-ui);font-variant-numeric:tabular-nums}
-.row{position:relative;display:flex;align-items:center;gap:12px;padding:0 12px 0 10px;border-radius:var(--r-md);height:56px;transition:background var(--dur-1),box-shadow var(--dur-2) var(--ease-out)}
+.row{position:relative;z-index:1;display:flex;align-items:center;gap:12px;padding:0 12px 0 10px;border-radius:var(--r-md);height:56px;transition:background var(--dur-1),box-shadow var(--dur-2) var(--ease-out)}
 .row+.row{margin-top:1px}
 .row:hover{background:var(--hover)}
 /* Selected row (Ribbon): sky-50 fill + 1px sky hairline, no one-sided stripe. */
 .row.sel{background:var(--sel-bg);box-shadow:inset 0 0 0 1px var(--sel-line)}
-.intro .row{animation:nb-rise .36s var(--ease-out) both;animation-delay:calc(min(var(--i,0),10) * 18ms)}
+/* with motion.js the fill lives on one gliding element (.nb-glide) instead of on the row */
+.has-glide .row.sel{background:none;box-shadow:none}
+.has-glide .row.sel:hover{background:none}
+.row:active .ico{transform:scale(.94)}
+.ico{transition:transform var(--dur-1) var(--ease-out)}
+/* entrance: the first six rows arrive in reading order (28 ms apart), the rest are simply there */
+.intro .row{animation:nb-rise var(--dur-2) var(--ease-out) both;animation-delay:calc(min(var(--i,0),6) * var(--stagger))}
+.intro .nb-glide,.intro .group{animation:nb-fade var(--dur-2) ease-out both}
 /* kind tile: a soft gradient in the kind's colour, glyph in the full colour */
 :root{--t-top:19%;--t-bot:8%}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--t-top:30%;--t-bot:15%}}
@@ -91,7 +95,8 @@ main{flex:1;display:grid;grid-template-columns:400px 1fr;min-height:0}
 .cp:active{transform:scale(.92)}
 .row:hover .cp,.row.sel .cp{display:grid}
 .row:hover .n,.row.sel .n{display:none}
-.row.flash .cp{color:var(--ok);box-shadow:0 0 0 1px color-mix(in srgb,var(--ok) 45%,transparent)}
+.cp.ok,.cp.ok:hover{display:grid;color:var(--ok);box-shadow:0 0 0 1px color-mix(in srgb,var(--ok) 45%,transparent)}
+.cp svg{pointer-events:none}
 mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
 
 /* buttons: blue pill for the primary action, quiet ghost pills for the rest */
@@ -127,7 +132,7 @@ footer .cnt{font:500 12px/1 var(--font-ui);color:var(--faint);font-variant-numer
 footer .cnt b{font-weight:650;color:var(--text);margin-right:4px}
 
 /* empty states */
-.empty{height:100%;display:grid;place-items:center;text-align:center;color:var(--muted);padding:40px 28px;font-size:13px;animation:nb-rise .3s var(--ease-out) both}
+.empty{height:100%;display:grid;place-items:center;text-align:center;color:var(--muted);padding:40px 28px;font-size:13px;animation:nb-rise var(--dur-2) var(--ease-out) both}
 .empty>div>svg{width:46px;height:46px;padding:13px;margin:0 auto 16px;border-radius:14px;color:var(--muted);background:var(--card);box-shadow:var(--card-lift),0 8px 20px -10px rgba(12,12,16,.2)}
 .empty svg+div{font:600 15px/1.35 var(--font-display);letter-spacing:var(--track-title);color:var(--text);max-width:300px;margin:0 auto}
 .empty .hint{color:var(--faint);font-size:12.5px;font-weight:400;margin:6px auto 0;max-width:280px;line-height:1.5}
@@ -135,9 +140,10 @@ footer .cnt b{font-weight:650;color:var(--text);margin-right:4px}
 
 /* toast: ink pill */
 .toast{position:absolute;left:50%;bottom:58px;z-index:40;transform:translate(-50%,10px) scale(.96);background:var(--tt-bg);color:var(--tt-fg);font:550 12.5px/1 var(--font-ui);letter-spacing:-.005em;padding:0 16px 0 6px;height:34px;border-radius:var(--r-pill);opacity:0;
-  transition:opacity var(--dur-1),transform var(--dur-2) var(--ease-spring);pointer-events:none;display:flex;gap:9px;align-items:center;box-shadow:var(--tt-shadow);white-space:nowrap}
+  transition:opacity var(--dur-exit) var(--ease-in),transform var(--dur-exit) var(--ease-in);pointer-events:none;display:flex;gap:9px;align-items:center;box-shadow:var(--tt-shadow);white-space:nowrap}
 .toast svg{width:22px;height:22px;padding:5px;border-radius:50%;color:#fff;background:var(--ok-bar)}
-.toast.on{opacity:1;transform:translate(-50%,0)}
+.toast.on{opacity:1;transform:translate(-50%,0);transition:opacity var(--dur-1) ease-out,transform var(--dur-2) var(--ease-spring)}
+.toast.on svg{animation:nb-pop var(--dur-2) var(--ease-spring) both .04s}
 
 body{-webkit-font-smoothing:auto}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body{-webkit-font-smoothing:antialiased}}
@@ -151,10 +157,10 @@ body{-webkit-font-smoothing:auto}
 .ico:has(img){box-shadow:inset 0 0 0 1px var(--line2);background:var(--chip)}
 .ico img{width:100%;height:100%;object-fit:cover;display:block}
 .ico .sw{width:20px;height:20px;border-radius:6px;box-shadow:inset 0 0 0 1px rgba(127,127,127,.35),0 1px 2px rgba(0,0,0,.12)}
-.ico.shimmer{background:linear-gradient(100deg,var(--chip) 30%,var(--line) 50%,var(--chip) 70%) 0 0/300% 100%;animation:sh 1.2s linear infinite}
-@keyframes sh{to{background-position:-100% 0}}
+/* thumbnails that are still being read from disk: the shared skeleton shimmer */
+.ico.shimmer{box-shadow:none;background:linear-gradient(100deg,var(--chip) 35%,var(--line2) 50%,var(--chip) 65%) 0 0/240% 100%;animation:nb-shimmer 1.3s linear infinite}
 .pv-body{flex:1;min-height:0;overflow:auto;padding:24px 24px 16px;display:flex;flex-direction:column}
-.intro .pv-body>*{animation:nb-rise .32s var(--ease-out) both}
+.intro .pv-body>*,.intro .pv-meta{animation:nb-rise var(--dur-2) var(--ease-out) both;animation-delay:.06s}
 /* one soft card style for every preview; it fills the height between the action bar and the metadata */
 .pv-body>.pv-card{flex:1 1 auto;min-height:0}
 .pv-card{position:relative;border-radius:16px;background:var(--pv-card);box-shadow:var(--card-lift),0 12px 32px -20px rgba(20,24,40,.22)}
@@ -243,6 +249,12 @@ textarea{width:100%;height:100%;resize:none;border:0;outline:0;border-radius:16p
 .empty .fan .ico:nth-child(3){left:34px;top:4px;width:52px;height:52px;border-radius:15px;z-index:1;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--k) var(--tile-ring),transparent),0 8px 16px -8px rgba(12,12,16,.22)}
 .empty .fan .ico:nth-child(3) svg{width:24px;height:24px}
 .empty .fan+div{font:650 16px/1.35 var(--font-display);letter-spacing:var(--track-title);color:var(--text);max-width:300px;margin:0 auto}
+
+/* empty state: the tiles fan out once (spring, staggered); a single icon pops in. Runs once, never loops. */
+.empty .fan .ico,.empty .fan .rid{animation:fan var(--dur-4) var(--ease-spring) both}
+.empty .fan>:nth-child(1){--fx:28px;animation-delay:.08s}.empty .fan>:nth-child(2){--fx:-28px;animation-delay:.12s}
+@keyframes fan{from{opacity:0;transform:translate(var(--fx,0),8px) rotate(0deg)}}
+.empty>div>svg{animation:nb-pop var(--dur-3) var(--ease-spring) both .04s}
 </style>
 </head>
 <body>
@@ -320,11 +332,12 @@ syncTheme();
 // Filter labels always stay readable: when the pills and the time range do not fit on one row,
 // the time range moves to a second row instead of the labels being hidden.
 const barEl = document.querySelector('.bar');
-function fitBar() {
+function fitBar(slide) {
   barEl.classList.remove('stack');
   if (kindsEl.scrollWidth > kindsEl.clientWidth + 1) barEl.classList.add('stack');
+  if (window.NB) { NB.thumb(kindsEl, slide === true); NB.thumb(timesEl, slide === true); }
 }
-new ResizeObserver(fitBar).observe(barEl);
+new ResizeObserver(() => fitBar(false)).observe(barEl);
 
 // Strict colour literals only: the value ends up in a style attribute, so nothing else may pass.
 const COLOR_RE = /^(#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})|rgba?\(\s*[\d.]+%?\s*(,\s*[\d.]+%?\s*){2,3}\)|hsla?\(\s*[\d.]+(deg)?\s*(,\s*[\d.]+%?\s*){2,3}\))$/i;
@@ -458,13 +471,17 @@ function refresh(keepId) {
 
 function renderFilters(toks) {
   const S = SPANS.find(x => x.key === span), K = KINDS.find(x => x.key === kind);
-  kindsEl.innerHTML = KINDS.map(f => {
-    const n = items.filter(it => f.test(it) && S.test(it) && matchQ(it, toks)).length;
-    return `<div class="f${f.key === kind ? ' on' : ''}${n ? '' : ' zero'}" data-k="${f.key}" title="${f.label}">${ICONS[f.icon]}<span class="lb">${f.label}</span><b>${num(n)}</b></div>`;
-  }).join('');
-  timesEl.innerHTML = SPANS.map(s => `<div class="t${s.key === span ? ' on' : ''}" data-s="${s.key}">${s.label}</div>`).join('');
+  // Built once and patched afterwards: the pills stay in the DOM, so the thumb slides between them.
+  if (!kindsEl.querySelector('.f')) kindsEl.innerHTML = KINDS.map(f => `<div class="f" data-k="${f.key}" title="${f.label}">${ICONS[f.icon]}<span class="lb">${f.label}</span><b></b></div>`).join('');
+  if (!timesEl.querySelector('.t')) timesEl.innerHTML = SPANS.map(s => `<div class="t" data-s="${s.key}">${s.label}</div>`).join('');
+  KINDS.forEach(f => {
+    const el = kindsEl.querySelector(`[data-k="${f.key}"]`), n = items.filter(it => f.test(it) && S.test(it) && matchQ(it, toks)).length, tx = num(n);
+    el.classList.toggle('on', f.key === kind); el.classList.toggle('zero', !n);
+    const b = el.querySelector('b'); if (b.textContent !== tx) b.textContent = tx;
+  });
+  SPANS.forEach(s => timesEl.querySelector(`[data-s="${s.key}"]`).classList.toggle('on', s.key === span));
   resetEl.classList.toggle('on', !isDefault() || !!q);
-  fitBar();
+  fitBar(true);
 }
 
 function emptyHTML(toks) {
@@ -479,7 +496,7 @@ function emptyHTML(toks) {
 }
 
 function renderList(toks) {
-  if (!view.length) { listEl.innerHTML = emptyHTML(toks); return; }
+  if (!view.length) { listEl.innerHTML = emptyHTML(toks); glide(false); return; }
   const n = Math.min(view.length, 500), counts = {};
   for (let i = 0; i < n; i++) { const g = groupOf(view[i]); counts[g] = (counts[g] || 0) + 1; }
   let html = '', last = null;
@@ -490,7 +507,10 @@ function renderList(toks) {
     html += `<div class="row${i === sel ? ' sel' : ''}" data-i="${i}" style="--i:${i}">${icoHTML(it)}<div class="meta"><div class="ti">${highlight(titleOf(it), toks)}</div><div class="su">${esc(subOf(it))}</div></div><div class="end">${it.pinned ? `<span class="pin">${ICONS.pin}</span>` : ''}${quick}<div class="cp" data-act="copy" title="Kopyala">${ICONS.copy}</div></div></div>`;
   }
   listEl.innerHTML = html;
+  glide(false);
 }
+// The selection is one element that glides from row to row (motion.js); without it the row keeps its own fill.
+function glide(animate) { if (window.NB) NB.glide(listEl, listEl.querySelector('.row.sel'), { animate }); }
 
 function btn(act, icon, label, key, cls = '') {
   return `<div class="btn ${cls}" data-act="${act}"${key ? ` title="${label} (${key})"` : ''}>${ICONS[icon]}${label}${key && cls === 'primary' ? `<span class="k">${key}</span>` : ''}</div>`;
@@ -613,6 +633,7 @@ function select(i, scroll = true) {
   listEl.querySelector('.row.sel')?.classList.remove('sel');
   const row = listEl.querySelector(`.row[data-i="${sel}"]`);
   if (row) { row.classList.add('sel'); if (scroll) row.scrollIntoView({ block: 'nearest' }); }
+  glide(true);
   renderPreview(); renderFooter();
 }
 
@@ -639,7 +660,8 @@ function act(a, it = view[sel]) {
   }
   if (a === 'copy') {
     const row = listEl.querySelector(`.row[data-i="${view.indexOf(it)}"]`);
-    if (row) { row.classList.add('flash'); setTimeout(() => row.classList.remove('flash'), 700); }
+    if (row && window.NB) NB.confirm(row.querySelector('.cp'));
+    else if (row) { row.classList.add('flash'); setTimeout(() => row.classList.remove('flash'), 700); }
   }
   post({ action: a, id: it.id });
 }
@@ -673,6 +695,7 @@ document.addEventListener('keydown', e => {
     if (k === 'Escape') act('cancel');
     else if (m && (lower(k) === 's' || k === 'Enter')) act('save');
     else return;
+    if (window.NB) NB.press(k === 'Escape' ? 'Esc' : '⌘S', app);
     return e.preventDefault();
   }
   if (k === 'ArrowDown') select(sel + 1);
@@ -696,6 +719,9 @@ document.addEventListener('keydown', e => {
   else if (m && /^[1-9]$/.test(k)) act('paste', view[+k - 1]);
   else return;
   e.preventDefault();
+  // the keycap of the shortcut that just fired dips (footer and the primary button's chip)
+  const cap = k === 'Enter' ? (m ? '⌘C' : '↩') : k === 'Tab' ? '⇥' : m && lower(k) === 'c' ? '⌘C' : '';
+  if (cap && window.NB) NB.press(cap, app);
 });
 
 // Relative times ("3 dk önce") and day groups stay correct while the panel is open.

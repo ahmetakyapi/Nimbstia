@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="stylesheet" href="theme.css">
 <script src="i18n.js"></script>
+<script src="motion.js"></script>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;background:transparent;overflow:hidden}
@@ -15,18 +16,18 @@ button:focus{outline:none}
 button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-ring);outline-offset:2px}
 
 /* ---------------------------------------------------------------- window */
-.app{position:relative;display:flex;flex-direction:column;max-height:980px;border-radius:22px;background:var(--app-bg);box-shadow:var(--shadow);overflow:hidden;outline:0;
-  opacity:0;transform:translateY(-6px) scale(.985);transform-origin:top right;transition:opacity .16s ease,transform .34s var(--ease-out)}
+.app{position:relative;display:flex;flex-direction:column;max-height:980px;border-radius:22px;background:var(--app-bg);box-shadow:var(--shadow);overflow:hidden;outline:0;transform-origin:100% 0}
 .app::before{content:"";position:absolute;inset:0 0 auto 0;height:220px;background:var(--wash);pointer-events:none}
-.app.show{opacity:1;transform:none}
 .app:focus,.app:focus-visible{outline:0;box-shadow:var(--shadow)}
 .scroll{position:relative;overflow-y:auto;overflow-x:hidden;padding:0 12px;display:flex;flex-direction:column;gap:10px;min-height:0}
 .scroll::after{content:"";flex:none;height:2px}
-.app.show .scroll > *{animation:nb-rise .45s var(--ease-out) both}
-.app.show .scroll > :nth-child(2){animation-delay:.035s}.app.show .scroll > :nth-child(3){animation-delay:.07s}
-.app.show .scroll > :nth-child(4){animation-delay:.105s}.app.show .scroll > :nth-child(5){animation-delay:.14s}
-.app.show .scroll > :nth-child(6){animation-delay:.175s}.app.show .scroll > :nth-child(n+7){animation-delay:.21s}
-.scroll.still > *{animation:none!important}
+/* entrance: widgets arrive top to bottom, 28 ms apart, six steps at most (theme.css --stagger) */
+.app.show .scroll > *{animation:nb-rise var(--dur-2) var(--ease-out) both}
+.app.show .scroll > :nth-child(2){animation-delay:calc(var(--stagger) * 1)}.app.show .scroll > :nth-child(3){animation-delay:calc(var(--stagger) * 2)}
+.app.show .scroll > :nth-child(4){animation-delay:calc(var(--stagger) * 3)}.app.show .scroll > :nth-child(5){animation-delay:calc(var(--stagger) * 4)}
+.app.show .scroll > :nth-child(6){animation-delay:calc(var(--stagger) * 5)}.app.show .scroll > :nth-child(n+7){animation-delay:calc(var(--stagger) * 6)}
+/* a live data update re-renders the same view: nothing enters again, rings and bars do not redraw */
+.scroll.still > *,.scroll.still .gauge .val,.scroll.still .meter i,.scroll.still .cbm i,.scroll.still .mbar i,.scroll.still .pb i,.scroll.still .ubar .sg,.scroll.still .vchip i::after,.scroll.still .pill i::after{animation:none!important}
 
 /* ---------------------------------------------------------------- header */
 .head{display:flex;align-items:center;gap:10px;padding:12px 4px 0 4px;flex:none}
@@ -38,7 +39,7 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .head .sp{flex:1}
 .pill{display:inline-flex;align-items:center;gap:7px;height:28px;padding:0 12px 0 10px;border-radius:var(--r-pill);font-size:12px;font-weight:600;white-space:nowrap;color:var(--ok);background:color-mix(in srgb,var(--ok-bar) 13%,transparent)}
 .pill i{position:relative;width:7px;height:7px;border-radius:50%;background:var(--ok-bar)}
-.pill.ok i::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:1.5px solid var(--ok-bar);animation:ping 2.4s var(--ease-out) infinite}
+.pill.ok i::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:1.5px solid var(--ok-bar);opacity:0;animation:ping 1.6s var(--ease-out) .3s 2}
 .pill.warn{color:var(--warn);background:color-mix(in srgb,var(--warn-bar) 16%,transparent)} .pill.warn i{background:var(--warn-bar)}
 .pill.bad{color:var(--danger);background:color-mix(in srgb,var(--bad-bar) 14%,transparent)} .pill.bad i{background:var(--bad-bar)}
 @keyframes ping{0%{transform:scale(.5);opacity:.8}80%,100%{transform:scale(1.7);opacity:0}}
@@ -50,7 +51,6 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .ib:active{transform:scale(.92)}
 .ib.ring{box-shadow:inset 0 0 0 1px var(--line2);background:var(--card)}
 .ib[data-act="close"]:hover{color:#fff;background:var(--bad-bar)}
-.ib[data-tip]:hover::after{content:attr(data-tip);position:absolute;top:calc(100% + 7px);right:0;z-index:80;white-space:nowrap;background:var(--ink);color:var(--on-ink);font:500 11.5px/1 var(--font-ui);padding:7px 10px;border-radius:9px;pointer-events:none;box-shadow:var(--pop-shadow);animation:nb-rise .16s var(--ease-out)}
 
 /* error banner */
 .banner{display:flex;align-items:center;gap:10px;width:100%;padding:11px 14px;border-radius:14px;background:color-mix(in srgb,var(--bad-bar) 11%,var(--card));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--bad-bar) 30%,transparent);color:var(--danger);font-size:13px;font-weight:600;flex:none}
@@ -88,7 +88,8 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .vchip{display:inline-flex;align-items:center;gap:7px;height:26px;padding:0 11px 0 9px;border-radius:var(--r-pill);font-size:12px;font-weight:650;color:color-mix(in srgb,var(--vc) 70%,var(--text));background:color-mix(in srgb,var(--vc) 13%,transparent)}
 .vchip em{font-style:normal;font-weight:550;opacity:.75;margin-left:2px;font-variant-numeric:tabular-nums}
 .vchip i{position:relative;width:7px;height:7px;border-radius:50%;background:var(--vc)}
-.w.vpn.ok .vchip i::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:1.5px solid var(--vc);animation:ping 2.4s var(--ease-out) infinite}
+/* connected: the dot pings twice when the hub opens ("checked, alive"), then rests */
+.w.vpn.ok .vchip i::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:1.5px solid var(--vc);opacity:0;animation:ping 1.6s var(--ease-out) .3s 2}
 @keyframes ping{0%{transform:scale(.5);opacity:.8}80%,100%{transform:scale(1.7);opacity:0}}
 .vs .lat{display:inline-flex;align-items:flex-end;gap:6px;font-size:12px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
 .sig{display:inline-flex;align-items:flex-end;gap:2px;height:12px}
@@ -110,7 +111,7 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .big small{font-size:18px;font-weight:650;letter-spacing:-.02em;color:var(--faint)}
 .bl{margin-top:5px;font-size:12px;font-weight:550;color:var(--muted)}
 .meter{height:8px;margin-top:12px;border-radius:5px;background:var(--chip);overflow:hidden}
-.meter i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,#f0a183,#d97757);transform-origin:left;animation:grow .8s var(--ease-out) both .12s}
+.meter i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,#f0a183,#d97757);transform-origin:left;animation:grow var(--dur-4) var(--ease-out) both .1s}
 .meter.warn i{background:linear-gradient(90deg,#fcd34d,#f59e0b)} .meter.bad i{background:linear-gradient(90deg,#fda4af,#f43f5e)}
 @keyframes grow{from{transform:scaleX(0)}}
 .rs{margin-top:8px;font-size:11.5px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -144,7 +145,7 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .ti:active .ico{transform:scale(.95)}
 .ti .nm{font-size:12.5px;font-weight:650;letter-spacing:-.01em;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ti .wt{font-size:11px;letter-spacing:-.01em;color:var(--faint);white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
-.ti .ky{margin-top:auto;position:relative;top:6px;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.04em;white-space:nowrap;padding:2px 7px;border-radius:6px;background:var(--chip)}
+.ti .ky{margin-top:auto;position:relative;top:6px}
 
 /* quick toggles: Control Center */
 .rw{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -158,7 +159,11 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .rt small{display:block;margin-top:2px;font-size:11.5px;font-weight:550;color:var(--faint)}
 .rt.on{background:var(--card);box-shadow:inset 0 0 0 1px var(--line2),0 1px 3px rgba(20,24,40,.06)}
 .rt.on .rc{color:#fff;background:linear-gradient(150deg,color-mix(in srgb,var(--q) 75%,#fff),var(--q));box-shadow:0 4px 12px -3px color-mix(in srgb,var(--q) 60%,transparent)}
-.rt.on small{color:color-mix(in srgb,var(--q) 70%,var(--text))}
+/* state label in the toggle colour: 58% in light keeps amber at AA on white (4.9:1; 70% was 3.8:1) */
+.rt.on small{color:color-mix(in srgb,var(--q) 58%,var(--text))}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .rt.on small{color:color-mix(in srgb,var(--q) 70%,var(--text))}}
+:root[data-theme="dark"] .rt.on small{color:color-mix(in srgb,var(--q) 70%,var(--text))}
+.rt.just .rc{animation:nb-pop var(--dur-2) var(--ease-spring) both}
 /* dev servers */
 .w.ports .wh .wi{background:var(--chip);color:var(--muted)}
 .pl{display:flex;flex-direction:column;gap:2px;margin:-4px -6px -6px}
@@ -189,7 +194,7 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .gauge svg{width:44px;height:44px;transform:rotate(-90deg)}
 .gauge circle{fill:none;stroke-width:5;stroke-linecap:round}
 .gauge .trk{stroke:color-mix(in srgb,var(--s) 16%,transparent)}
-.gauge .val{stroke:var(--s);animation:dash .9s var(--ease-out) both .15s}
+.gauge .val{stroke:var(--s);animation:dash var(--dur-4) var(--ease-out) both .12s}
 @keyframes dash{from{stroke-dasharray:0 200}}
 .gauge .gi{position:absolute;inset:0;display:grid;place-items:center;color:var(--s)}
 .gauge .gi svg{width:16px;height:16px;transform:none}
@@ -242,11 +247,11 @@ button.ss:hover .go{color:var(--text);transform:translate(2px,-2px)}
 .msum b{font:560 28px/1 var(--font-display);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
 .msum span{font-size:12.5px;color:var(--faint)}
 .mbar{height:8px;border-radius:5px;background:var(--chip);overflow:hidden;margin-bottom:10px}
-.mbar i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,color-mix(in srgb,var(--accent) 55%,var(--card)),var(--accent));transform-origin:left;animation:grow .7s var(--ease-out) both}
+.mbar i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,color-mix(in srgb,var(--accent) 55%,var(--card)),var(--accent));transform-origin:left;animation:grow var(--dur-4) var(--ease-out) both}
 .prc{display:grid;grid-template-columns:minmax(0,1.3fr) 1fr 64px 56px;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
 .pn{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pb{height:5px;border-radius:3px;background:var(--chip);overflow:hidden}
-.pb i{display:block;height:100%;border-radius:3px;background:var(--accent);transform-origin:left;animation:grow .6s var(--ease-out) both}
+.pb i{display:block;height:100%;border-radius:3px;background:var(--accent);transform-origin:left;animation:grow var(--dur-4) var(--ease-out) both}
 .pm{font-size:12.5px;font-weight:650;font-variant-numeric:tabular-nums;text-align:right}
 .pc2{font-size:11.5px;color:var(--faint);text-align:right;font-variant-numeric:tabular-nums}
 
@@ -279,7 +284,7 @@ button.ss:hover .go{color:var(--text);transform:translate(2px,-2px)}
 /* memory: one segmented usage bar + legend; hovering a segment, chip or row lights its pair */
 .card.mem{padding:6px 16px 8px}
 .ubar{display:flex;gap:2px;height:14px;margin:2px 0 12px;border-radius:7px;overflow:hidden;background:var(--chip)}
-.ubar .sg{display:block;min-width:4px;background:var(--c);transform-origin:left;animation:grow .7s var(--ease-out) both;transition:opacity var(--dur-1)}
+.ubar .sg{display:block;min-width:4px;background:var(--c);transform-origin:left;animation:grow var(--dur-4) var(--ease-out) both;transition:opacity var(--dur-1)}
 .ubar .free{display:block;background:transparent}
 .ulg{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
 .ulg span{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px 0 8px;border-radius:999px;font-size:12px;font-weight:550;color:var(--muted);background:var(--chip);transition:opacity var(--dur-1)}
@@ -290,8 +295,8 @@ button.ss:hover .go{color:var(--text);transform:translate(2px,-2px)}
 /* rolling numbers */
 .rl{position:relative;display:inline-grid;overflow:hidden;vertical-align:bottom}
 .rl > span{grid-area:1/1}
-.rl .ro{animation:roll-out .5s var(--ease-out) both}
-.rl .rn{animation:roll-in .5s var(--ease-out) both}
+.rl .ro{animation:roll-out var(--dur-2) var(--ease-in) both}
+.rl .rn{animation:roll-in var(--dur-3) var(--ease-out) both}
 .rl.dn .ro{animation-name:roll-out-dn}.rl.dn .rn{animation-name:roll-in-dn}
 @keyframes roll-out{to{transform:translateY(-100%);opacity:0}}
 @keyframes roll-in{from{transform:translateY(100%);opacity:0}}
@@ -365,7 +370,7 @@ button.ss:hover .go{color:var(--text);transform:translate(2px,-2px)}
 .cbm i:last-child{border-radius:0 999px 999px 0}
 .cbr.warn .cbt b{color:var(--warn)} .cbr.bad .cbt b{color:var(--danger)}
 .cbr .cbx{margin-top:6px}
-.cbm i{display:block;height:100%;background:linear-gradient(90deg,#f0a183,#d9623f);transform-origin:left;animation:grow .8s var(--ease-out) both}
+.cbm i{display:block;height:100%;background:linear-gradient(90deg,#f0a183,#d9623f);transform-origin:left;animation:grow var(--dur-4) var(--ease-out) both}
 .cbm.b2 i{background:linear-gradient(90deg,#fcd581,#ef9a1a)}
 .cbm i.tday{background:#f7c4ae;animation-delay:.15s}
 .cbm.b2 i.tday{background:#fde3a7}
@@ -426,11 +431,12 @@ const W_ICON = {
 };
 
 // Nimbstia mark: two white panes and the diagonal that makes them an N, on a blue-to-violet squircle.
-const MARK = `<svg class="mark" viewBox="0 0 512 512" aria-hidden="true"><defs><linearGradient id="mk-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#38bdf8"/><stop offset=".55" stop-color="#0ea5e9"/><stop offset="1" stop-color="#0369a1"/></linearGradient><radialGradient id="mk-sh" cx=".25" cy=".1" r=".9"><stop offset="0" stop-color="#fff" stop-opacity=".38"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><path d="M256 0C462 0 512 50 512 256S462 512 256 512 0 462 0 256 50 0 256 0Z" fill="url(#mk-bg)"/><path d="M256 0C462 0 512 50 512 256S462 512 256 512 0 462 0 256 50 0 256 0Z" fill="url(#mk-sh)"/><line x1="182" y1="170" x2="330" y2="342" stroke="#fff" stroke-width="70" stroke-linecap="round" opacity=".88"/><rect x="141" y="132" width="70" height="248" rx="35" fill="#fff"/><rect x="301" y="132" width="70" height="248" rx="35" fill="#fff"/></svg>`;
+// Inline copy of assets/logo.svg for the 28 px header mark: same body, glyph and gradient, without the rim and shadow that do not survive at this size.
+const MARK = `<svg class="mark" viewBox="0 0 512 512" aria-hidden="true"><defs><linearGradient id="mk-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3ec1fa"/><stop offset=".5" stop-color="#0ea5e9"/><stop offset="1" stop-color="#0374b5"/></linearGradient></defs><path d="M328 0c64.41 0 96.61 0 121.21 12.53a115 115 0 0 1 50.26 50.26c12.53 24.6 12.53 56.8 12.53 121.21L512 328c0 64.41 0 96.61 -12.53 121.21a115 115 0 0 1 -50.26 50.26c-24.6 12.53 -56.8 12.53 -121.21 12.53L184 512c-64.41 0 -96.61 0 -121.21 -12.53a115 115 0 0 1 -50.26 -50.26c-12.53 -24.6 -12.53 -56.8 -12.53 -121.21L0 184c0 -64.41 0 -96.61 12.53 -121.21a115 115 0 0 1 50.26 -50.26c24.6 -12.53 56.8 -12.53 121.21 -12.53Z" fill="url(#mk-bg)"/><line x1="160" y1="160" x2="352" y2="352" stroke="#fff" stroke-opacity=".8" stroke-width="54" stroke-linecap="round"/><rect x="128" y="128" width="64" height="256" rx="21" fill="#fff"/><rect x="320" y="128" width="64" height="256" rx="21" fill="#fff"/></svg>`;
 const ARROW = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>';
 const CHEV = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 4 4 4-4 4"/></svg>';
 
-let data = {}, view = 'main', sessionsOpen = false, lastView = null, lastHTML = '';
+let data = {}, view = 'main', sessionsOpen = false, lastView = null, lastHTML = '', justToggled = null, justAt = 0;
 
 // "⌃⌥P" -> "Ctrl Opt P"
 function keyText(s) {
@@ -573,12 +579,12 @@ function renderMain() {
   const tools = Array.isArray(d.tools) ? d.tools : [];
   if (tools.length) {
     out.push(`<section class="w tools"><div class="tw" style="--n:${Math.min(tools.length, 5)}">` + tools.map(t =>
-      `<button class="ti" data-act="tool" data-id="${esc(t.id)}" style="--k:${TOOL_COLOR[t.id] || '#64748b'}" aria-label="${esc(t.name + ' · ' + t.what)}"><span class="ico">${ICONS[TOOL_ICON[t.id]] || ICONS.clip}</span><span class="nm">${esc(t.name)}</span><span class="wt">${esc(t.what)}</span><span class="ky">${esc(Array.from(String(t.keys || '')).join(' ').replace('S p a c e', 'Space'))}</span></button>`).join('') + `</div></section>`);
+      `<button class="ti" data-act="tool" data-id="${esc(t.id)}" style="--k:${TOOL_COLOR[t.id] || '#64748b'}" aria-label="${esc(t.name + ' · ' + t.what)}"><span class="ico">${ICONS[TOOL_ICON[t.id]] || ICONS.clip}</span><span class="nm">${esc(t.name)}</span><span class="wt">${esc(t.what)}</span><kbd class="ky">${esc(t.keys || '')}</kbd></button>`).join('') + `</div></section>`);
   }
 
   // ---- quick toggles
   const tg = d.toggles || {};
-  const rt = (id, label, icon, color, states) => `<button class="rt${tg[id] ? ' on' : ''}" role="switch" aria-checked="${tg[id] ? 'true' : 'false'}" data-act="toggle" data-id="${id}" style="--q:${color}"><span class="rc">${ICONS[icon]}</span><span><span class="rn">${label}</span><small>${(states || ['Açık', 'Kapalı'])[tg[id] ? 0 : 1]}</small></span></button>`;
+  const rt = (id, label, icon, color, states) => `<button class="rt${tg[id] ? ' on' : ''}${justToggled === id && Date.now() - justAt < 2500 ? ' just' : ''}" role="switch" aria-checked="${tg[id] ? 'true' : 'false'}" data-act="toggle" data-id="${id}" style="--q:${color}"><span class="rc">${ICONS[icon]}</span><span><span class="rn">${label}</span><small>${(states || ['Açık', 'Kapalı'])[tg[id] ? 0 : 1]}</small></span></button>`;
   let q = `<section class="w quick"><div class="rw">` +
     rt('awake', 'Her Zaman Uyanık', 'cup', '#f59e0b') + rt('saver', 'Ekran Koruyucu', 'moonf', '#6366f1', ['Açık', 'Başlat']) +
     rt('mic', 'Mikrofon', 'mic', '#f43f5e', ['Sessiz', 'Açık']) + rt('meetings', 'Toplantılar', 'cal', '#8b5cf6') + `</div>`;
@@ -719,6 +725,7 @@ function render() {
   scrollEl.classList.toggle('still', lastView === view);
   lastView = view; lastHTML = html;
   scrollEl.innerHTML = html;
+  justToggled = null; // its pop has been rendered once
   footEl.innerHTML = renderFoot();
   syncFlip();
   rollChanged();
@@ -735,7 +742,7 @@ function rollChanged() {
     if (old == null || old === v || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const up = parseFloat(String(v).replace(/[^\d,.-]/g, '').replace(',', '.')) >= parseFloat(String(old).replace(/[^\d,.-]/g, '').replace(',', '.'));
     el.innerHTML = `<span class="rl${up ? '' : ' dn'}"><span class="ro">${esc(old)}</span><span class="rn">${esc(v)}</span></span>`;
-    setTimeout(() => { if (el.isConnected) el.textContent = v; }, 560);
+    setTimeout(() => { if (el.isConnected) el.textContent = v; }, 360);
   });
 }
 function postSize() { const h = Math.ceil(app.offsetHeight) + 20; if (h !== lastH) { lastH = h; post({ action: 'size', h }); } }
@@ -750,7 +757,7 @@ document.addEventListener('click', e => {
     case 'port': post({ action: 'port', v: el.dataset.v, port: +el.dataset.port }); break;
     case 'fold': data.portsFolded = !data.portsFolded; render(); post({ action: 'fold', v: data.portsFolded }); break;
     case 'tool': post({ action: 'tool', id: el.dataset.id }); break;
-    case 'toggle': post({ action: 'toggle', id: el.dataset.id }); break;
+    case 'toggle': justToggled = el.dataset.id; justAt = Date.now(); post({ action: 'toggle', id: el.dataset.id }); break;
     case 'theme': post({ action: 'theme', v: el.dataset.v }); break;
     case 'flip': post({ action: 'toggleTheme' }); break;
     case 'close': post({ action: 'close' }); break;

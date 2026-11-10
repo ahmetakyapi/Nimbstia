@@ -4,20 +4,15 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="theme.css">
 <script src="i18n.js"></script>
+<script src="motion.js"></script>
 <style>
-/* tooltips and toasts: a white card in light, graphite ink in dark (no near-black fills in light) */
-:root{--tt-bg:#ffffff;--tt-fg:var(--text);--tt-shadow:0 0 0 .5px rgba(20,24,40,.14),0 8px 24px -6px rgba(20,24,40,.22)}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--tt-bg:var(--ink);--tt-fg:var(--on-ink);--tt-shadow:var(--ink-shadow),0 16px 36px -10px rgba(0,0,0,.45)}}
-:root[data-theme="dark"]{--tt-bg:var(--ink);--tt-fg:var(--on-ink);--tt-shadow:var(--ink-shadow),0 16px 36px -10px rgba(0,0,0,.45)}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:transparent;overflow:hidden}
 body{font:13px/1.45 var(--font-ui);color:var(--text);-webkit-user-select:none;cursor:default}
 svg{display:block}
 /* Shared skeleton (Pastia + Repostia): search header, segmented filter bar, day-grouped list, paper preview, keycap footer, ink toast. */
-.app{position:absolute;inset:16px;border-radius:var(--r-lg);background:var(--app-bg);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;isolation:isolate;
-  opacity:0;transform:scale(.985) translateY(-6px);transition:opacity var(--dur-1) ease,transform var(--dur-2) var(--ease-out)}
+.app{position:absolute;inset:16px;border-radius:var(--r-lg);background:var(--app-bg);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;isolation:isolate}
 .app::before{content:"";position:absolute;inset:0 0 auto;height:180px;background:var(--wash);pointer-events:none;z-index:-1}
-.app.show{opacity:1;transform:none}
 
 /* header: a calm, large search field */
 header{display:flex;align-items:center;gap:12px;height:64px;padding:0 16px 0 20px;flex:none}
@@ -31,13 +26,13 @@ header:focus-within>svg{color:var(--text)}
 .reset{display:none;align-items:center;gap:6px;height:26px;padding:0 11px;border-radius:var(--r-pill);font:500 12px/1 var(--font-ui);color:var(--accent-ink);background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent-line);white-space:nowrap;transition:background var(--dur-1)}
 .reset.on{display:flex}
 .reset:hover{background:color-mix(in srgb,var(--accent) 14%,transparent)}
-.tb{position:relative;width:30px;height:30px;flex:none;border:0;padding:0;font:inherit;background:none;border-radius:var(--r-pill);display:grid;place-items:center;color:var(--muted);transition:background var(--dur-1),color var(--dur-1)}
+.tb{position:relative;width:30px;height:30px;flex:none;border:0;padding:0;font:inherit;background:none;border-radius:var(--r-pill);display:grid;place-items:center;color:var(--muted);transition:background var(--dur-1),color var(--dur-1),transform var(--dur-1) var(--ease-out)}
+.tb:active{transform:scale(.92)}
 .tb svg{width:16px;height:16px}
 .tb.spin svg{animation:rot 1s linear infinite}
 @keyframes rot{to{transform:rotate(360deg)}}
 .tb:hover{background:var(--hover);color:var(--text)}
-.tb[data-tip]:hover::after{content:attr(data-tip);position:absolute;top:calc(100% + 6px);right:0;white-space:nowrap;background:var(--tt-bg);color:var(--tt-fg);font:500 11.5px/1 var(--font-ui);padding:6px 9px;border-radius:var(--r-pill);pointer-events:none;z-index:60;box-shadow:var(--tt-shadow)}
-#closeBtn{color:#e5484d}
+#closeBtn{color:var(--muted)}
 #closeBtn:hover{color:#fff;background:#e5484d}
 
 /* filter bar: two pill segmented controls */
@@ -54,6 +49,8 @@ header:focus-within>svg{color:var(--text)}
 .f:hover:not(.on),.t:hover:not(.on){color:var(--text)}
 .f:hover:not(.on) svg{color:var(--muted)}
 .f.on,.t.on{background:var(--seg-on);color:var(--text);font-weight:600;box-shadow:0 0 0 .5px var(--line2),0 1px 2px rgba(12,12,16,.08),0 2px 6px -2px rgba(12,12,16,.08)}
+.has-thumb .f.on,.has-thumb .t.on{background:none;box-shadow:none}
+.f:active,.t:active{transform:scale(.97)}
 .f.on svg{color:var(--accent)}
 .f.on b{color:var(--accent-ink)}
 .f.zero:not(.on){color:var(--faint)}
@@ -62,18 +59,25 @@ header:focus-within>svg{color:var(--text)}
 
 /* list */
 main{flex:1;display:grid;grid-template-columns:400px 1fr;min-height:0}
-#list{overflow-y:auto;padding:0 10px 12px;background:var(--pane);border-right:1px solid var(--line);scroll-padding:40px 0 8px}
+#list{position:relative;overflow-y:auto;padding:0 10px 12px;background:var(--pane);border-right:1px solid var(--line);scroll-padding:40px 0 8px}
 .group{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:8px;margin:0 -10px 2px;padding:14px 20px 8px;
   font:600 12px/1 var(--font-ui);letter-spacing:-.003em;color:var(--muted);
   background:linear-gradient(180deg,var(--pane) 70%,color-mix(in srgb,var(--pane) 0%,transparent))}
 .group::after{content:"";flex:1;height:1px;background:var(--line);order:1}
 .group span{order:2;min-width:20px;height:18px;padding:0 6px;display:grid;place-items:center;border-radius:var(--r-pill);background:var(--chip);color:var(--faint);font:600 11px/1 var(--font-ui);font-variant-numeric:tabular-nums}
-.row{position:relative;display:flex;align-items:center;gap:12px;padding:0 12px 0 10px;border-radius:var(--r-md);height:56px;transition:background var(--dur-1),box-shadow var(--dur-2) var(--ease-out)}
+.row{position:relative;z-index:1;display:flex;align-items:center;gap:12px;padding:0 12px 0 10px;border-radius:var(--r-md);height:56px;transition:background var(--dur-1),box-shadow var(--dur-2) var(--ease-out)}
 .row+.row{margin-top:1px}
 .row:hover{background:var(--hover)}
 /* Selected row (Ribbon): sky-50 fill + 1px sky hairline, no one-sided stripe. */
 .row.sel{background:var(--sel-bg);box-shadow:inset 0 0 0 1px var(--sel-line)}
-.intro .row{animation:nb-rise .36s var(--ease-out) both;animation-delay:calc(min(var(--i,0),10) * 18ms)}
+/* with motion.js the fill lives on one gliding element (.nb-glide) instead of on the row */
+.has-glide .row.sel{background:none;box-shadow:none}
+.has-glide .row.sel:hover{background:none}
+.row:active .ico{transform:scale(.94)}
+.ico{transition:transform var(--dur-1) var(--ease-out)}
+/* entrance: the first six rows arrive in reading order (28 ms apart), the rest are simply there */
+.intro .row{animation:nb-rise var(--dur-2) var(--ease-out) both;animation-delay:calc(min(var(--i,0),6) * var(--stagger))}
+.intro .nb-glide,.intro .group{animation:nb-fade var(--dur-2) ease-out both}
 /* kind tile: a soft gradient in the kind's colour, glyph in the full colour */
 :root{--t-top:19%;--t-bot:8%}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--t-top:30%;--t-bot:15%}}
@@ -95,7 +99,8 @@ main{flex:1;display:grid;grid-template-columns:400px 1fr;min-height:0}
 .cp:active{transform:scale(.92)}
 .row:hover .cp,.row.sel .cp{display:grid}
 .row:hover .n,.row.sel .n{display:none}
-.row.flash .cp{color:var(--ok);box-shadow:0 0 0 1px color-mix(in srgb,var(--ok) 45%,transparent)}
+.cp.ok,.cp.ok:hover{display:grid;color:var(--ok);box-shadow:0 0 0 1px color-mix(in srgb,var(--ok) 45%,transparent)}
+.cp svg{pointer-events:none}
 mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
 
 /* buttons: blue pill for the primary action, quiet ghost pills for the rest */
@@ -132,7 +137,7 @@ footer .cnt{font:500 12px/1 var(--font-ui);color:var(--faint);font-variant-numer
 footer .cnt b{font-weight:650;color:var(--text);margin-right:4px}
 
 /* empty states */
-.empty{height:100%;display:grid;place-items:center;text-align:center;color:var(--muted);padding:40px 28px;font-size:13px;animation:nb-rise .3s var(--ease-out) both}
+.empty{height:100%;display:grid;place-items:center;text-align:center;color:var(--muted);padding:40px 28px;font-size:13px;animation:nb-rise var(--dur-2) var(--ease-out) both}
 .empty>div>svg{width:46px;height:46px;padding:13px;margin:0 auto 16px;border-radius:14px;color:var(--muted);background:var(--card);box-shadow:var(--card-lift),0 8px 20px -10px rgba(12,12,16,.2)}
 .empty svg+div{font:600 15px/1.35 var(--font-display);letter-spacing:var(--track-title);color:var(--text);max-width:300px;margin:0 auto}
 .empty .hint{color:var(--faint);font-size:12.5px;font-weight:400;margin:6px auto 0;max-width:280px;line-height:1.5}
@@ -140,7 +145,9 @@ footer .cnt b{font-weight:650;color:var(--text);margin-right:4px}
 
 /* toast: ink pill */
 .toast{position:absolute;left:50%;bottom:58px;z-index:40;transform:translate(-50%,10px) scale(.96);background:var(--tt-bg);color:var(--tt-fg);font:550 12.5px/1 var(--font-ui);letter-spacing:-.005em;padding:0 16px 0 6px;height:34px;border-radius:var(--r-pill);opacity:0;
-  transition:opacity var(--dur-1),transform var(--dur-2) var(--ease-spring);pointer-events:none;display:flex;gap:9px;align-items:center;box-shadow:var(--tt-shadow);white-space:nowrap;max-width:calc(100% - 48px)}
+  transition:opacity var(--dur-exit) var(--ease-in),transform var(--dur-exit) var(--ease-in);pointer-events:none;display:flex;gap:9px;align-items:center;box-shadow:var(--tt-shadow);white-space:nowrap;max-width:calc(100% - 48px)}
+.toast.on{transition:opacity var(--dur-1) ease-out,transform var(--dur-2) var(--ease-spring)}
+.toast.on svg{animation:nb-pop var(--dur-2) var(--ease-spring) both .04s}
 .toast svg{flex:none;width:22px;height:22px;padding:5px;border-radius:50%;color:#fff;background:var(--ok-bar)}
 .toast.err svg{background:var(--danger)}
 .toast span{min-width:0;overflow:hidden;text-overflow:ellipsis}
@@ -162,7 +169,7 @@ body{-webkit-font-smoothing:auto}
 .dirty{min-width:20px;text-align:center;font:650 11.5px/20px var(--font-ui);color:var(--warn);background:var(--warn-soft);padding:0 7px;border-radius:var(--r-pill);font-variant-numeric:tabular-nums}
 .sy{font:550 11.5px/1 var(--font-ui);color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
 .pv-body{flex:1;min-height:0;overflow:auto;padding:24px}
-.intro .pv-body>*{animation:nb-rise .32s var(--ease-out) both}
+.intro .pv-body>*,.intro .pv-meta{animation:nb-rise var(--dur-2) var(--ease-out) both;animation-delay:.06s}
 .pv-name{font:560 28px/1.15 var(--font-display);letter-spacing:var(--track-display);word-break:break-word;overflow-wrap:anywhere;-webkit-user-select:text}
 .pv-head{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px}
 .pv-head .pv-name{min-width:0}
@@ -355,6 +362,47 @@ button.gs.chart:hover{background:var(--hover);box-shadow:inset 0 0 0 1px var(--l
 .hdc .gp{padding:8px 10px}
 .hdc .gp .tm{font:500 11.5px/1 var(--font-mono);color:var(--faint)}
 .pv-text.mono,textarea.mono,code{font-variant-ligatures:none;font-feature-settings:"liga" 0,"calt" 0}
+
+/* Repo identity tile: monogram on a hue derived from the name. oklch keeps lightness and chroma the same
+   for every hue, so contrast does not depend on the colour: 6.8:1 at worst in light, 7.0:1 in dark. */
+.rid{position:relative;flex:none;width:36px;height:36px;border-radius:11px;display:grid;place-items:center;font:650 12.5px/1 var(--font-ui);letter-spacing:.01em;
+  color:oklch(.42 .085 var(--h));background:oklch(.955 .025 var(--h));box-shadow:inset 0 0 0 1px oklch(.55 .09 var(--h) / .2);transition:transform var(--dur-1) var(--ease-out)}
+.rid i{position:absolute;right:-4px;bottom:-4px;width:16px;height:16px;border-radius:50%;display:grid;place-items:center;color:var(--muted);background:var(--pane);box-shadow:0 0 0 1px var(--line2)}
+.rid i svg{width:10px;height:10px}
+.rid.lg{width:40px;height:40px;border-radius:12px;font-size:14px}
+.rid.lg i{background:var(--bg)}
+.row:active .rid{transform:scale(.94)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .rid{color:oklch(.86 .08 var(--h));background:oklch(.36 .045 var(--h));box-shadow:inset 0 0 0 1px oklch(.8 .08 var(--h) / .18)}}
+:root[data-theme="dark"] .rid{color:oklch(.86 .08 var(--h));background:oklch(.36 .045 var(--h));box-shadow:inset 0 0 0 1px oklch(.8 .08 var(--h) / .18)}
+.pv-head{gap:8px 12px}
+/* period switch: the thumb is one sliding element */
+.seg.has-thumb button.on{background:none;box-shadow:none}
+.gs b .nv{font-variant-numeric:tabular-nums}
+
+/* empty state: the tiles fan out once (spring, staggered); a single icon pops in. Runs once, never loops. */
+.empty .fan .ico,.empty .fan .rid{animation:fan var(--dur-4) var(--ease-spring) both}
+.empty .fan>:nth-child(1){--fx:28px;animation-delay:.08s}.empty .fan>:nth-child(2){--fx:-28px;animation-delay:.12s}
+@keyframes fan{from{opacity:0;transform:translate(var(--fx,0),8px) rotate(0deg)}}
+.empty>div>svg{animation:nb-pop var(--dur-3) var(--ease-spring) both .04s}
+.empty .fan{position:relative;width:120px;height:74px;margin:0 auto 18px}
+.empty .fan .rid{position:absolute;top:14px;width:44px;height:44px;border-radius:13px}
+.empty .fan .rid svg{width:20px;height:20px}
+.empty .fan .rid:nth-child(1){left:6px;transform:rotate(-12deg)}
+.empty .fan .rid:nth-child(2){right:6px;transform:rotate(12deg)}
+.empty .fan .rid:nth-child(3){left:34px;top:4px;width:52px;height:52px;border-radius:15px;z-index:1;box-shadow:inset 0 0 0 1px oklch(.55 .09 var(--h) / .2),0 8px 16px -8px rgba(12,12,16,.22)}
+.empty .fan .rid:nth-child(3) svg{width:24px;height:24px}
+.empty .fan+div{font:650 16px/1.35 var(--font-display);letter-spacing:var(--track-title);color:var(--text);max-width:300px;margin:0 auto}
+/* real loading: skeleton rows while the first scan runs, skeleton lines while a commit log is read */
+.skrow{display:flex;align-items:center;gap:12px;height:56px;padding:0 12px 0 10px}
+.skrow i{flex:none;width:36px;height:36px;border-radius:11px}
+.skrow span{display:flex;flex-direction:column;gap:8px;flex:1}
+.skrow b{display:block;height:10px;width:var(--w,50%)}
+.skrow b+b{height:8px;width:calc(var(--w,50%) * .7)}
+.skline{display:flex;flex-direction:column;gap:8px;padding:14px 16px;border-top:1px solid var(--line)}
+.skline:first-child{border-top:0}
+.skline b{display:block;height:10px;width:var(--w,60%)}
+.skline b+b{height:8px;width:38%}
+.sklabel{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
 </style>
 </head>
 <body>
@@ -442,11 +490,12 @@ function fetchTip() { return 'Uzaktan Kontrol Et' + (busy.fetched ? ' · son: ' 
 
 // Pills collapse to icon + count as one unit when their labels no longer fit: nothing wraps, shifts or clips.
 const barEl = document.querySelector('.bar');
-function fitBar() {
+function fitBar(slide) {
   barEl.classList.remove('compact');
   if (kindsEl.scrollWidth > kindsEl.clientWidth + 1) barEl.classList.add('compact');
+  if (window.NB) { NB.thumb(kindsEl, slide === true); NB.thumb(sortsEl, slide === true); }
 }
-new ResizeObserver(fitBar).observe(barEl);
+new ResizeObserver(() => fitBar(false)).observe(barEl);
 const num = n => Number(n).toLocaleString('tr-TR');
 const DAY = 864e2;
 function day0(t) { const d = new Date(t * 1000); d.setHours(0, 0, 0, 0); return d.getTime() / 1000; }
@@ -555,17 +604,23 @@ function refresh(keepPath) {
 }
 
 function renderFilters(toks) {
-  kindsEl.innerHTML = KINDS.map(f => {
-    const n = items.filter(p => f.test(p) && (!toks.length || score(p, toks))).length;
-    return `<div class="f${f.key === kind ? ' on' : ''}${n ? '' : ' zero'}" data-k="${f.key}" title="${esc(f.tip)}">${ICONS[f.icon]}<span class="lb">${f.label}</span><b>${num(n)}</b></div>`;
-  }).join('');
-  sortsEl.innerHTML = SORTS.map(s => `<div class="t${s.key === sort ? ' on' : ''}" data-s="${s.key}">${s.label}</div>`).join('');
+  // Built once and patched afterwards: the pills stay in the DOM, so the thumb slides between them.
+  if (!kindsEl.querySelector('.f')) kindsEl.innerHTML = KINDS.map(f => `<div class="f" data-k="${f.key}" title="${esc(f.tip)}">${ICONS[f.icon]}<span class="lb">${f.label}</span><b></b></div>`).join('');
+  if (!sortsEl.querySelector('.t')) sortsEl.innerHTML = SORTS.map(s => `<div class="t" data-s="${s.key}">${s.label}</div>`).join('');
+  KINDS.forEach(f => {
+    const el = kindsEl.querySelector(`[data-k="${f.key}"]`), n = items.filter(p => f.test(p) && (!toks.length || score(p, toks))).length, tx = num(n);
+    el.classList.toggle('on', f.key === kind); el.classList.toggle('zero', !n);
+    const b = el.querySelector('b'); if (b.textContent !== tx) b.textContent = tx;
+  });
+  SORTS.forEach(s => sortsEl.querySelector(`[data-s="${s.key}"]`).classList.toggle('on', s.key === sort));
   resetEl.classList.toggle('on', !isDefault() || !!q);
-  fitBar();
+  fitBar(true);
 }
 
 function emptyHTML(toks) {
-  if (!items.length) return `<div class="empty"><div>${ICONS.folder}<div>${scanning ? 'Projeler Taranıyor…' : 'Proje Bulunamadı'}</div><div class="hint">~/Projects altındaki git kopyaları burada listelenir.</div></div></div>`;
+  // the first scan is real loading: skeleton rows; nothing found: three repo tiles fan out once
+  if (!items.length && scanning) return `<span class="sklabel">Projeler Taranıyor…</span>` + [62, 44, 70, 52, 58].map(w => `<div class="skrow" style="--w:${w}%"><i class="nb-skel"></i><span><b class="nb-skel"></b><b class="nb-skel"></b></span></div>`).join('');
+  if (!items.length) return `<div class="empty"><div><div class="fan">${[160, 310, 235].map(h => `<div class="rid" style="--h:${h}">${ICONS.main}</div>`).join('')}</div><div>Proje Bulunamadı</div><div class="hint">~/Projects altındaki git kopyaları burada listelenir.</div></div></div>`;
   const all = items.filter(p => !toks.length || score(p, toks)).length;
   if (!isDefault() && all) {
     const K = KINDS.find(x => x.key === kind);
@@ -588,8 +643,27 @@ function syncOf(p) {
 }
 const syncTip = p => [p.ahead ? `${num(p.ahead)} commit push edilmedi` : '', p.behind ? `${num(p.behind)} yeni commit var` : ''].filter(Boolean).join(' · ');
 
+// Repo identity: a monogram on a tile whose hue comes from the name, so every repo looks like itself
+// and the eye finds it by colour and letters. A copy (worktree, PR clone) wears its parent's tile plus
+// a small corner mark. Lightness and chroma are fixed in oklch, so every hue has the same contrast.
+const baseName = n => String(n).replace(/-((pr)?\d+[a-z]*|r\d+|codex|tmp|scratch|review|wt|fix)$/i, '') || String(n);
+function monogram(n) {
+  const parts = baseName(n).replace(/([a-z0-9])([A-Z])/g, '$1 $2').split(/[^A-Za-z0-9\u00C0-\u024F]+/).filter(Boolean);
+  if (!parts.length) return '?';
+  return (parts.length > 1 ? parts[0].charAt(0) + parts[1].charAt(0) : parts[0].charAt(0)).toUpperCase();
+}
+// twelve hues that stay clean as a pastel tile (the khaki band around 80-125 is left out)
+const HUES = [10, 35, 60, 135, 160, 185, 210, 235, 260, 285, 310, 340];
+function hueOf(n) { let h = 2166136261; for (const ch of baseName(n).toLowerCase()) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; } return HUES[(h >>> 8) % HUES.length]; } // FNV-1a
+function ridHTML(p, cls = '') {
+  return `<div class="rid ${cls}" style="--h:${hueOf(p.name)}">${esc(monogram(p.name))}${isCopy(p) ? `<i title="Kopya">${ICONS.copy}</i>` : ''}</div>`;
+}
+
+// The selection is one element that glides from row to row (motion.js); without it the row keeps its own fill.
+function glide(animate) { if (window.NB) NB.glide(listEl, listEl.querySelector('.row.sel'), { animate }); }
+
 function renderList(toks) {
-  if (!view.length) { listEl.innerHTML = emptyHTML(toks); return; }
+  if (!view.length) { listEl.innerHTML = emptyHTML(toks); glide(false); return; }
   const flat = toks.length > 0;
   const counts = {};
   if (!flat) for (const p of view) { const g = groupOf(p); counts[g] = (counts[g] || 0) + 1; }
@@ -601,11 +675,12 @@ function renderList(toks) {
     }
     const quick = i < 9 ? `<span class="n">⌘${i + 1}</span>` : '';
     const sy = syncOf(p);
-    html += `<div class="row${i === sel ? ' sel' : ''}" data-i="${i}" style="--i:${i}"><div class="ico ${isCopy(p) ? 'k-copy' : 'k-main'}">${isCopy(p) ? ICONS.copy : ICONS.main}</div>` +
+    html += `<div class="row${i === sel ? ' sel' : ''}" data-i="${i}" style="--i:${i}">${ridHTML(p)}` +
       `<div class="meta"><div class="ti">${highlight(titleOf(p), toks)}</div><div class="su">${subOf(p, toks)}</div></div>` +
       `<div class="end">${p.dirty > 0 ? `<span class="dirty" title="Commit’lenmemiş dosya sayısı">${num(p.dirty)}</span>` : ''}${sy ? `<span class="sy" title="${esc(syncTip(p))}">${sy}</span>` : ''}${p.pinned ? `<span class="pin">${ICONS.pin}</span>` : ''}${quick}<div class="cp" data-act="copy" title="Yolu Kopyala">${ICONS.copyi}</div></div></div>`;
   });
   listEl.innerHTML = html;
+  glide(false);
 }
 
 function btn(act, icon, label, key, cls = '') {
@@ -648,7 +723,7 @@ function renderPreview() {
 
   const lg = logs[p.path];
   let commits = '', commitSum = '';
-  if (!lg) commits = '<div class="pv-note">Yükleniyor…</div>';
+  if (!lg) commits = '<span class="sklabel">Yükleniyor…</span>' + [72, 54, 64].map(w => `<div class="skline" style="--w:${w}%"><b class="nb-skel"></b><b class="nb-skel"></b></div>`).join('');
   else if (!lg.commits.length) commits = '<div class="pv-note">Commit bulunamadı.</div>';
   else {
     commits = lg.commits.map(commitHTML).join('');
@@ -662,7 +737,7 @@ function renderPreview() {
   if (busy.fetched) sub.push(`<span title="${esc(fullTime(busy.fetched))}"><em>Uzak Kontrol</em>${esc(rel(busy.fetched))}</span>`);
 
   pvEl.innerHTML = `<div class="pv-actions">${acts}</div>` +
-    `<div class="pv-body"><div class="pv-head"><div class="pv-name">${esc(titleOf(p))}</div>${chips.join('')}</div>` +
+    `<div class="pv-body"><div class="pv-head">${ridHTML(p, 'lg')}<div class="pv-name">${esc(titleOf(p))}</div>${chips.join('')}</div>` +
     `<div class="sec">Durum</div>${statusCard(p)}${sub.length ? `<div class="pv-sub">${sub.join('')}</div>` : ''}` +
     worktreeHTML(p) +
     `<div class="sec">Son Commit’ler${commitSum}</div><div class="commits">${commits}</div>` +
@@ -731,6 +806,7 @@ function select(i, scroll = true) {
   listEl.querySelector('.row.sel')?.classList.remove('sel');
   const row = listEl.querySelector(`.row[data-i="${sel}"]`);
   if (row) { row.classList.add('sel'); if (scroll) row.scrollIntoView({ block: 'nearest' }); }
+  glide(true);
   renderPreview();
 }
 
@@ -772,7 +848,7 @@ function act(a, p = view[sel]) {
   if (!p) return;
   if (a === 'copy') {
     const row = listEl.querySelector(`.row[data-i="${view.indexOf(p)}"]`);
-    if (row) { row.classList.add('flash'); setTimeout(() => row.classList.remove('flash'), 700); }
+    if (row && window.NB) NB.confirm(row.querySelector('.cp'));
   }
   if (a === 'pull') {
     if (busy.pulling.has(p.path) || !canPull(p)) return; // no double trigger while it runs
@@ -835,6 +911,9 @@ document.addEventListener('keydown', e => {
   else if (m && /^[1-9]$/.test(k)) act('vscode', view[+k - 1]);
   else return;
   e.preventDefault();
+  // the keycap of the shortcut that just fired dips (footer and the primary button's chip)
+  const cap = k === 'Enter' ? (m ? '⌘↩' : e.altKey ? '⌥↩' : '↩') : m && lower(k) === 'c' ? '⌘C' : m && lower(k) === 'u' ? '⌘U' : '';
+  if (cap && window.NB) NB.press(cap, app);
 });
 
 // Relative times and recency groups stay correct while the panel is open.
@@ -920,8 +999,8 @@ function renderGitHub() {
     : `<span class="eyebrow">${P.eyebrow}${gh.org ? ' · ' + esc(gh.org) : ''}</span>`;
   // PR and commit numbers open their own list; line counts are plain numbers.
   const stat = (cls, v, label, key) => key
-    ? `<button class="gs ${cls}${ghOpen === key ? ' on' : ''}" data-gh="${key}" type="button"><b>${v}${CHEV}</b>${label}</button>`
-    : `<span class="gs ${cls}"><b>${v}</b>${label}</span>`;
+    ? `<button class="gs ${cls}${ghOpen === key ? ' on' : ''}" data-gh="${key}" type="button"><b><span class="nv" data-c="${cls}">${v}</span>${CHEV}</b>${label}</button>`
+    : `<span class="gs ${cls}"><b><span class="nv" data-c="${cls}">${v}</span></b>${label}</span>`;
   const btn = (key, label, count) => count == null ? '' :
     `<button class="gb${ghOpen === key ? ' on' : ''}${key === 'review' && count > 0 ? ' hot' : ''}" data-gh="${key}" type="button">${label}<b>${n(count)}</b>${CHEV}</button>`;
   const NEXT = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m6.5 4 4 4-4 4"/></svg>';
@@ -942,7 +1021,13 @@ function renderGitHub() {
       (total > list.length ? `<div class="ge">${n(total - list.length)} tane daha</div>` : '') + `</div></div>`;
   }
   if (gh.ghMissing) html += `<span class="gn">PR'lar için GitHub CLI (gh) gerekiyor</span>`;
+  const from = ghEl.querySelector('.seg .on')?.getBoundingClientRect();
   ghEl.innerHTML = html;
+  if (!window.NB) return;
+  // the period thumb slides from where it was; the four numbers count to the new period's values
+  const seg2 = ghEl.querySelector('.seg'); if (seg2) NB.thumb(seg2, true, from);
+  const raw = { pr: cur.prs, cm: cur.commits, add: cur.added, del: cur.deleted }, sign = { add: '+', del: '−' };
+  ghEl.querySelectorAll('.nv').forEach(el => { const c = el.dataset.c; if (typeof raw[c] === 'number') NB.count(el, 'gh.' + c, raw[c], v => (sign[c] || '') + n(Math.round(v))); });
 }
 ghEl.addEventListener('mousedown', e => {
   if (e.target.closest('[data-hist]')) { e.preventDefault(); e.stopPropagation(); ghOpen = null; renderGitHub(); openHistory(); return; }
