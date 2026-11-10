@@ -39,12 +39,14 @@ local function glyph()
   local k = 2
   local c = hs.canvas.new({ x = 0, y = 0, w = 18 * k, h = 18 * k })
   local ink = { white = 0, alpha = 1 }
-  c[1] = { type = "segments", action = "stroke", strokeColor = ink, strokeWidth = 3.1 * k, strokeCapStyle = "round",
-    coordinates = { { x = 6.2 * k, y = 4.6 * k }, { x = 11.8 * k, y = 13.4 * k } } }
-  c[2] = { type = "rectangle", action = "fill", fillColor = ink, roundedRectRadii = { xRadius = 1.55 * k, yRadius = 1.55 * k },
-    frame = { x = 3.1 * k, y = 3.1 * k, w = 3.1 * k, h = 11.8 * k } }
-  c[3] = { type = "rectangle", action = "fill", fillColor = ink, roundedRectRadii = { xRadius = 1.55 * k, yRadius = 1.55 * k },
-    frame = { x = 11.8 * k, y = 3.1 * k, w = 3.1 * k, h = 11.8 * k } }
+  -- Same geometry as assets/logo-mono.svg, on whole points so the uprights are crisp: panes 3 pt wide
+  -- (x 3-6 and 12-15, y 3-15, radius 1), link 2.5 pt at 45 degrees between the centres of the pane ends.
+  c[1] = { type = "segments", action = "stroke", strokeColor = ink, strokeWidth = 2.5 * k, strokeCapStyle = "round",
+    coordinates = { { x = 4.5 * k, y = 4.5 * k }, { x = 13.5 * k, y = 13.5 * k } } }
+  c[2] = { type = "rectangle", action = "fill", fillColor = ink, roundedRectRadii = { xRadius = 1 * k, yRadius = 1 * k },
+    frame = { x = 3 * k, y = 3 * k, w = 3 * k, h = 12 * k } }
+  c[3] = { type = "rectangle", action = "fill", fillColor = ink, roundedRectRadii = { xRadius = 1 * k, yRadius = 1 * k },
+    frame = { x = 12 * k, y = 3 * k, w = 3 * k, h = 12 * k } }
   local img = c:imageFromCanvas()
   c:delete()
   return img:setSize({ w = 18, h = 18 }):template(true)

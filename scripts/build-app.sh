@@ -12,9 +12,10 @@ WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
 
 # Icon: render the SVG logo once at 1024 px on a transparent canvas with the standard macOS icon
-# margin, then every size iconutil wants. (qlmanage would paint a white background.)
+# margin (Apple's grid: an 824 px body in 1024, so 9.8% on each side and the icon is the same size as
+# its neighbours in the Dock), then every size iconutil wants. (qlmanage would paint a white background.)
 SRC="$WORK/logo1024.png"
-osascript -l JavaScript "$HERE/scripts/svg2png.js" "$HERE/assets/logo.svg" "$SRC" 1024 0.06 >/dev/null
+osascript -l JavaScript "$HERE/scripts/svg2png.js" "$HERE/assets/logo.svg" "$SRC" 1024 0.098 >/dev/null
 [[ -f "$SRC" ]] || { echo "could not render assets/logo.svg" >&2; exit 1; }
 ICONSET="$WORK/Nimbstia.iconset"
 mkdir -p "$ICONSET"
