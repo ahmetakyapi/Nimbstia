@@ -75,7 +75,6 @@
     'Bütün projeler': 'All projects', 'Commit’lenmemiş değişikliği ya da yeni dosyası olanlar': 'Uncommitted changes or new files',
     'Uzak dala gönderilmemiş commit’i olanlar': 'Commits not pushed to the remote yet',
     'Uzak dalda henüz çekilmemiş commit olanlar': 'The remote has commits not pulled yet',
-    '7+ gündür hareketsiz, temiz çalışma kopyaları (bilgi amaçlı, hiçbir şey silinmez)': 'Clean work copies idle for 7+ days (info only, nothing gets deleted)',
     'Commit’lenmemiş Değişiklikler': 'Uncommitted Changes', 'Değişen Dosya': 'Changed Files', 'Yeni Dosya': 'New Files',
     'Hesaplanıyor…': 'Calculating…', 'Değişiklik yok': 'No changes', 'Ana Klon': 'Main Clone', 'Klon (Kopya)': 'Clone (Copy)',
     'Worktree': 'Worktree', 'Satır farkı yok (yalnız izin/mod değişikliği olabilir).': 'No line changes (maybe only mode changes).',
@@ -86,7 +85,6 @@
     'Değişiklik': 'Changes', 'Yolu Kopyala': 'Copy Path', 'Temiz': 'Clean', 'Yukarı Akış Yok': 'No Upstream',
     'Güncel': 'Up to Date', "VS Code'da Aç": 'Open in VS Code', 'Çalışma Kopyası · Worktree': 'Work Copy · Worktree',
     'Çalışma Kopyası · Klon': 'Work Copy · Clone', 'Ana Kopya': 'Main Clone', 'Temizlenebilir': 'Can Be Cleaned',
-    'Yalnız bilgi: 7+ gündür hareketsiz, temiz bir çalışma kopyası. Hiçbir şey silinmez.': 'Info only: a clean work copy, idle for 7+ days. Nothing gets deleted.',
     'Commit bulunamadı.': 'No commits found.', 'Dal': 'Branch', 'Durum': 'Status', 'Yukarı Akış': 'Upstream',
     'Son Commit': 'Last Commit', 'Dizin Değişimi': 'Folder Changed', 'Panelden Açılış': 'Opened from Panel',
     'Hiç Açılmadı': 'Never Opened', 'Özet': 'Summary', 'Son Commit’ler': 'Recent Commits', "Son Commit'ler": 'Recent Commits',
@@ -141,7 +139,20 @@
     // Repostia: today / week / month and the commit history
     'Bu Hafta Yaptıkların': 'Your Week', 'Bu Ay Yaptıkların': 'Your Month', 'Hafta': 'Week', 'Ay': 'Month', 'Bu Ay': 'This Month', "Bu Hafta Açılan PR'lar": 'PRs Opened This Week', "Bu Ay Açılan PR'lar": 'PRs Opened This Month', "Bu Haftaki Commit'ler": "This Week's Commits", "Bu Ayki Commit'ler": "This Month's Commits", 'Bu hafta PR açılmadı.': 'No PRs opened this week.', 'Bu ay PR açılmadı.': 'No PRs opened this month.', 'Bu hafta commit yok.': 'No commits this week.', 'Bu ay commit yok.': 'No commits this month.', 'Günlük Commit': 'Daily Commits', 'Commit Geçmişi': 'Commit History', 'Gün gün geçmiş': 'Day-by-day history', 'Geçen Ay': 'Last Month', 'Son 90 Gün': 'Last 90 Days', 'Tüm Repolar': 'All Repos', 'Repo': 'Repo', 'Commit ara…': 'Search commits…', 'Aktif Gün': 'Active Days', 'Günlük Ortalama': 'Daily Average', 'En Çok Commit': 'Most Commits', 'Geçen ay commit yok.': 'No commits last month.', 'Son 90 günde commit yok.': 'No commits in the last 90 days.', 'Bu filtrelerle commit yok.': 'No commits match these filters.', 'Aramayı ya da repoyu değiştirmeyi dene.': 'Try another search or repo.', 'Geri · Esc': 'Back · Esc',
     // Repostia: filters and the Claude action
-    'Değişiklik Var': 'Changed', 'Pull Bekleyen': 'Needs Pull', 'Hareketsiz': 'Idle', 'Claude': 'Claude', 'Henüz commit’lenmemiş değişikliği ya da yeni dosyası olan repolar': 'Repos with uncommitted changes or new files', 'Commit’lenmiş ama GitHub’a gönderilmemiş commit’i olan repolar': 'Repos with commits not pushed to GitHub yet', 'GitHub’da yeni commit’i olan, henüz çekilmemiş repolar': 'Repos with new commits on GitHub not pulled yet', '7+ gündür dokunulmamış, değişikliği olmayan kopyalar (yalnız bilgi, hiçbir şey silinmez)': 'Clean copies untouched for 7+ days (info only, nothing is deleted)',
+    'Claude': 'Claude',
+    'Push Edilmemiş': 'Unpushed', 'Güncelleme Var': 'Updates Available', 'Ara: repo, dal, son commit…': 'Search: repo, branch, last commit…',
+    'Commit’lenmemiş değişikliği olan repolar': 'Repos with uncommitted changes', 'Commit’i var ama GitHub’a gönderilmemiş repolar': 'Repos with commits not pushed to GitHub yet',
+    'GitHub’da yeni commit’i olan repolar (son uzaktan kontrole göre)': 'Repos with new commits on GitHub (as of the last remote check)',
+    // Repostia: pull / remote check, status card, commit authors
+    'Tümünü Çek': 'Pull All', 'Çekiliyor…': 'Pulling…', 'Pull': 'Pull', 'Bütün güncellemeleri çeker': 'Pulls every update',
+    'Uzaktan Kontrol Et': 'Check Remotes', 'Uzaktan Kontrol Ediliyor…': 'Checking Remotes…', 'Uzak Kontrol': 'Remote Check', 'Uzaktan kontrol tamamlandı': 'Remote check finished',
+    'Güncel, temiz': 'Up to date, clean', 'Uzak dal yok': 'No remote branch', 'Durum hesaplanıyor…': 'Calculating status…', 'Detached HEAD': 'Detached HEAD',
+    'dallar ayrıştı': 'branches diverged', 'Bir dalda değil': 'Not on a branch', 'Ana klonun ek çalışma dizini': 'Extra working directory of the main clone',
+    'Sen': 'You', 'Senin commit’in': 'Your commit', 'Commit’lenmemiş dosya sayısı': 'Uncommitted file count',
+    'Güncellenecek repo yok': 'No repos to update',
+    'commit’lenmemiş değişiklik var': 'uncommitted changes', 'push edilmemiş commit var': 'unpushed commits', 'durumu henüz bilinmiyor': 'status not known yet',
+    'ileri sarma mümkün değil (dallar ayrışmış)': 'cannot fast-forward (branches diverged)', 'yerel değişiklik çakışıyor': 'local changes conflict',
+    'uzak dal tanımlı değil': 'no upstream branch', 'zaman aşımı': 'timed out', 'git başlatılamadı': 'could not start git',
     // hub: CPU gauge and its detail
     'İşlemci': 'CPU', 'İşlemci Kullanımı': 'CPU Usage', 'Neyin ne kadar işlemci kullandığını gör': 'See what uses the CPU',
     // hub: VPN card
@@ -212,6 +223,7 @@
     R('^' + NUM + ' kısayol$', function (m) { return pl(m[1], 'shortcut', 'shortcuts'); }),
     R('^' + NUM + ' modül yüklenemedi$', function (m) { return pl(m[1], 'module', 'modules') + ' failed to load'; }),
     R('^' + NUM + ' Modül Yüklenemedi$', function (m) { return pl(m[1], 'Module', 'Modules') + ' Failed to Load'; }),
+    R('^' + NUM + ' dosya$', function (m) { return pl(m[1], 'file', 'files'); }),
     R('^' + NUM + ' satır$', function (m) { return pl(m[1], 'line', 'lines'); }),
     R('^' + NUM + ' karakter$', function (m) { return pl(m[1], 'character', 'characters'); }),
     R('^' + NUM + ' kelime$', function (m) { return pl(m[1], 'word', 'words'); }),
@@ -222,7 +234,18 @@
     R('^' + NUM + ' geride$', function (m) { return m[1] + ' behind'; }),
     R('^' + NUM + ' tane daha$', function (m) { return m[1] + ' more'; }),
     R('^' + NUM + ' Push Bekliyor$', function (m) { return m[1] + ' to Push'; }),
-    R('^' + NUM + ' Pull Bekliyor$', function (m) { return m[1] + ' to Pull'; }),
+    R('^' + NUM + ' yeni commit var$', function (m) { return pl(m[1], 'new commit', 'new commits') + ' to pull'; }),
+    R('^' + NUM + ' commit push edilmedi$', function (m) { return pl(m[1], 'commit', 'commits') + ' not pushed'; }),
+    R('^' + NUM + ' dosya commit’lenmedi$', function (m) { return pl(m[1], 'file', 'files') + ' not committed'; }),
+    R('^son: (.+)$', function (m) { return 'last: ' + tr(m[1]); }),
+    R('^' + NUM + ' repo çekilebilir; commit’lenmemiş ya da push edilmemiş değişikliği olanlar atlanır$', function (m) { return m[1] + ' can be pulled; repos with uncommitted or unpushed work are skipped'; }),
+    R('^' + NUM + ' repo güncellendi(, .+)?$', function (m) { return m[1] + ' ' + (N(m[1]) === 1 ? 'repo' : 'repos') + ' updated' + (m[2] ? ', ' + tr(m[2].slice(2)) : ''); }),
+    R('^' + NUM + ' atlandı: (.+?)(, .+)?$', function (m) { return m[1] + ' skipped: ' + m[2].split('; ').map(tr).join('; ') + (m[3] ? ', ' + tr(m[3].slice(2)) : ''); }),
+    R('^' + NUM + ' çekilemedi(?: \\((.+)\\))?$', function (m) { return m[1] + ' failed' + (m[2] ? ' (' + tr(m[2]) + ')' : ''); }),
+    R('^Çekilecek temiz repo yok, (.+)$', function (m) { return 'No clean repos to pull, ' + tr(m[1]); }),
+    R('^Kontrol tamamlandı, ' + NUM + ' repo kontrol edilemedi$', function (m) { return 'Check finished, ' + m[1] + ' ' + (N(m[1]) === 1 ? 'repo' : 'repos') + ' could not be checked'; }),
+    R('^(.+) zaten güncel$', function (m) { return m[1] + ' is already up to date'; }),
+    R('^(.+) güncellendi$', function (m) { return m[1] + ' updated'; }),
     R('^' + NUM + ' commit$', function (m) { return pl(m[1], 'commit', 'commits'); }),
     R('^Filtreler kaldırılınca ' + NUM + ' öğe var\\.$', function (m) { return pl(m[1], 'item', 'items') + ' without filters.'; }),
     R('^Filtre kaldırılınca ' + NUM + ' proje var\\.$', function (m) { return pl(m[1], 'project', 'projects') + ' without the filter.'; }),
@@ -247,6 +270,7 @@
     R('^/ ([^·]+) kullanımda$', function (m) { return '/ ' + m[1] + ' in use'; }),
     R('^([^A-Za-zÀ-ɏ\\d]*)(\\d+),(\\d+) (B|KB|MB|GB|TB)$', function (m) { return m[1] + m[2] + '.' + m[3] + ' ' + m[4]; }), // "1,5 MB", "/ 16,0 GB"
     R('^(\\d+),(\\d)$', function (m) { return m[1] + '.' + m[2]; }), // decimal comma (free disk "0,4 TB")
+    R('^([^:·\\s]+): (.+)$', function (m) { var t = T(m[2]); return t == null ? null : m[1] + ': ' + t; }), // "repo: reason" (pull errors)
   ];
 
   // ---------------------------------------------------------------- lookup
@@ -342,7 +366,7 @@
       return 1;
     } },
     // Repostia: names, paths, commit subjects, PR titles, repos, authors, branch.
-    projects: { sel: '.ti,.pv-name,.pv-path,.commit .s,.pt,.rp,.av,.a b,dd', mode: function (el) {
+    projects: { sel: '.ti,.pv-name,.pv-path,.commit .s,.pt,.rp,.av,.a b,dd,.br,.who', mode: function (el) {
       if (el.matches('dd')) return dtIs(el, ['Dal', 'Branch']) ? 1 : 0;
       return 1;
     } },

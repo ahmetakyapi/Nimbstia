@@ -33,6 +33,8 @@ header:focus-within>svg{color:var(--text)}
 .reset:hover{background:color-mix(in srgb,var(--accent) 14%,transparent)}
 .tb{position:relative;width:30px;height:30px;flex:none;border:0;padding:0;font:inherit;background:none;border-radius:var(--r-pill);display:grid;place-items:center;color:var(--muted);transition:background var(--dur-1),color var(--dur-1)}
 .tb svg{width:16px;height:16px}
+.tb.spin svg{animation:rot 1s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
 .tb:hover{background:var(--hover);color:var(--text)}
 .tb[data-tip]:hover::after{content:attr(data-tip);position:absolute;top:calc(100% + 6px);right:0;white-space:nowrap;background:var(--tt-bg);color:var(--tt-fg);font:500 11.5px/1 var(--font-ui);padding:6px 9px;border-radius:var(--r-pill);pointer-events:none;z-index:60;box-shadow:var(--tt-shadow)}
 #closeBtn{color:#e5484d}
@@ -42,7 +44,8 @@ header:focus-within>svg{color:var(--text)}
 .bar{display:flex;align-items:center;gap:8px 16px;padding:0 20px 16px;border-bottom:1px solid var(--line);flex:none}
 .seg{display:flex;gap:2px;flex-wrap:nowrap;padding:3px;border-radius:var(--r-pill);background:var(--chip);box-shadow:inset 0 0 0 1px var(--line);overflow:hidden}
 #kinds{flex:0 1 auto;min-width:0}
-.seg.time{flex:none;margin-left:auto}
+.bar .sp{flex:1;min-width:0}
+.seg.time{flex:none}
 .f,.t{flex:none;display:flex;align-items:center;gap:6px;height:28px;padding:0 12px 0 10px;border-radius:var(--r-pill);font:500 12.5px/1 var(--font-ui);letter-spacing:-.005em;color:var(--muted);white-space:nowrap;
   transition:background var(--dur-1),color var(--dur-1),box-shadow var(--dur-2) var(--ease-out)}
 .t{padding:0 12px}
@@ -55,6 +58,7 @@ header:focus-within>svg{color:var(--text)}
 .f.on b{color:var(--accent-ink)}
 .f.zero:not(.on){color:var(--faint)}
 .f.zero:not(.on) svg{opacity:.55}
+.f.zero:not(.on) b{opacity:.55}
 
 /* list */
 main{flex:1;display:grid;grid-template-columns:400px 1fr;min-height:0}
@@ -136,8 +140,10 @@ footer .cnt b{font-weight:650;color:var(--text);margin-right:4px}
 
 /* toast: ink pill */
 .toast{position:absolute;left:50%;bottom:58px;z-index:40;transform:translate(-50%,10px) scale(.96);background:var(--tt-bg);color:var(--tt-fg);font:550 12.5px/1 var(--font-ui);letter-spacing:-.005em;padding:0 16px 0 6px;height:34px;border-radius:var(--r-pill);opacity:0;
-  transition:opacity var(--dur-1),transform var(--dur-2) var(--ease-spring);pointer-events:none;display:flex;gap:9px;align-items:center;box-shadow:var(--tt-shadow);white-space:nowrap}
-.toast svg{width:22px;height:22px;padding:5px;border-radius:50%;color:#fff;background:var(--ok-bar)}
+  transition:opacity var(--dur-1),transform var(--dur-2) var(--ease-spring);pointer-events:none;display:flex;gap:9px;align-items:center;box-shadow:var(--tt-shadow);white-space:nowrap;max-width:calc(100% - 48px)}
+.toast svg{flex:none;width:22px;height:22px;padding:5px;border-radius:50%;color:#fff;background:var(--ok-bar)}
+.toast.err svg{background:var(--danger)}
+.toast span{min-width:0;overflow:hidden;text-overflow:ellipsis}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 
 body{-webkit-font-smoothing:auto}
@@ -158,21 +164,33 @@ body{-webkit-font-smoothing:auto}
 .pv-body{flex:1;min-height:0;overflow:auto;padding:24px}
 .intro .pv-body>*{animation:nb-rise .32s var(--ease-out) both}
 .pv-name{font:560 28px/1.15 var(--font-display);letter-spacing:var(--track-display);word-break:break-word;overflow-wrap:anywhere;-webkit-user-select:text}
-.pv-folder{display:flex;align-items:center;gap:6px;margin-top:8px;font:500 12.5px/1.2 var(--font-ui);color:var(--muted);-webkit-user-select:text}
-.pv-folder svg{width:14px;height:14px;color:var(--faint);flex:none}
+.pv-head{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px}
+.pv-head .pv-name{min-width:0}
+.chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:var(--r-pill);font:550 12px/1 var(--font-ui);background:var(--chip);color:var(--muted);box-shadow:inset 0 0 0 1px var(--line);white-space:nowrap;max-width:100%}
+.chip svg{width:13px;height:13px;flex:none;color:var(--faint)}
+.chip.br-chip{color:var(--accent-ink);background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent-line)}
+.chip.br-chip svg{color:var(--accent)}
+.chip .br{min-width:0;overflow:hidden;text-overflow:ellipsis;-webkit-user-select:text}
 .su .dt{font:600 10.5px/1 var(--font-ui);color:var(--warn);background:var(--warn-soft);padding:2px 5px;border-radius:var(--r-pill);margin-right:5px}
-.tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.tag{display:inline-flex;align-items:center;font:550 12px/1 var(--font-ui);padding:0 10px;height:24px;border-radius:var(--r-pill);background:var(--chip);color:var(--muted)}
-.tag.main{color:var(--accent-ink);background:var(--accent-soft)}
-.tag.copy{color:var(--ink-code);background:color-mix(in srgb,var(--k-code) 11%,transparent)}
-.tag.warn{color:var(--warn);background:var(--warn-soft)}
-.tag.stale{color:var(--ok);background:color-mix(in srgb,var(--ok-bar) 13%,transparent)}
-/* summary: hairline grid of paper cells */
-.pv-meta{margin:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border-radius:14px;overflow:hidden;box-shadow:0 0 0 1px var(--line),0 10px 30px -18px rgba(12,12,16,.18)}
-.pv-meta div{min-width:0;padding:13px 15px 14px;background:var(--pv-card)}
-.pv-meta dt{font:500 12px/1.1 var(--font-ui);color:var(--faint);margin-bottom:7px}
-.pv-meta dd{margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13.5px;font-weight:580;letter-spacing:-.006em;font-variant-numeric:tabular-nums}
-.pv-meta dd.warn{color:var(--warn)}.pv-meta dd.ok{color:var(--ok)}
+/* status card: one sentence per state, the action it asks for on the right */
+.stc{border-radius:14px;background:var(--pv-card);box-shadow:var(--card-lift);padding:2px 0}
+.stl{display:flex;align-items:center;gap:12px;min-height:52px;padding:8px 10px 8px 16px;border-top:1px solid var(--line)}
+.stl:first-child{border-top:0}
+.stl>i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--faint);opacity:.6}
+.stl.warn>i{background:var(--warn);opacity:1}
+.stl.act>i{background:var(--accent);opacity:1}
+.stl.ok>i{background:var(--ok-bar);opacity:1}
+.stl .tx{flex:1;min-width:0;font:520 13.5px/1.35 var(--font-ui);letter-spacing:-.006em;color:var(--text)}
+.stl.mute .tx{color:var(--muted);font-weight:500}
+.btn.busy{opacity:.6;pointer-events:none}
+.btn.sq{width:30px;padding:0;justify-content:center;gap:0}
+.btn.sq.on svg{color:var(--accent)}
+.pv-sub{display:flex;flex-wrap:wrap;gap:6px 20px;margin-top:12px;font:500 12px/1.3 var(--font-ui);color:var(--muted);font-variant-numeric:tabular-nums}
+.pv-sub em{font-style:normal;color:var(--faint);margin-right:6px}
+#pullall{flex:none}
+#pullall b{display:grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:var(--r-pill);font:650 11.5px/1 var(--font-ui);font-variant-numeric:tabular-nums;color:var(--accent-ink);background:var(--accent-soft)}
+#pullall.dim{color:var(--faint)}
+#pullall[hidden]{display:none}
 /* line counts: green additions, red deletions, GitHub-style five-block ratio */
 .pl{color:var(--ok);font-weight:650;font-variant-numeric:tabular-nums}
 .mi{color:var(--danger);font-weight:650;font-variant-numeric:tabular-nums}
@@ -199,6 +217,7 @@ body{-webkit-font-smoothing:auto}
 .commit .s .prn{font-weight:650;color:var(--accent-ink);margin-right:6px}
 .commit .w{grid-column:1;display:flex;align-items:center;gap:6px;min-width:0;font:500 12px/1 var(--font-ui);color:var(--faint);white-space:nowrap;overflow:hidden;font-variant-numeric:tabular-nums}
 .commit .w code{font:500 11.5px/1 var(--font-mono);color:var(--accent-ink);letter-spacing:.01em}
+.commit .w .me{font-weight:650;color:var(--accent-ink)}
 .commit .st{grid-column:2;grid-row:1/span 2;display:flex;align-items:center;gap:10px;font:12px/1 var(--font-ui)}
 .commit .st .n{display:flex;gap:6px;min-width:84px;justify-content:flex-end}
 .commit .st .fz{font-weight:500;color:var(--faint);font-variant-numeric:tabular-nums}
@@ -342,10 +361,11 @@ button.gs.chart:hover{background:var(--hover);box-shadow:inset 0 0 0 1px var(--l
 <div class="app grain" id="app">
   <header>
     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5.5" fill="currentColor" fill-opacity=".14" stroke="none"/><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4 4"/></svg>
-    <input id="q" placeholder="Ara: dal, klasör, son commit…" autocomplete="off" spellcheck="false">
+    <input id="q" placeholder="Ara: repo, dal, son commit…" autocomplete="off" spellcheck="false">
     <span class="qhint" aria-hidden="true"><kbd>⌃⇧P</kbd></span>
-    <div class="sync" id="sync"><i></i>Yenileniyor…</div>
+    <div class="sync" id="sync"><i></i><span id="syncTx">Yenileniyor…</span></div>
     <div class="reset" id="reset">Filtreleri Temizle</div>
+    <button class="tb" id="fetchBtn" type="button" aria-label="Uzaktan Kontrol Et"></button>
     <button class="tb" id="theme" type="button"></button>
     <button class="tb" id="closeBtn" type="button" aria-label="Kapat" data-tip="Kapat · Esc"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg></button>
   </header>
@@ -353,6 +373,8 @@ button.gs.chart:hover{background:var(--hover);box-shadow:inset 0 0 0 1px var(--l
   <div class="hist" id="hist" hidden></div>
   <div class="bar">
     <div class="seg" id="kinds"></div>
+    <span class="sp"></span>
+    <div class="btn" id="pullall" hidden></div>
     <div class="seg time" id="sorts"></div>
   </div>
   <main>
@@ -364,8 +386,9 @@ button.gs.chart:hover{background:var(--hover);box-shadow:inset 0 0 0 1px var(--l
 </div>
 <script>
 const $ = s => document.querySelector(s);
-const app = $('#app'), input = $('#q'), listEl = $('#list'), pvEl = $('#preview'), kindsEl = $('#kinds'), sortsEl = $('#sorts'), footEl = $('#foot'), resetEl = $('#reset'), toastEl = $('#toast'), syncEl = $('#sync');
+const app = $('#app'), input = $('#q'), listEl = $('#list'), pvEl = $('#preview'), kindsEl = $('#kinds'), sortsEl = $('#sorts'), footEl = $('#foot'), resetEl = $('#reset'), toastEl = $('#toast'), syncEl = $('#sync'), syncTx = $('#syncTx'), fetchBtn = $('#fetchBtn'), pullAllEl = $('#pullall');
 let items = [], view = [], sel = 0, q = '', kind = 'all', sort = 'recent', logs = {}, wts = {}, scanning = false, selPath = null;
+let busy = { fetching: false, pullAll: false, pulling: new Set(), fetched: 0 };
 const nowS = () => Date.now() / 1000;
 
 // Duotone set: 16px grid, 1.6px round stroke; a soft fill (same colour, 20%) sits behind part of each glyph.
@@ -389,6 +412,8 @@ const ICONS = {
   broom:  P('<path d="M3 13.6c.4-2.4 1.6-4 3.6-4.6l2.6 2.6c-.6 2-2.2 3.2-4.6 3.6z"/>', '<path d="M3 13.6c.4-2.4 1.6-4 3.6-4.6l2.6 2.6c-.6 2-2.2 3.2-4.6 3.6zM7.9 10.3l5.3-5.3a1.3 1.3 0 0 0-1.8-1.8L6.1 8.5"/>'),
   check:  P('', '<path d="m3.5 8.5 3 3 6-7"/>'),
   x:      P('', '<path d="M4 4l8 8M12 4l-8 8"/>'),
+  sync:   P('', '<path d="M12.8 8A4.8 4.8 0 0 0 4.6 4.6L3 6.2M3 3v3.2h3.2M3.2 8a4.8 4.8 0 0 0 8.2 3.4L13 9.8M13 13V9.8H9.8"/>'),
+  branch: P('', '<circle cx="4.8" cy="3.8" r="1.5"/><circle cx="4.8" cy="12.2" r="1.5"/><circle cx="11.2" cy="6.2" r="1.5"/><path d="M4.8 5.3v5.4M11.2 7.7c0 2.2-2.2 2.6-4.7 3.3"/>'),
 };
 
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -409,6 +434,12 @@ themeBtn.addEventListener('mousedown', e => { e.preventDefault(); post({ action:
 $('#closeBtn').addEventListener('mousedown', e => { e.preventDefault(); post({ action: 'close' }); });
 syncTheme();
 
+// Top-bar "Uzaktan Kontrol Et": fetches every remote (Lua), then rescans.
+fetchBtn.innerHTML = ICONS.sync;
+fetchBtn.addEventListener('mousedown', e => { e.preventDefault(); fetchRemote(); });
+function fetchRemote() { if (!busy.fetching) post({ action: 'fetch' }); }
+function fetchTip() { return 'Uzaktan Kontrol Et' + (busy.fetched ? ' · son: ' + rel(busy.fetched) : '') + ' · ⌘R'; }
+
 // Pills collapse to icon + count as one unit when their labels no longer fit: nothing wraps, shifts or clips.
 const barEl = document.querySelector('.bar');
 function fitBar() {
@@ -426,7 +457,6 @@ const COPY_NAME = /-(pr)?\d+[a-z]*(-|$)|-(r\d+|codex|tmp|scratch|review|wt|fix)(
 function isCopy(p) { return p.worktree || COPY_NAME.test(p.name); }
 const activity = p => Math.max(p.ct || 0, p.mtime || 0);
 const lastUsed = p => Math.max(p.opened || 0, activity(p));
-function isStale(p) { return isCopy(p) && p.dirty === 0 && nowS() - activity(p) > 7 * DAY && !(p.opened && nowS() - p.opened < 7 * DAY); }
 
 function rel(t) {
   if (!t) return '–';
@@ -454,19 +484,21 @@ function groupOf(p) {
   if (diff < 7) return 'Bu Hafta';
   return 'Daha Eski';
 }
-const branchOf = p => p.branch || (p.sha ? `${p.sha} (detached)` : '–');
-// List and preview lead with the branch; a detached HEAD falls back to the folder name.
-const titleOf = p => p.branch || p.name;
+// Rows and the preview lead with the repo (folder) name; the branch is the second line / a chip.
+const titleOf = p => p.name;
+// A fast-forward pull is only offered when nothing is unpushed (otherwise the branches have diverged).
+const canPull = p => p.behind > 0 && !(p.ahead > 0);
+// "Tümünü Çek" only touches repos where a fast-forward cannot collide with local work.
+const canPullAll = p => p.behind > 0 && p.dirty === 0 && !(p.ahead > 0);
 
 // ---- filters / sorting / search -------------------------------------------
-// Filters answer "what needs me?": uncommitted work, unpushed commits, branches behind their remote,
-// and old clean copies that could go. Whether a folder is the main clone or a copy stays a tag.
+// Filters answer "what do I have to do?": commit, push or pull. Whether a folder is the main clone or a
+// copy stays a small detail of the preview.
 const KINDS = [
-  { key: 'all',    label: 'Tümü',            icon: 'all',   tip: 'Bütün projeler',                                         test: () => true },
-  { key: 'dirty',  label: 'Değişiklik Var',  icon: 'dirty', tip: 'Henüz commit’lenmemiş değişikliği ya da yeni dosyası olan repolar', test: p => p.dirty > 0 },
-  { key: 'ahead',  label: 'Push Bekleyen',   icon: 'up',    tip: 'Commit’lenmiş ama GitHub’a gönderilmemiş commit’i olan repolar',  test: p => p.ahead > 0 },
-  { key: 'behind', label: 'Pull Bekleyen',   icon: 'down',  tip: 'GitHub’da yeni commit’i olan, henüz çekilmemiş repolar',           test: p => p.behind > 0 },
-  { key: 'stale',  label: 'Hareketsiz',      icon: 'broom', tip: '7+ gündür dokunulmamış, değişikliği olmayan kopyalar (yalnız bilgi, hiçbir şey silinmez)', test: p => isStale(p) },
+  { key: 'all',    label: 'Tümü',            icon: 'all',   tip: 'Bütün projeler',                                      test: () => true },
+  { key: 'dirty',  label: 'Commit’lenmemiş', icon: 'dirty', tip: 'Commit’lenmemiş değişikliği olan repolar',             test: p => p.dirty > 0 },
+  { key: 'ahead',  label: 'Push Edilmemiş',  icon: 'up',    tip: 'Commit’i var ama GitHub’a gönderilmemiş repolar',      test: p => p.ahead > 0 },
+  { key: 'behind', label: 'Güncelleme Var',  icon: 'down',  tip: 'GitHub’da yeni commit’i olan repolar (son uzaktan kontrole göre)', test: p => p.behind > 0 },
 ];
 const SORTS = [{ key: 'recent', label: 'Son Kullanılan' }, { key: 'name', label: 'Ad' }];
 const isDefault = () => kind === 'all';
@@ -474,14 +506,14 @@ const isDefault = () => kind === 'all';
 function tokens(s) { return lower(s).split(/\s+/).filter(Boolean); }
 function subseq(tk, s) { let i = 0; for (const c of s) { if (c === tk[i] && ++i === tk.length) return true; } return false; }
 function hay(p) { return p._h || (p._h = { n: lower(p.name), b: lower(p.branch || p.sha), s: lower(p.subject) }); }
-// Score of one token: 0 = no match; larger = better. Branch first, it is what the row shows.
+// Score of one token: 0 = no match; larger = better. Repo name first, it is what the row shows.
 function tokScore(tk, h) {
-  if (h.b.startsWith(tk)) return 7;
-  if (h.n.startsWith(tk)) return 6;
-  if (h.b.includes(tk)) return 5;
-  if (h.n.includes(tk)) return 4;
+  if (h.n.startsWith(tk)) return 7;
+  if (h.b.startsWith(tk)) return 6;
+  if (h.n.includes(tk)) return 5;
+  if (h.b.includes(tk)) return 4;
   if (h.s.includes(tk)) return 3;
-  if (tk.length >= 2 && (subseq(tk, h.b) || subseq(tk, h.n))) return 2;
+  if (tk.length >= 2 && (subseq(tk, h.n) || subseq(tk, h.b))) return 2;
   return 0;
 }
 function score(p, toks) {
@@ -501,7 +533,7 @@ function highlight(str, toks) {
   }
   return out + (on ? '</mark>' : '');
 }
-const byName = (a, b) => titleOf(a).localeCompare(titleOf(b), 'tr', { numeric: true }) || a.name.localeCompare(b.name, 'tr', { numeric: true });
+const byName = (a, b) => a.name.localeCompare(b.name, 'tr', { numeric: true });
 function order(a, b) {
   if (!!a.pinned !== !!b.pinned) return a.pinned ? -1 : 1;
   if (sort === 'name') return byName(a, b);
@@ -519,7 +551,7 @@ function refresh(keepPath) {
   if (want) { const i = view.findIndex(p => p.path === want); sel = i >= 0 ? i : Math.min(sel, view.length - 1); }
   else sel = 0;
   sel = Math.max(0, Math.min(sel, view.length - 1));
-  renderFilters(toks); renderList(toks); renderPreview(); renderFooter();
+  renderFilters(toks); renderList(toks); renderPreview(); renderPullAll();
 }
 
 function renderFilters(toks) {
@@ -542,8 +574,9 @@ function emptyHTML(toks) {
   return `<div class="empty"><div>${ICONS.folder}<div>“${esc(q)}” için Sonuç Yok</div><div class="hint">Farklı bir kelime dene ya da Esc ile aramayı temizle.</div></div></div>`;
 }
 
+// Second row line: "branch · time" (a detached HEAD shows a badge and the commit instead).
 function subOf(p, toks) {
-  const head = p.branch ? highlight(p.name, toks) : `<span class="dt">detached</span>${highlight(p.sha || '', toks)}`;
+  const head = p.branch ? `<span class="br">${highlight(p.branch, toks)}</span>` : `<span class="dt">detached</span><span class="br">${highlight(p.sha || '', toks)}</span>`;
   return `${head} · ${esc(rel(activity(p)))}`;
 }
 function syncOf(p) {
@@ -553,6 +586,7 @@ function syncOf(p) {
   if (p.behind) s.push('↓' + p.behind);
   return s.join(' ');
 }
+const syncTip = p => [p.ahead ? `${num(p.ahead)} commit push edilmedi` : '', p.behind ? `${num(p.behind)} yeni commit var` : ''].filter(Boolean).join(' · ');
 
 function renderList(toks) {
   if (!view.length) { listEl.innerHTML = emptyHTML(toks); return; }
@@ -569,7 +603,7 @@ function renderList(toks) {
     const sy = syncOf(p);
     html += `<div class="row${i === sel ? ' sel' : ''}" data-i="${i}" style="--i:${i}"><div class="ico ${isCopy(p) ? 'k-copy' : 'k-main'}">${isCopy(p) ? ICONS.copy : ICONS.main}</div>` +
       `<div class="meta"><div class="ti">${highlight(titleOf(p), toks)}</div><div class="su">${subOf(p, toks)}</div></div>` +
-      `<div class="end">${p.dirty > 0 ? `<span class="dirty" title="Commit’lenmemiş dosya">${num(p.dirty)}</span>` : ''}${sy ? `<span class="sy">${sy}</span>` : ''}${p.pinned ? `<span class="pin">${ICONS.pin}</span>` : ''}${quick}<div class="cp" data-act="copy" title="Yolu Kopyala">${ICONS.copyi}</div></div></div>`;
+      `<div class="end">${p.dirty > 0 ? `<span class="dirty" title="Commit’lenmemiş dosya sayısı">${num(p.dirty)}</span>` : ''}${sy ? `<span class="sy" title="${esc(syncTip(p))}">${sy}</span>` : ''}${p.pinned ? `<span class="pin">${ICONS.pin}</span>` : ''}${quick}<div class="cp" data-act="copy" title="Yolu Kopyala">${ICONS.copyi}</div></div></div>`;
   });
   listEl.innerHTML = html;
 }
@@ -577,29 +611,40 @@ function renderList(toks) {
 function btn(act, icon, label, key, cls = '') {
   return `<div class="btn ${cls}" data-act="${act}"${key ? ` title="${label} (${key})"` : ''}>${ICONS[icon]}${label}${key && cls === 'primary' ? `<span class="k">${key}</span>` : ''}</div>`;
 }
-
-function statusText(p) {
-  if (p.dirty == null) return ['Bilinmiyor', ''];
-  if (p.dirty === 0) return ['Temiz', 'ok'];
-  return [`${num(p.dirty)} Dosya Değişti`, 'warn'];
+// Icon-only action: the label lives in the tooltip.
+function ibtn(act, icon, label, on = false) {
+  return `<div class="btn sq${on ? ' on' : ''}" data-act="${act}" title="${label}" aria-label="${label}">${ICONS[icon]}</div>`;
 }
-function syncText(p) {
-  if (p.ahead == null) return p.branch ? 'Uzak Dal Yok' : 'Detached HEAD';
-  if (!p.ahead && !p.behind) return 'Güncel';
-  return [p.ahead ? `${num(p.ahead)} ileride` : '', p.behind ? `${num(p.behind)} geride` : ''].filter(Boolean).join(' · ');
+
+// One sentence per state, with the action it asks for. Nothing to do -> a single "Güncel, temiz" line.
+function statusCard(p) {
+  const rows = [];
+  const row = (cls, text, action = '') => rows.push(`<div class="stl ${cls}"><i></i><div class="tx">${esc(text)}</div>${action}</div>`);
+  const ghBtn = btn('github', 'gh', 'GitHub Desktop', '');
+  const pulling = busy.pulling.has(p.path);
+  if (p.behind > 0) {
+    if (p.ahead > 0) row('act', `${num(p.behind)} yeni commit var · dallar ayrıştı`, ghBtn);
+    else row('act', `${num(p.behind)} yeni commit var`, `<div class="btn${pulling ? ' busy' : ''}" data-act="pull" title="Pull (⌘U)">${ICONS.down}${pulling ? 'Çekiliyor…' : 'Pull'}</div>`);
+  }
+  if (p.ahead > 0) row('act', `${num(p.ahead)} commit push edilmedi`, p.behind > 0 ? '' : ghBtn);
+  if (p.dirty > 0) row('warn', `${num(p.dirty)} dosya commit’lenmedi`);
+  const unknown = p.dirty == null, hasUp = p.ahead != null;
+  if (unknown) row('mute', 'Durum hesaplanıyor…');
+  else if (!rows.length) row('ok', hasUp ? 'Güncel, temiz' : 'Temiz');
+  if (!hasUp) row('mute', p.branch ? 'Uzak dal yok' : 'Detached HEAD');
+  return `<div class="stc">${rows.join('')}</div>`;
 }
 
 function renderPreview() {
   const p = view[sel];
-  if (!p) { pvEl.innerHTML = ''; return; }
+  if (!p) { pvEl.innerHTML = ''; renderFooter(); return; }
+  const keepScroll = selPath === p.path ? (pvEl.querySelector('.pv-body')?.scrollTop || 0) : 0;
   selPath = p.path;
-  const acts = btn('vscode', 'code', 'VS Code\'da Aç', '↩', 'primary') + btn('claude', 'spark', 'Claude', '⌥↩') + btn('terminal', 'term', 'Terminal', '⌘↩') + btn('github', 'gh', 'GitHub Desktop', '') + btn('reveal', 'folder', 'Finder', '') +
-    '<span class="sp"></span>' + btn('pin', p.pinned ? 'pin' : 'pinO', p.pinned ? 'Sabitli' : 'Sabitle', '');
-  const tags = [];
-  if (p.dirty > 0) tags.push(`<span class="tag warn">${num(p.dirty)} Değişiklik</span>`);
-  if (p.ahead > 0) tags.push(`<span class="tag main">${num(p.ahead)} Push Bekliyor</span>`);
-  if (p.behind > 0) tags.push(`<span class="tag">${num(p.behind)} Pull Bekliyor</span>`);
-  if (isStale(p)) tags.push('<span class="tag stale" title="Yalnız bilgi: 7+ gündür dokunulmamış, değişikliği olmayan bir kopya. Hiçbir şey silinmez.">Hareketsiz</span>');
+  const acts = btn('vscode', 'code', 'VS Code\'da Aç', '↩', 'primary') + btn('claude', 'spark', 'Claude', '⌥↩') + btn('terminal', 'term', 'Terminal', '⌘↩') +
+    '<span class="sp"></span>' + ibtn('github', 'gh', 'GitHub Desktop (⌘G)') + ibtn('reveal', 'folder', 'Finder (⌘O)') + ibtn('pin', p.pinned ? 'pin' : 'pinO', p.pinned ? 'Sabitli (⌘P)' : 'Sabitle (⌘P)', !!p.pinned);
+  const chips = [p.branch ? `<span class="chip br-chip" title="Dal">${ICONS.branch}<span class="br">${esc(p.branch)}</span></span>`
+      : `<span class="chip" title="Bir dalda değil">Detached HEAD${p.sha ? ` · <span class="br">${esc(p.sha)}</span>` : ''}</span>`];
+  if (p.worktree) chips.push('<span class="chip" title="Ana klonun ek çalışma dizini">Worktree</span>');
 
   const lg = logs[p.path];
   let commits = '', commitSum = '';
@@ -611,19 +656,19 @@ function renderPreview() {
     if (a || d) commitSum = `<span class="sx" title="Listelenen ${lg.commits.length} commit'in toplamı"><span class="pl">+${num(a)}</span><span class="mi">−${num(d)}</span></span>`;
   }
 
-  const [st, stCls] = statusText(p);
-  const meta = [
-    ['Durum', st, stCls], ['Uzak Dal', syncText(p), ''], ['Son Açılış', p.opened ? rel(p.opened) : 'Hiç Açılmadı', ''],
-    ['Son Commit', fullTime(p.ct), ''],
-    ['Son Değişiklik', fullTime(p.mtime), ''],
-    ['Tür', isCopy(p) ? (p.worktree ? 'Worktree' : 'Klon (Kopya)') : 'Ana Klon', ''],
-  ];
+  const sub = [];
+  if (p.ct) sub.push(`<span title="${esc(fullTime(p.ct))}"><em>Son Commit</em>${esc(rel(p.ct))}</span>`);
+  if (p.opened) sub.push(`<span><em>Son Açılış</em>${esc(rel(p.opened))}</span>`);
+  if (busy.fetched) sub.push(`<span title="${esc(fullTime(busy.fetched))}"><em>Uzak Kontrol</em>${esc(rel(busy.fetched))}</span>`);
+
   pvEl.innerHTML = `<div class="pv-actions">${acts}</div>` +
-    `<div class="pv-body"><div class="pv-name">${esc(titleOf(p))}</div><div class="pv-folder">${ICONS.folder}${esc(p.name)}${p.branch ? '' : ' · detached HEAD'}</div>${tags.length ? `<div class="tags">${tags.join('')}</div>` : ''}` +
-    `<div class="sec">Özet</div><dl class="pv-meta">${meta.map(([k, v, c]) => `<div><dt>${esc(k)}</dt><dd class="${c}">${esc(v)}</dd></div>`).join('')}</dl>` +
+    `<div class="pv-body"><div class="pv-head"><div class="pv-name">${esc(titleOf(p))}</div>${chips.join('')}</div>` +
+    `<div class="sec">Durum</div>${statusCard(p)}${sub.length ? `<div class="pv-sub">${sub.join('')}</div>` : ''}` +
     worktreeHTML(p) +
     `<div class="sec">Son Commit’ler${commitSum}</div><div class="commits">${commits}</div>` +
     `<div class="sec">Konum</div><div class="pv-path"><code>${esc(p.path)}</code><div class="cp" data-act="copy" title="Yolu Kopyala">${ICONS.copyi}</div></div></div>`;
+  if (keepScroll) pvEl.querySelector('.pv-body').scrollTop = keepScroll;
+  renderFooter();
   wantLog(p);
 }
 
@@ -644,7 +689,7 @@ function commitHTML(c) {
     ? `<span class="st" title="${filesText(c.files)} · +${num(c.added)} −${num(c.deleted)}"><span class="n"><span class="pl">+${num(c.added)}</span><span class="mi">−${num(c.deleted)}</span></span>${diffBar(c.added, c.deleted)}</span>`
     : `<span class="st"><span class="fz">Değişiklik yok</span></span>`;
   return `<div class="commit"><span class="s" title="${esc(c.subject)}">${subjectHTML(c.subject)}</span>${st}` +
-    `<span class="w"><code>${esc(c.sha)}</code>· ${esc(c.author)} · ${esc(rel(c.t))}${has ? ` · <span class="fz">${filesText(c.files)}</span>` : ''}</span></div>`;
+    `<span class="w"><code>${esc(c.sha)}</code>· ${c.mine ? '<span class="me" title="Senin commit’in">Sen</span>' : `<span class="who">${esc(c.author)}</span>`} · ${esc(rel(c.t))}${has ? ` · <span class="fz">${filesText(c.files)}</span>` : ''}</span></div>`;
 }
 // Uncommitted lines against HEAD; only for dirty projects.
 function worktreeHTML(p) {
@@ -676,6 +721,7 @@ function wantLog(p) {
 
 function renderFooter() {
   const h = ['<span><kbd>↩</kbd>VS Code</span>', '<span><kbd>⌥↩</kbd>Claude</span>', '<span><kbd>⌘↩</kbd>Terminal</span>', '<span><kbd>⌘C</kbd>Yolu Kopyala</span>'];
+  if (view[sel] && canPull(view[sel])) h.push('<span><kbd>⌘U</kbd>Pull</span>');
   footEl.innerHTML = h.join('') + `<span class="sp"></span><span class="cnt"><b>${num(view.length)}</b>Proje</span>`;
 }
 
@@ -689,10 +735,37 @@ function select(i, scroll = true) {
 }
 
 let toastTimer, introTimer;
-function toast(msg) {
-  toastEl.innerHTML = ICONS.check + esc(msg);
+// kind "err" gets a red mark and stays longer; long messages stay in proportion to their length.
+function toast(msg, kind) {
+  const err = kind === 'err';
+  toastEl.classList.toggle('err', err);
+  toastEl.innerHTML = (err ? ICONS.x : ICONS.check) + `<span>${esc(msg)}</span>`;
   toastEl.classList.add('on');
-  clearTimeout(toastTimer); toastTimer = setTimeout(() => toastEl.classList.remove('on'), 1300);
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => toastEl.classList.remove('on'), err ? 4500 : Math.max(1300, Math.min(3500, String(msg).length * 55)));
+}
+
+// Sync state from Lua (pull / fetch in flight, last fetch time): spinners, labels and disabled buttons.
+function applyBusy(b) {
+  b = b || {};
+  busy = { fetching: !!b.fetching, pullAll: !!b.pullAll, pulling: new Set(b.pulling || []), fetched: b.fetched || 0 };
+  fetchBtn.classList.toggle('spin', busy.fetching);
+  fetchBtn.dataset.tip = fetchTip();
+  updateSync();
+  renderPullAll();
+}
+function updateSync() {
+  const on = scanning || busy.fetching || busy.pullAll;
+  syncTx.textContent = busy.pullAll ? 'Çekiliyor…' : busy.fetching ? 'Uzaktan Kontrol Ediliyor…' : 'Yenileniyor…';
+  syncEl.classList.toggle('on', on);
+}
+function renderPullAll() {
+  const behindN = items.filter(p => p.behind > 0).length, ready = items.filter(canPullAll).length;
+  pullAllEl.hidden = !behindN;
+  pullAllEl.classList.toggle('busy', busy.pullAll);
+  pullAllEl.classList.toggle('dim', !busy.pullAll && !ready);
+  pullAllEl.title = ready < behindN ? `${num(ready)} repo çekilebilir; commit’lenmemiş ya da push edilmemiş değişikliği olanlar atlanır` : 'Bütün güncellemeleri çeker';
+  pullAllEl.innerHTML = `${ICONS.down}${busy.pullAll ? 'Çekiliyor…' : 'Tümünü Çek'}${!busy.pullAll && ready ? `<b>${num(ready)}</b>` : ''}`;
+  fitBar();
 }
 
 function act(a, p = view[sel]) {
@@ -700,6 +773,10 @@ function act(a, p = view[sel]) {
   if (a === 'copy') {
     const row = listEl.querySelector(`.row[data-i="${view.indexOf(p)}"]`);
     if (row) { row.classList.add('flash'); setTimeout(() => row.classList.remove('flash'), 700); }
+  }
+  if (a === 'pull') {
+    if (busy.pulling.has(p.path) || !canPull(p)) return; // no double trigger while it runs
+    busy.pulling.add(p.path); renderPreview();
   }
   post({ action: a, path: p.path });
 }
@@ -712,6 +789,7 @@ input.addEventListener('input', () => { q = input.value; refresh(); listEl.scrol
 kindsEl.addEventListener('mousedown', e => { const c = e.target.closest('.f'); if (c) { e.preventDefault(); setKind(c.dataset.k); } });
 sortsEl.addEventListener('mousedown', e => { const c = e.target.closest('.t'); if (c) { e.preventDefault(); setSort(c.dataset.s); } });
 resetEl.addEventListener('mousedown', e => { e.preventDefault(); clearAll(); });
+pullAllEl.addEventListener('mousedown', e => { e.preventDefault(); if (!busy.pullAll) post({ action: 'pullAll' }); });
 listEl.addEventListener('mousedown', e => {
   const b = e.target.closest('[data-act]');
   if (b && b.dataset.act === 'clear') { e.preventDefault(); return clearAll(); }
@@ -752,7 +830,8 @@ document.addEventListener('keydown', e => {
   else if (m && lower(k) === 'g') act('github');
   else if (m && lower(k) === 'o') act('reveal');
   else if (m && lower(k) === 'p') act('pin');
-  else if (m && lower(k) === 'r') { post({ action: 'refresh' }); }
+  else if (m && lower(k) === 'u') { if (view[sel] && canPull(view[sel])) act('pull'); }
+  else if (m && lower(k) === 'r') fetchRemote();
   else if (m && /^[1-9]$/.test(k)) act('vscode', view[+k - 1]);
   else return;
   e.preventDefault();
@@ -1004,10 +1083,12 @@ window.Projects = {
   setItems(data) {
     items = Array.isArray(data.items) ? data.items : [];
     scanning = !!data.scanning;
-    syncEl.classList.toggle('on', scanning);
+    if (data.busy) applyBusy(data.busy); else updateSync();
+    fetchBtn.dataset.tip = fetchTip();
     refresh(selPath);
   },
-  setScanning(on) { scanning = !!on; syncEl.classList.toggle('on', scanning); if (!items.length) renderList(tokens(q)); },
+  setBusy(b) { applyBusy(b); renderPreview(); },
+  setScanning(on) { scanning = !!on; updateSync(); if (!items.length) renderList(tokens(q)); },
   log(path, sha, commits) {
     logs[path] = { sha, commits: Array.isArray(commits) ? commits : [] };
     if (view[sel]?.path === path) renderPreview();
@@ -1020,6 +1101,7 @@ window.Projects = {
   toast,
   open() {
     input.value = q = ''; kind = 'all'; sort = 'recent'; selPath = null;
+    fetchBtn.dataset.tip = fetchTip();
     if (ghOpen) { ghOpen = null; renderGitHub(); } // lists start closed on every open
     if (histOpen) closeHistory();
     refresh();

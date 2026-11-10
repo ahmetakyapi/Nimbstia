@@ -14,7 +14,7 @@ exports.CLIP = { now, items: [
 ]};
 const P = '/Users/demo/Projects/';
 const proj = (name, o) => Object.assign(o, { name, path: P + name, mtime: o.ct });
-exports.PROJECTS = { scanning: false, items: [
+exports.PROJECTS = { scanning: false, busy: { fetching: false, pullAll: false, pulling: [], fetched: now - 540 }, items: [
   proj('Nimbstia', { branch: 'main', sha: '4f2c9e1', ct: now - 600, subject: 'feat: menu bar status with VPN check', dirty: 2, ahead: 1, behind: 0 }),
   proj('website', { branch: 'main', sha: 'a91b3d0', ct: now - 5400, subject: 'docs: refresh landing copy', dirty: 0, ahead: 0, behind: 0 }),
   proj('api-server', { branch: 'feature/auth-refresh', sha: '77de210', ct: now - 9000, subject: 'fix: rotate refresh tokens', dirty: 5, ahead: 2, behind: 3 }),
@@ -25,12 +25,14 @@ exports.PROJECTS = { scanning: false, items: [
   proj('docs', { branch: 'main', sha: 'f88a103', ct: now - 20 * DAY, subject: 'docs: install guide', dirty: 0, ahead: 0, behind: 0 }),
 ]};
 exports.LOG = [
-  { sha: '4f2c9e1', subject: 'feat: menu bar status with VPN check', author: 'Ahmet', t: now - 600 },
-  { sha: 'b17a0c4', subject: 'fix: newest-first sort in clipboard history', author: 'Ahmet', t: now - 7200 },
-  { sha: '0e92d5b', subject: 'feat: screenshot overlay with annotations', author: 'Ahmet', t: now - DAY },
-  { sha: '6ac3f10', subject: 'refactor: shared panel wrapper', author: 'Ahmet', t: now - 2 * DAY },
-  { sha: 'd2b8e77', subject: 'chore: initial commit', author: 'Ahmet', t: now - 3 * DAY },
+  { sha: '4f2c9e1', subject: 'feat: menu bar status with VPN check', author: 'Ahmet', mine: true, t: now - 600, files: 4, added: 86, deleted: 12 },
+  { sha: 'b17a0c4', subject: 'fix: newest-first sort in clipboard history', author: 'Aylin', t: now - 7200, files: 2, added: 14, deleted: 9 },
+  { sha: '0e92d5b', subject: 'feat: screenshot overlay with annotations', author: 'Ahmet', mine: true, t: now - DAY, files: 9, added: 412, deleted: 31 },
+  { sha: '6ac3f10', subject: 'refactor: shared panel wrapper', author: 'Enes', t: now - 2 * DAY, files: 5, added: 120, deleted: 98 },
+  { sha: 'd2b8e77', subject: 'chore: initial commit', author: 'Ahmet', mine: true, t: now - 3 * DAY, files: 12, added: 640, deleted: 0 },
 ];
+// Uncommitted work of the first demo project (what `git diff HEAD --numstat` adds up to).
+exports.WT = { files: 2, added: 38, deleted: 6, binary: 0, untracked: 1 };
 const G = 'https://github.com';
 exports.GH = { commits: 12, added: 1840, deleted: 412, prsToday: 2, updatedAgo: '1 dk önce', org: 'acme',
   opened: [{ owner: 'acme', repo: 'api-server', number: 233, title: 'feat: audit log for token refresh', author: 'ahmetakyapi', url: G }, { owner: 'acme', repo: 'website', number: 91, title: 'fix: hero image on small screens', author: 'ahmetakyapi', url: G }],

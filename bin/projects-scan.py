@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """Scan git working copies directly under ~/Projects and stream NDJSON to stdout.
 
-Usage: projects-scan.py [root]
+Usage: projects-scan.py [root [name ...]]   (names limit the scan to those folders, e.g. after a pull)
 
 Phase 1 (cheap, ~1 s): one "base" line per repo (branch/sha, last commit, ahead/behind, mtime).
 Phase 2 (slow, stats every tracked file): one "dirty" line per repo, most recently touched first.
@@ -16,6 +16,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 
 ROOT = os.path.abspath(os.path.expanduser(sys.argv[1] if len(sys.argv) > 1 else "~/Projects"))
+ONLY = set(sys.argv[2:])
 GIT = "/usr/bin/git"
 TIMEOUT = 30
 OUT_LOCK = threading.Lock()
@@ -85,6 +86,8 @@ def dirty(p):
 def main():
     try:
         names = sorted(n for n in os.listdir(ROOT) if not n.startswith("."))
+        if ONLY:
+            names = [n for n in names if n in ONLY]
     except OSError:
         names = []
     with ThreadPoolExecutor(max_workers=10) as ex:

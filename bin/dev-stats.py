@@ -3,7 +3,7 @@
 
 - commits / lines added / lines deleted: your commits across every git repository directly under
   ~/Projects that are on a remote branch (refs/remotes, as of the last fetch). Local-only commits and
-  commits a force-push removed do not count; a reverted commit and its revert both drop out. The same commit in several clones or worktrees is counted once. The top-level
+  commits a force-push removed do not count; a reverted commit and its revert both drop out. The same commit in several clones or worktrees is counted once, and so is the same change merged into several branches. Only commits you authored count: merge commits are skipped, so merging someone else's PR adds nothing. The top-level
   numbers are today's; `periods` has today / this week (from Monday) / this month, and `days` one entry
   per calendar day of the last HISTORY_DAYS days. Every commit of that range is also written to
   HISTORY_FILE for Repostia's day-by-day history (read on demand, too big for the hub payload).
@@ -27,10 +27,11 @@ TIMEOUT = 20
 # Commits before today hardly change, so they are cached and only today is re-read on every run.
 CACHE_DIR = os.path.expanduser("~/Library/Caches/nimbstia")
 PAST_MAX_AGE = 3600  # also bounds how long a commit removed by a force-push can linger in the past days
-CACHE_VERSION = "remotes-3"
+CACHE_VERSION = "remotes-4"
 HISTORY_DAYS = 90
 HISTORY_FILE = os.path.join(CACHE_DIR, "dev-stats-history.json")
 REVERT_RE = re.compile(r"This reverts commit ([0-9a-f]{40})")
+PR_SUFFIX_RE = re.compile(r"\s*\(#\d+\)\s*$")
 
 
 def run(args, cwd=None, timeout=TIMEOUT):
@@ -122,6 +123,18 @@ def period_starts():
     return {"day": today, "week": today - dt.timedelta(days=today.weekday()), "month": today.replace(day=1)}
 
 
+def drop_copies(commits, web):
+    """The same change landing on several branches (one PR squash-merged into dev and again into release,
+    a cherry-pick) is one piece of work: keep only its earliest copy. Copies share the repository, the
+    subject without GitHub's "(#123)" suffix and the line counts."""
+    keep = {}
+    for sha, v in sorted(commits.items(), key=lambda kv: kv[1][3]):
+        key = (web.get(v[4], (None, None))[1] or v[4], PR_SUFFIX_RE.sub("", v[2]), v[0], v[1])
+        keep.setdefault(key, sha)
+    wanted = set(keep.values())
+    return {sha: v for sha, v in commits.items() if sha in wanted}
+
+
 def commit_item(sha, ins, dels, subject, ct, path, web):
     owner, repo = web.get(path, (None, None))
     return {"sha": sha[:10], "subject": subject, "t": ct, "added": ins, "deleted": dels,
@@ -163,6 +176,7 @@ def git_stats(org=None):
     # A revert and the commit it undoes cancel out: neither counts. A revert of older work drops too.
     undone = {v[5] for v in seen.values() if v[5]}
     seen = {sha: v for sha, v in seen.items() if not v[5] and sha not in undone}
+    seen = drop_copies(seen, web)
     ordered = sorted(seen.items(), key=lambda kv: kv[1][3], reverse=True)
     periods = {}
     for key, start in starts.items():
