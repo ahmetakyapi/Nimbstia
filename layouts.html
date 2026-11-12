@@ -101,6 +101,8 @@ h2 em{font-style:normal;color:var(--faint);text-transform:none;letter-spacing:0;
 .screen .mb u{width:16px;height:3px;border-radius:2px;background:var(--menubar-ink);opacity:.7}
 .area{position:absolute;left:0;right:0;bottom:0;top:13px}
 .cell{position:absolute;padding:5px}
+.cell.front{padding:13px 13px 5px 5px;z-index:1}
+.cell.behind{padding:5px 5px 13px 13px}
 .win{position:relative;width:100%;height:100%;border-radius:7px;background:var(--win);box-shadow:var(--win-shadow);overflow:hidden;display:flex;flex-direction:column;
   transition:transform var(--dur-2) var(--ease-out),box-shadow var(--dur-2)}
 .win .bar{height:12px;flex:none;display:flex;align-items:center;gap:3px;padding:0 5px;
@@ -217,6 +219,7 @@ function descOf(L) {
   const [a, b, c] = L.cells;
   if (L.id === 'pair') return 'Öndeki solda · önceki sağda';
   if (L.cells.length === 1) return name(a) + (a.rect[2] === 1 ? ' tam ekran' : ' ortada');
+  if (L.cells.length === 3 && b.rect[0] === c.rect[0] && b.rect[1] === c.rect[1]) return `${name(a)} ${pct(a.rect[2])} · sağda ${name(b)} ve ${name(c)} ${pct(b.rect[2])}`;
   if (L.cells.length === 3 && b.rect[0] === c.rect[0]) return `${name(a)} ${pct(a.rect[2])} · sağda ${name(b)} / ${name(c)}`;
   return L.cells.map(x => `${name(x)} ${pct(x.rect[2])}`).join(' · ');
 }
@@ -237,7 +240,8 @@ const appIcon = a => a.icon ? `<img class="app-ic" src="${a.icon}">` : `<span cl
 function layoutCard(L, i) {
   const big = L.cells.length <= 2;
   let focused = false;
-  const cells = L.cells.map(c => {
+  const same = (p, q) => p.rect.every((v, k) => v === q.rect[k]);
+  const cells = L.cells.map((c, ci) => {
     const a = data.apps[c.app] || {};
     // The window of the app in front gets the focus ring (once per card).
     const focus = !focused && !!data.win && (data.win.key ? c.app === data.win.key : a.name === data.win.app);
@@ -245,7 +249,9 @@ function layoutCard(L, i) {
     const showPct = L.adjustable && c.rect[3] === 1;
     const roomy = big || c.rect[2] > 0.3;
     const inner = `${appIcon(a)}${roomy ? `<b>${esc(a.name)}</b>` : ''}${showPct ? `<em>${pct(c.rect[2])}</em>` : ''}`;
-    return cellHTML(c.rect, inner, a.color || '#888', focus ? 'focus' : '');
+    // Windows sharing a rect are drawn as a cascade: the earlier one in front, the later peeking out behind.
+    const stack = L.cells.some((o, oi) => oi !== ci && same(o, c)) ? (L.cells.findIndex(o => same(o, c)) === ci ? ' front' : ' behind') : '';
+    return cellHTML(c.rect, inner, a.color || '#888', (focus ? 'focus' : '') + stack);
   });
   const tags = [];
   if (L.hideOthers) tags.push('Diğerlerini Gizler');

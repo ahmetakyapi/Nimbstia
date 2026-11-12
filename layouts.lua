@@ -31,10 +31,21 @@ local function three(a, b, c, share)
     return { { a, { 0, 0, r, 1 } }, { b, { r, 0, w2, 1 } }, { c, { r + w2, 0, 1 - r - w2, 1 } } }
   end
 end
+-- One app on the left, the rest stacked on the same right-hand rect (first of them in front).
+local function leftStack(a, ...)
+  local rest = { ... }
+  return function(r)
+    local t = { { a, { 0, 0, r, 1 } } }
+    for _, b in ipairs(rest) do table.insert(t, { b, { r, 0, 1 - r, 1 } }) end
+    return t
+  end
+end
 local function single(a, rect) return function() return { { a, rect } } end end
 
 local LAYOUTS = {
-  -- The owner's daily default comes first (key 1): code 35 % · browser 65 %.
+  -- The owner's daily default comes first (key 1): code 35 %, with Chrome and Teams parked on the
+  -- same right-hand 65 % rect (Chrome in front), so either one opens at that size.
+  { id = "browserTeams", group = "İki Uygulama", name = "Tarayıcı ve Teams Sağda", ratio = 0.35, build = leftStack("code", "chrome", "teams") },
   { id = "browser",  group = "İki Uygulama", name = "Tarayıcı Ağırlıklı", ratio = 0.35, build = cols("code", "chrome") },
   -- "pair" uses the two most recently focused windows, whatever apps they are.
   { id = "pair",     group = "İki Uygulama", name = "Son İki Pencere Yan Yana", ratio = 0.50, pair = true,
