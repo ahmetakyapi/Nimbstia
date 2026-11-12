@@ -238,6 +238,11 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .pr:hover .ib{opacity:1}
 .pr .ib.stop:hover{color:#fff;background:var(--bad-bar)}
 .pr .ib[data-tip]:hover::after{top:auto;bottom:calc(100% + 6px)}
+.pmore{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:2px;padding:7px 10px;border-radius:12px;font-size:12px;font-weight:600;letter-spacing:-.005em;color:var(--muted);transition:background var(--dur-1),color var(--dur-1)}
+.pmore:hover{background:var(--hover);color:var(--text)}
+.pmore .chev{display:inline-flex;transform:rotate(90deg)}
+.pmore .chev.open{transform:rotate(-90deg)}
+.pmore .chev svg{width:12px;height:12px}
 .meets{margin:12px 0 0;padding:8px 0 0;border-top:1px solid var(--line)}
 .mrow{display:flex;align-items:center;gap:10px;width:calc(100% + 16px);margin:0 -8px;padding:0 8px;height:32px;border-radius:9px;font-size:13px}
 .mrow.link:hover{background:var(--hover)}
@@ -732,8 +737,12 @@ function renderMain() {
   if (ports.length) {
     const folded = d.portsFolded === true;
     const head = `<button class="wh wfold" data-act="fold" type="button" aria-expanded="${folded ? 'false' : 'true'}"><span class="wi">${ICONS.term}</span><b>Geliştirme Sunucuları</b><span class="sp"></span><span class="meta">${ports.length}</span><span class="chev${folded ? '' : ' open'}" aria-label="${folded ? 'Genişlet' : 'Daralt'}">${CHEV}</span></button>`;
-    out.push(`<section class="w ports${folded ? ' folded' : ''}">${head}${folded ? '' : `<div class="pl">` + ports.map(x =>
-      `<div class="pr"><span class="pd"></span><button class="pp" data-act="port" data-v="open" data-port="${x.port}" type="button" aria-label="localhost:${x.port}"><span class="pnm">${esc(x.folder || x.cmd)}</span>${x.folder ? `<small>${esc(x.cmd)}</small>` : ''}<span class="sp"></span><span class="ppt">:${x.port}</span></button><button class="ib sm" data-act="port" data-v="open" data-port="${x.port}" type="button" data-tip="Aç" aria-label="Aç">${W_ICON.ext}</button><button class="ib sm stop" data-act="port" data-v="stop" data-port="${x.port}" type="button" data-tip="Durdur" aria-label="Durdur">${W_ICON.stop}</button></div>`).join('') + `</div>`}</section>`);
+    // Only the first PORTS_SHOWN rows stay open; the rest sit behind a "N Daha Göster" row.
+    const extra = ports.length - PORTS_SHOWN;
+    const shown = extra > 0 && !portsMore ? ports.slice(0, PORTS_SHOWN) : ports;
+    const more = extra > 0 ? `<button class="pmore" data-act="pmore" type="button" aria-expanded="${portsMore ? 'true' : 'false'}"><span>${portsMore ? 'Daha Az Göster' : `${extra} Daha Göster`}</span><span class="chev${portsMore ? ' open' : ''}">${CHEV}</span></button>` : '';
+    out.push(`<section class="w ports${folded ? ' folded' : ''}">${head}${folded ? '' : `<div class="pl">` + shown.map(x =>
+      `<div class="pr"><span class="pd"></span><button class="pp" data-act="port" data-v="open" data-port="${x.port}" type="button" aria-label="localhost:${x.port}"><span class="pnm">${esc(x.folder || x.cmd)}</span>${x.folder ? `<small>${esc(x.cmd)}</small>` : ''}<span class="sp"></span><span class="ppt">:${x.port}</span></button><button class="ib sm" data-act="port" data-v="open" data-port="${x.port}" type="button" data-tip="Aç" aria-label="Aç">${W_ICON.ext}</button><button class="ib sm stop" data-act="port" data-v="stop" data-port="${x.port}" type="button" data-tip="Durdur" aria-label="Durdur">${W_ICON.stop}</button></div>`).join('') + more + `</div>`}</section>`);
   }
 
   // ---- tools: app icons
@@ -923,6 +932,10 @@ function rollChanged() {
 function fitScreen() { const a = window.screen && screen.availHeight; if (a > 0) document.documentElement.style.setProperty('--maxh', Math.max(420, a - 36) + 'px'); }
 function postSize() { fitScreen(); const h = Math.ceil(app.offsetHeight) + 20; if (h !== lastH) { lastH = h; post({ action: 'size', h }); } }
 
+// Dev servers list: how many rows stay open before the "N Daha Göster" row, and whether it is expanded.
+const PORTS_SHOWN = 3;
+let portsMore = false;
+
 document.addEventListener('click', e => {
   const el = e.target.closest('[data-act]');
   if (!el) return;
@@ -931,6 +944,7 @@ document.addEventListener('click', e => {
     case 'url': if (el.dataset.url) post({ action: 'url', url: el.dataset.url }); break;
     case 'vpn': post({ action: 'vpn', v: el.dataset.v }); break;
     case 'port': post({ action: 'port', v: el.dataset.v, port: +el.dataset.port }); break;
+    case 'pmore': portsMore = !portsMore; render(); break;
     case 'fold': data.portsFolded = !data.portsFolded; render(); post({ action: 'fold', v: data.portsFolded }); break;
     case 'tool': post({ action: 'tool', id: el.dataset.id }); break;
     case 'toggle': justToggled = el.dataset.id; justAt = Date.now(); post({ action: 'toggle', id: el.dataset.id }); break;

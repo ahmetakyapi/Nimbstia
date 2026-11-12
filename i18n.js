@@ -120,7 +120,7 @@
     'Küçük': 'Small', 'Orta': 'Medium', 'Büyük': 'Large',
 
     // Pulstia hub (pulstia.html, status.lua, claude.lua)
-    'Günlük Durum Paneli': 'Daily Status Panel', 'Her Zaman Uyanık': 'Always Awake', 'Daralt': 'Collapse', 'Genişlet': 'Expand', 'Geliştirme Sunucuları': 'Dev Servers', 'Durdur': 'Stop',
+    'Günlük Durum Paneli': 'Daily Status Panel', 'Her Zaman Uyanık': 'Always Awake', 'Daralt': 'Collapse', 'Genişlet': 'Expand', 'Geliştirme Sunucuları': 'Dev Servers', 'Daha Az Göster': 'Show Less', 'Durdur': 'Stop',
     'Koyu Görünüm': 'Dark Mode', 'Ekran Koruyucu': 'Screen Saver', 'Açık Görünüm': 'Light Mode', 'Sıfırlanma': 'Resets', 'Son kontrol': 'Checked', 'Son Kontrol': 'Checked', 'Çevrimiçi': 'Online', 'Her Şey Yolunda': 'All Good',
     'Bağlantı Yok': 'No Connection', 'Dikkat': 'Attention', 'Bağlı': 'Online', 'Bağlı Değil': 'Offline',
     'Yanıt Vermiyor': 'Not Responding', 'Kontrol Ediliyor…': 'Checking…', 'Bağlantıyı Kes': 'Disconnect', 'Bağlantı Süresi': 'Connected For', 'sa': 'h', 'dk': 'min',
@@ -247,6 +247,7 @@
     R('^' + NUM + ' Değişiklik$', function (m) { return pl(m[1], 'Change', 'Changes'); }),
     R('^' + NUM + ' ileride$', function (m) { return m[1] + ' ahead'; }),
     R('^' + NUM + ' geride$', function (m) { return m[1] + ' behind'; }),
+    R('^' + NUM + ' Daha Göster$', function (m) { return 'Show ' + m[1] + ' More'; }),
     R('^' + NUM + ' tane daha$', function (m) { return m[1] + ' more'; }),
     R('^' + NUM + ' Push Bekliyor$', function (m) { return m[1] + ' to Push'; }),
     R('^' + NUM + ' yeni commit var$', function (m) { return pl(m[1], 'new commit', 'new commits') + ' to pull'; }),
