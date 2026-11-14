@@ -19,6 +19,8 @@ local C = {
   screenshotDir = HOME .. "/Documents/Screenshots",
   -- Keep a closed MacBook driving the external display on battery too (needs scripts/clamshell-setup.sh).
   batteryClamshell = false,
+  -- Start the screen saver by itself after this many idle minutes. nil = only from the hub.
+  saverIdleMinutes = nil,
 }
 
 local path = HOME .. "/.hammerspoon/config.local.lua"

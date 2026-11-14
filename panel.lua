@@ -25,6 +25,18 @@ function Panel.themeJS()
   return "delete document.documentElement.dataset.theme"
 end
 
+-- Real app icons for the panels: the installed app's own icon as a data URI (64 px), cached per
+-- bundle id for the session. nil when the app is not installed. Nothing is bundled with Nimbstia.
+local iconCache = {}
+function Panel.appIcon(bid)
+  if type(bid) ~= "string" or bid == "" then return nil end
+  if iconCache[bid] ~= nil then return iconCache[bid] or nil end
+  local ok, img = pcall(hs.image.imageFromAppBundle, bid)
+  local uri = ok and img and img:setSize({ w = 64, h = 64 }):encodeAsURLString() or false
+  iconCache[bid] = uri
+  return uri or nil
+end
+
 local function readFile(p)
   local f = io.open(p, "rb")
   if not f then return nil end

@@ -110,6 +110,13 @@ function M.usage()
   for key, name in pairs({ seven_day_opus = "Opus", seven_day_sonnet = "Sonnet" }) do
     if pct(util[key]) then table.insert(out.limits, { label = "Haftalık · " .. name, percent = pct(util[key]), resetsAt = resets(util[key]) }) end
   end
+  -- A reading whose window has already reset is history, not usage: Claude Code only rewrites the
+  -- number after the next response, so until then the truth is "0, a new window".
+  local now = os.time()
+  for _, l in ipairs(out.limits) do
+    if l.resetsAt and l.resetsAt <= now then l.percent, l.resetsAt, l.reset, l.severity = 0, nil, true, nil end
+    l.session = l.label == "Oturum Limiti"
+  end
   -- Weekly first in the hub (outer ring), the session window second (inner ring).
   table.sort(out.limits, function(x, y)
     local rx, ry = x.weekly and 0 or (x.label == "Oturum Limiti" and 1 or 2), y.weekly and 0 or (y.label == "Oturum Limiti" and 1 or 2)
@@ -177,6 +184,48 @@ function M.today(current)
   local d = current - base
   if d < 0 then d = current end -- the weekly window reset today
   return d
+end
+
+-- ---------------------------------------------------------------- pace: when would the limit fill?
+-- Every new reading of a limit is kept for a few hours (per limit, per window). The slope over the
+-- last 45 minutes says how fast it is filling; if that reaches 100 before the window resets, the hub
+-- shows the time. No forecast without at least two readings five minutes apart that actually rose.
+local PACE_KEY = "nimbstia.claudePace"
+local PACE_SPAN, PACE_MIN = 45 * 60, 5 * 60
+
+function M.track(key, percent, resetsAt, fetchedAt)
+  if not key or not percent or not fetchedAt then return end
+  local all = hs.settings.get(PACE_KEY) or {}
+  local log = all[key] or {}
+  local last = log[#log]
+  if last and last.t >= fetchedAt then return end
+  -- a new window (the reset time moved, or the number fell): start over
+  if last and ((resetsAt and last.r and math.abs(resetsAt - last.r) > 120) or percent < last.p) then log = {} end
+  table.insert(log, { t = fetchedAt, p = percent, r = resetsAt })
+  local keep, cutoff = {}, os.time() - 6 * 3600
+  for _, e in ipairs(log) do if e.t >= cutoff then table.insert(keep, e) end end
+  all[key] = keep
+  hs.settings.set(PACE_KEY, all)
+end
+
+-- { perHour = points per hour, fullAt = epoch or nil (nil: resets before it fills) } or nil
+function M.pace(key, percent, resetsAt)
+  local log = (hs.settings.get(PACE_KEY) or {})[key]
+  if not log or #log < 2 or not percent then return nil end
+  local now, last = os.time(), log[#log]
+  if now - last.t > PACE_SPAN then return nil end -- nothing recent: not being used right now
+  local first
+  for _, e in ipairs(log) do
+    if last.t - e.t <= PACE_SPAN then first = e; break end
+  end
+  if not first or last.t - first.t < PACE_MIN or last.p - first.p < 1 then return nil end
+  local perSec = (last.p - first.p) / (last.t - first.t)
+  local out = { perHour = perSec * 3600 }
+  if percent < 100 then
+    local at = math.floor(last.t + (100 - last.p) / perSec)
+    if at > now and (not resetsAt or at < resetsAt) then out.fullAt = at end
+  end
+  return out
 end
 
 -- Highest current percent across limits (for the menu bar warning), or nil.

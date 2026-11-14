@@ -47,6 +47,7 @@
     // shared chrome
     'Kapat': 'Close', 'Kapat · Esc': 'Close · Esc', 'kapat': 'close',
     'Açık Tema': 'Light Theme', 'Koyu Tema': 'Dark Theme',
+    'Sıfırlandı': 'Reset', 'Bu hızla': 'Full at', '’de dolar': 'at this pace', '/sa': '/h', 'Claude Code her yanıttan sonra günceller': 'Claude Code updates this after every response', 'Son 45 dakikanın hızıyla': 'At the pace of the last 45 minutes',
     'Türe Göre Gruplu': 'Grouped by Kind', 'Tarihe Göre Gruplu': 'Grouped by Date',
     'Filtreleri Temizle': 'Clear Filters', 'Filtreleri Kaldır': 'Remove Filters', 'Filtreyi Kaldır': 'Remove Filter',
     'Farklı bir kelime dene ya da Esc ile aramayı temizle.': 'Try another word, or press Esc to clear the search.',

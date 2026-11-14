@@ -9,10 +9,10 @@
    Aurora round (2026-11): the hub's light now reaches every panel.
      surfaces  light is a cool porcelain page with white cards that float on layered soft shadows;
                dark is deep ink (blue-black, never grey and never pure black) lit from above.
-     identity  every tool has its own colour pair (--tool, --tool-deep) and two companions
-               (--tool2, --tool3). <div class="app" data-tool="pastia"> gets an aurora behind its
-               header (--wash), a tight tinted glow (it must fit the 16px window margin) and the header badge (.tmark). Identity is
-               atmosphere only: it never carries state.
+     identity  every tool has its own colour pair (--tool, --tool-deep). <div class="app" data-tool="pastia">
+               gets one soft glow of that colour behind its header corner (--wash), a faint tinted
+               shadow and the header badge (.tmark). Identity is atmosphere only: it never
+               carries state, and it is always a single hue.
      accent    one sky family for focus, selection and the primary action in every tool, split
                three ways for contrast: --accent for rings, lines and icons only (never text),
                --accent-ink for text, --accent-fill for fills under white text. The primary
@@ -85,10 +85,10 @@
   --pop-shadow:0 0 0 .5px rgba(20,24,40,.14),0 12px 32px -6px rgba(20,24,40,.22);
   --rim:inset 0 1px 0 rgba(255,255,255,.9);
 
-  /* window canvas + aurora strengths (how much of each tool colour the wash takes) */
+  /* window canvas + how much of the tool colour the header glow takes */
   --app-bg:linear-gradient(180deg,#f4f5f9 0,#eceef4 100%);
   --wash:none;
-  --wash-1:46%; --wash-2:36%; --wash-3:26%; --wash-4:18%; --tool-halo:32%;
+  --wash-1:20%; --tool-halo:16%;
 
   /* film grain: a whisper of texture on the aurora canvas, under the cards (.grain::after) */
   --grain:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
@@ -126,7 +126,7 @@
   --rim:inset 0 1px 0 rgba(255,255,255,.06);
   --app-bg:linear-gradient(180deg,#14151b 0,#0d0e12 100%);
   --wash:none;
-  --wash-1:58%; --wash-2:44%; --wash-3:30%; --wash-4:20%; --tool-halo:42%;
+  --wash-1:24%; --tool-halo:18%;
   --grain-op:.09;
   color-scheme:dark;
 }}
@@ -159,7 +159,7 @@
   --rim:inset 0 1px 0 rgba(255,255,255,.06);
   --app-bg:linear-gradient(180deg,#14151b 0,#0d0e12 100%);
   --wash:none;
-  --wash-1:58%; --wash-2:44%; --wash-3:30%; --wash-4:20%; --tool-halo:42%;
+  --wash-1:24%; --tool-halo:18%;
   --grain-op:.09;
   color-scheme:dark;
 }
@@ -168,18 +168,17 @@
    <div class="app" data-tool="…">: the colour each tool wears in the hub's tile row, carried into
    its own panel as light. --wash paints the aurora (the panel puts it on .app::before), the outer
    halo tints the window shadow, .tmark is the header badge. Nothing here animates. */
-.app{--tool:#0ea5e9;--tool-deep:#0369a1;--tool2:#818cf8;--tool3:#2dd4bf}
-.app[data-tool="pastia"]{--tool:#3b82f6;--tool-deep:#1d4ed8;--tool2:#22d3ee;--tool3:#818cf8}
-.app[data-tool="clipstia"]{--tool:#22c55e;--tool-deep:#15803d;--tool2:#2dd4bf;--tool3:#a3e635}
-.app[data-tool="panestia"]{--tool:#8b5cf6;--tool-deep:#6d28d9;--tool2:#ec4899;--tool3:#38bdf8}
-.app[data-tool="repostia"]{--tool:#f59e0b;--tool-deep:#c2410c;--tool2:#f43f5e;--tool3:#a855f7}
-.app[data-tool="lexstia"]{--tool:#14b8a6;--tool-deep:#0f766e;--tool2:#38bdf8;--tool3:#a3e635}
+.app{--tool:#0ea5e9;--tool-deep:#0369a1}
+.app[data-tool="pastia"]{--tool:#3b82f6;--tool-deep:#1d4ed8}
+.app[data-tool="clipstia"]{--tool:#22c55e;--tool-deep:#15803d}
+.app[data-tool="panestia"]{--tool:#8b5cf6;--tool-deep:#6d28d9}
+.app[data-tool="repostia"]{--tool:#f59e0b;--tool-deep:#c2410c}
+.app[data-tool="lexstia"]{--tool:#14b8a6;--tool-deep:#0f766e}
 .app[data-tool]{
-  --wash:radial-gradient(58% 52% at 0% 0%,color-mix(in srgb,var(--tool) var(--wash-1),transparent) 0,transparent 72%),
-         radial-gradient(44% 40% at 52% -8%,color-mix(in srgb,var(--tool3) var(--wash-3),transparent) 0,transparent 74%),
-         radial-gradient(52% 50% at 100% 0%,color-mix(in srgb,var(--tool2) var(--wash-2),transparent) 0,transparent 72%),
-         radial-gradient(56% 50% at 100% 100%,color-mix(in srgb,var(--tool) var(--wash-4),transparent) 0,transparent 72%),
-         radial-gradient(48% 46% at 0% 100%,color-mix(in srgb,var(--tool2) var(--wash-4),transparent) 0,transparent 72%);
+  /* one hue, one light: a soft glow of the tool's colour behind the header corner, gone by mid-window.
+     No second or third colour and nothing along the bottom: several hues around the edge read as a
+     rainbow, not as light. */
+  --wash:radial-gradient(64% 56% at 8% -6%,color-mix(in srgb,var(--tool) var(--wash-1),transparent) 0,transparent 72%);
   box-shadow:var(--shadow),0 8px 22px -10px color-mix(in srgb,var(--tool) var(--tool-halo),transparent)}
 /* header badge: the tool's glyph on its colour, the same tile the hub shows */
 .tmark{position:relative;flex:none;width:34px;height:34px;border-radius:11px;display:grid;place-items:center;color:#fff;overflow:hidden;

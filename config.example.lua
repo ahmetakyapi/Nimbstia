@@ -17,6 +17,10 @@ return {
   -- The hub offers a one-click update when origin/main has new commits (checked every 6 hours).
   -- updateCheck = false,   -- switch the check and the banner off
 
+  -- Start the screen saver (Ekran Koruyucu) by itself after this many idle minutes. It stays away
+  -- while a video, a call or Her Zaman Uyanık keeps the display awake.
+  -- saverIdleMinutes = 10,
+
   -- Lid closed + external display on battery (macOS allows it only on AC). Run scripts/clamshell-setup.sh once.
   -- batteryClamshell = true,
 }

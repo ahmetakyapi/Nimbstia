@@ -4,6 +4,15 @@
 -- instead of vanishing. Nothing but the date and the clock is drawn on top of the picture.
 -- The system is kept from idle-sleeping while it runs; displays may still sleep. Not a lock.
 -- Closing the lid still sleeps the Mac.
+--
+-- It must never trap the user or go stale, so:
+--   * a click on the overlay itself wakes it even if the event tap is not delivering (Secure Input,
+--     a tap macOS switched off), and a watchdog switches a disabled tap back on;
+--   * it rebuilds when displays are connected, removed or change resolution;
+--   * it ends by itself after the Mac wakes from sleep, the screen is unlocked or the user is switched;
+--   * the clock follows the minute to the second.
+-- Optional: `saverIdleMinutes = N` in config.local.lua starts it after N idle minutes, unless an app
+-- (a video, a call, Her Zaman Uyanık) is keeping the display awake.
 local Keep = require("keep")
 local M = { active = false }
 
@@ -17,6 +26,7 @@ local MONTHS = EN and { "January", "February", "March", "April", "May", "June", 
   or { "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık" }
 
 local canvases, tap, clockTimer, watchdog, driftTimer = {}, nil, nil, nil, nil
+local screenWatch, powerWatch, rebuildTimer, shownClock
 local tookSleepHold, drift, phase = false, { x = 0, y = 0 }, 0
 local info = {} -- canvas -> { f = screen frame, iw, ih = picture size or nil }
 
@@ -73,6 +83,9 @@ local function build(screen)
   if c[BG].type == "rectangle" then c[BG].frame = { x = 0, y = 0, w = f.w, h = f.h } end
   placePicture(c)
   layout(c)
+  -- Fallback wake: a click that reaches the overlay (the event tap normally swallows it first).
+  c:canvasMouseEvents(true, false, false, false)
+  c:mouseCallback(function() M.stop() end)
   c:level(hs.canvas.windowLevels.screenSaver)
   c:behavior({ "canJoinAllSpaces", "stationary", "ignoresCycle", "fullScreenAuxiliary" })
   return c
@@ -80,9 +93,27 @@ end
 
 local function each(fn) for _, c in ipairs(canvases) do fn(c) end end
 
-local function tickClock()
-  local t, d = os.date("%H:%M"), dateText()
+local function tickClock(force)
+  local t = os.date("%H:%M")
+  if t == shownClock and not force then return false end
+  shownClock = t
+  local d = dateText()
   each(function(c) c[CLOCK].text = t; c[DATE].text = d end)
+  return true
+end
+
+-- Displays changed (connected, removed, new resolution): draw the overlay again for what is there now.
+local function rebuild()
+  if not M.active then return end
+  local old = canvases
+  canvases, info = {}, {}
+  for _, s in ipairs(hs.screen.allScreens()) do
+    local ok, c = pcall(build, s)
+    if ok and c then table.insert(canvases, c) end
+  end
+  tickClock(true)
+  each(function(c) c:show() end)
+  for _, c in ipairs(old) do c:delete() end
 end
 
 -- Wake on any key or click at once; the mouse has to travel WAKE_PX within a short burst, so a bumped
@@ -131,40 +162,77 @@ begin = function()
     tookSleepHold = true
   end
   drift, startedAt, travel = { x = 0, y = 0 }, hs.timer.secondsSinceEpoch(), 0
-  canvases = {}
+  canvases, info = {}, {}
   for _, s in ipairs(hs.screen.allScreens()) do table.insert(canvases, build(s)) end
-  tickClock()
+  tickClock(true)
   each(function(c) c:show(0.6) end)
   driftTimer = hs.timer.doEvery(0.1, function() phase = phase + 0.007; each(placePicture) end)
   tap = hs.eventtap.new({ ET.keyDown, ET.keyUp, ET.flagsChanged, ET.mouseMoved, ET.leftMouseDown, ET.leftMouseUp,
     ET.rightMouseDown, ET.rightMouseUp, ET.otherMouseDown, ET.otherMouseUp, ET.leftMouseDragged,
     ET.rightMouseDragged, ET.scrollWheel }, onEvent):start()
-  local n = 0
-  clockTimer = hs.timer.doEvery(5, function()
-    tickClock()
-    n = n + 1
-    if n % 12 == 0 then -- once a minute, nudge the clock a little
+  clockTimer = hs.timer.doEvery(1, function()
+    if tickClock() then -- the minute changed: nudge the clock a little as well
       drift = { x = math.random(-60, 60), y = math.random(-30, 30) }
       each(layout)
     end
   end)
   -- macOS turns off an event tap whose callback stalls; turn it back on so waking keeps working.
   watchdog = hs.timer.doEvery(3, function() if tap and not tap:isEnabled() then tap:start() end end)
+  -- Displays reconfigure in bursts; rebuild once they settle.
+  screenWatch = hs.screen.watcher.new(function()
+    if rebuildTimer then rebuildTimer:stop() end
+    rebuildTimer = hs.timer.doAfter(1, function() rebuildTimer = nil; pcall(rebuild) end)
+  end):start()
+  -- After sleep, an unlock or a user switch the person is already back: do not make them wake it again.
+  local W = hs.caffeinate.watcher
+  powerWatch = W.new(function(ev)
+    if ev == W.systemDidWake or ev == W.screensDidUnlock or ev == W.sessionDidResignActive then M.stop() end
+  end):start()
 end
 
 function M.stop()
   if not M.active then return end
   M.active = false
-  for _, t in pairs({ clockTimer, watchdog, driftTimer }) do t:stop() end
-  clockTimer, watchdog, driftTimer, travel = nil, nil, nil, 0
-  if tap then tap:stop(); tap = nil end
+  for _, t in pairs({ clockTimer, watchdog, driftTimer, rebuildTimer, screenWatch, powerWatch }) do pcall(function() t:stop() end) end
+  clockTimer, watchdog, driftTimer, rebuildTimer, screenWatch, powerWatch, travel, shownClock = nil, nil, nil, nil, nil, nil, 0, nil
+  if tap then pcall(function() tap:stop() end); tap = nil end
   local old = canvases
   canvases, info = {}, {}
   -- a slow fade back to the desktop, like waking from the macOS saver
   for _, c in ipairs(old) do c:hide(0.7) end
   Keep.after(0.8, function() for _, c in ipairs(old) do c:delete() end end)
   if tookSleepHold then hs.caffeinate.set("systemIdle", false, true); tookSleepHold = false end
-  if M.onStop then M.onStop() end
+  if M.onStop then pcall(M.onStop) end
+end
+
+-- ---------------------------------------------------------------- optional: start after N idle minutes
+-- Off unless config sets saverIdleMinutes. Like the macOS saver it stays away while something holds the
+-- display awake (a video, a call, Her Zaman Uyanık) and while the screen is locked or asleep.
+local idleTimer, idleWatch, screenOff = nil, nil, false
+
+local function displayHeld()
+  if hs.caffeinate.get("displayIdle") then return true end
+  local out = hs.execute("/usr/bin/pmset -g assertions") or ""
+  return out:match("PreventUserIdleDisplaySleep%s+1") ~= nil
+end
+
+function M.watchIdle(minutes)
+  if idleTimer then idleTimer:stop(); idleTimer = nil end
+  if idleWatch then idleWatch:stop(); idleWatch = nil end
+  minutes = tonumber(minutes)
+  if not minutes or minutes <= 0 then return end
+  local limit = math.max(60, minutes * 60)
+  local W = hs.caffeinate.watcher
+  idleWatch = W.new(function(ev)
+    if ev == W.screensDidLock or ev == W.screensDidSleep or ev == W.systemWillSleep then screenOff = true
+    elseif ev == W.screensDidUnlock or ev == W.screensDidWake or ev == W.systemDidWake then screenOff = false end
+  end):start()
+  idleTimer = hs.timer.doEvery(20, function()
+    if M.active or screenOff then return end
+    if hs.host.idleTime() < limit then return end
+    if displayHeld() then return end
+    M.start()
+  end)
 end
 
 return M

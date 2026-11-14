@@ -264,9 +264,31 @@ end
 
 -- ---------------------------------------------------------------- keep awake / mic
 
-function M.toggleAwake()
-  local on = not hs.caffeinate.get("displayIdle")
+-- Her Zaman Uyanık: the display and the system stay awake, on AC and on battery. The choice is
+-- remembered, so a Hammerspoon reload or restart does not silently drop it (a reload releases every
+-- assertion). On battery it lets go at 10% so a forgotten switch cannot drain the Mac to zero.
+-- Closing the lid still sleeps the Mac; that is macOS's rule (see clamshell.lua for the exception).
+local AWAKE_KEY, AWAKE_SINCE_KEY, AWAKE_FLOOR = "nimbstia.awake", "nimbstia.awakeSince", 10
+local function awakeOn() return hs.caffeinate.get("displayIdle") == true end
+local function setAwake(on)
   hs.caffeinate.set("displayIdle", on, true)
+  hs.caffeinate.set("systemIdle", on, true)
+  hs.settings.set(AWAKE_KEY, on)
+  if on then
+    if not hs.settings.get(AWAKE_SINCE_KEY) then hs.settings.set(AWAKE_SINCE_KEY, os.time()) end
+  else
+    hs.settings.clear(AWAKE_SINCE_KEY)
+  end
+end
+local function onBattery() return hs.battery.powerSource() == "Battery Power" end
+
+function M.toggleAwake()
+  local on = not awakeOn()
+  if on and onBattery() and (hs.battery.percentage() or 100) <= AWAKE_FLOOR then
+    hs.alert.show("Pil %" .. AWAKE_FLOOR .. " altında: önce şarja tak", 1.6)
+    return
+  end
+  setAwake(on)
   hs.alert.show(on and "☕︎ Mac uyanık tutuluyor" or "Uyku normale döndü", 0.9)
   render()
 end
@@ -473,8 +495,9 @@ end
 local githubData -- defined with the GitHub numbers below; popoverData only runs after start-up
 local function popoverData()
   local d = { errors = LOAD_ERRORS or {}, theme = Panel.theme(), shortcuts = M.help or {},
-    toggles = { awake = hs.caffeinate.get("displayIdle") or false, mic = micMuted(), meetings = meetingsEnabled(),
-      saver = Saver.active } }
+    toggles = { awake = awakeOn(), mic = micMuted(), meetings = meetingsEnabled(),
+      saver = Saver.active },
+    awakeSince = awakeOn() and hs.settings.get(AWAKE_SINCE_KEY) or nil, now = os.time() }
   d.portsFolded = hs.settings.get("nimbstia.portsFolded") == true
   if state.ports and #state.ports > 0 then
     d.ports = {}
@@ -498,8 +521,18 @@ local function popoverData()
     for _, l in ipairs(u.limits) do
       local pct = math.floor(l.percent + 0.5)
       if not peak or pct > peak then peak = pct end
-      local item = { label = l.label, percent = pct, resets = l.resetsAt and Claude.when(l.resetsAt) or "" }
-      if l.weekly then
+      local item = { label = l.label, percent = pct, resets = l.resetsAt and Claude.when(l.resetsAt) or "", reset = l.reset or nil }
+      if (l.weekly or l.session) and not l.reset then
+        local key = l.weekly and "weekly" or "session"
+        Claude.track(key, l.percent, l.resetsAt, u.fetchedAt)
+        local pace = Claude.pace(key, l.percent, l.resetsAt)
+        -- a 45-minute slope says nothing about a week: only the session window gets a forecast
+        if pace and l.session then
+          item.perHour = math.floor(pace.perHour + 0.5)
+          if pace.fullAt then item.fullAt = os.date("%H:%M", pace.fullAt) end
+        end
+      end
+      if l.weekly and not l.reset then
         Claude.record(l.percent, u.fetchedAt)
         local t = Claude.today(l.percent)
         if t then item.today = math.floor(t + 0.5) end
@@ -511,7 +544,9 @@ local function popoverData()
       table.insert(sessions, { name = ss.name, busy = ss.busy, url = ss.url,
         folder = ss.cwd and ss.cwd:match("[^/]+$") or nil, ago = ss.updated and ago(ss.updated) or nil })
     end
-    d.claude = { plan = u.plan, updatedAgo = u.fetchedAt and ago(u.fetchedAt) or nil, limits = limits, sessions = sessions }
+    d.claude = { plan = u.plan, updatedAgo = u.fetchedAt and ago(u.fetchedAt) or nil, limits = limits, sessions = sessions,
+      -- older than 20 minutes: the numbers may be behind (Claude Code writes them after each response)
+      stale = u.fetchedAt and (os.time() - u.fetchedAt) > 1200 or nil }
   end
   d.tools = {}
   for _, t in ipairs(TOOLS) do
@@ -782,7 +817,7 @@ function M.start(help)
   -- ~/.claude.json, newer ones go through statusline.sh → ~/.claude/cache/rate-limits.json.
   local function claudeChanged()
     if M.claudeTimer then M.claudeTimer:stop() end
-    M.claudeTimer = hs.timer.doAfter(0.5, function() render() end)
+    M.claudeTimer = hs.timer.doAfter(0.3, function() render(); if M.pushPopover then M.pushPopover() end end)
   end
   M.claudeWatch = hs.pathwatcher.new(HOME .. "/.claude.json", claudeChanged):start()
   -- statusline.sh replaces the file with mv, so watch the directory and filter by name.
@@ -794,6 +829,19 @@ function M.start(help)
   M.fetchDevStats(true)
   M.fetchMeetings()
   M.tick = hs.timer.doEvery(20, render) -- meeting countdown in the title
+  -- While the hub is open its numbers follow the clock too (a limit window that resets, "2 dk önce").
+  M.hubTick = hs.timer.doEvery(30, function() if M.pushPopover then M.pushPopover() end end)
+  -- Her Zaman Uyanık survives a reload; on battery it lets go at the floor.
+  if hs.settings.get(AWAKE_KEY) == true and not awakeOn() then setAwake(true); render() end
+  M.batteryWatch = hs.battery.watcher.new(function()
+    if awakeOn() and onBattery() and (hs.battery.percentage() or 100) <= AWAKE_FLOOR then
+      setAwake(false)
+      hs.notify.new({ title = "Her Zaman Uyanık kapatıldı", informativeText = "Pil %" .. AWAKE_FLOOR .. " altına indi; Mac artık normal şekilde uyuyabilir." }):send()
+      render()
+      if M.pushPopover then M.pushPopover() end
+    end
+  end):start()
+  Saver.watchIdle(Config.saverIdleMinutes)
   -- Re-check right away after wake or a network change instead of waiting for the next tick.
   M.wake = hs.caffeinate.watcher.new(function(ev)
     if ev == hs.caffeinate.watcher.systemDidWake then Keep.after(4, function() M.check(false) end) end

@@ -164,6 +164,7 @@ return {
   language = "en",                                                    -- interface language ("tr" by default)
   screenshotDir = os.getenv("HOME") .. "/Documents/Screenshots",
   batteryClamshell = true,                                            -- closed lid + external display on battery
+  saverIdleMinutes = 10,                                              -- start the screen saver after 10 idle minutes
 }
 ```
 

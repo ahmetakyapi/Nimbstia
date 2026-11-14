@@ -308,6 +308,10 @@ footer{border-top:0;background:none;-webkit-backdrop-filter:none;backdrop-filter
 .pv-meta div>span{min-width:0;flex:1}
 .pv-meta .mi{flex:none;width:30px;height:30px;border-radius:10px;display:grid;place-items:center;color:color-mix(in srgb,var(--k) var(--glyph),#000);background:linear-gradient(160deg,color-mix(in srgb,var(--k) var(--t-top),var(--card)),color-mix(in srgb,var(--k) var(--t-bot),var(--card)));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--k) var(--tile-ring),transparent)}
 .pv-meta .mi svg{width:15px;height:15px}
+/* the app an item came from, as its real icon */
+.pv-meta img.mi.srcapp{background:none;box-shadow:none;border-radius:0;filter:drop-shadow(0 1px 2px rgba(0,0,0,.22))}
+.end .src{width:22px;height:22px;flex:none;filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.2))}
+.row:hover .src,.row.sel .src{display:none}
 .pv-meta dt{margin-bottom:4px}
 /* bigger, brighter previews */
 .htile,.pv-mail .av{box-shadow:inset 0 1px 0 rgba(255,255,255,.3),inset 0 0 0 1px rgba(0,0,0,.06),0 12px 22px -10px hsl(var(--h) 80% 50% / .7)}
@@ -343,6 +347,7 @@ const $ = s => document.querySelector(s);
 const app = $('#app'), input = $('#q'), listEl = $('#list'), pvEl = $('#preview'), kindsEl = $('#kinds'), timesEl = $('#times'), footEl = $('#foot'), resetEl = $('#reset'), toastEl = $('#toast');
 let items = [], thumbs = {}, view = [], sel = 0, q = '', kind = 'all', span = 'any', editing = null;
 const nowS = () => Date.now() / 1000;
+let appIcons = {}; // source app name -> its real icon (data URI), sent by clipboard.lua
 let grouping = 'kind';
 try { grouping = localStorage.getItem('pastia.group') === 'date' ? 'date' : 'kind'; } catch (e) {}
 
@@ -587,7 +592,7 @@ function renderList(toks) {
     const it = view[i], g = groupOf(it);
     if (g !== last) { html += `<div class="group">${esc(g)}<span>${num(counts[g])}</span></div>`; last = g; }
     const quick = '';
-    html += `<div class="row${i === sel ? ' sel' : ''}" data-i="${i}" style="--i:${i}">${icoHTML(it)}<div class="meta"><div class="ti">${highlight(titleOf(it), toks)}</div><div class="su">${esc(subOf(it))}</div></div><div class="end">${it.pinned ? `<span class="pin">${ICONS.pin}</span>` : ''}${quick}<div class="cp" data-act="copy" title="Kopyala">${ICONS.copy}</div></div></div>`;
+    html += `<div class="row${i === sel ? ' sel' : ''}" data-i="${i}" style="--i:${i}">${icoHTML(it)}<div class="meta"><div class="ti">${highlight(titleOf(it), toks)}</div><div class="su">${esc(subOf(it))}</div></div><div class="end">${it.pinned ? `<span class="pin">${ICONS.pin}</span>` : ''}${quick}${appIcons[it.app] ? `<img class="src" src="${appIcons[it.app]}" alt="" title="${esc(it.app)}">` : ''}<div class="cp" data-act="copy" title="Kopyala">${ICONS.copy}</div></div></div>`;
   }
   listEl.innerHTML = html;
   glide(false);
@@ -718,7 +723,7 @@ function renderPreview() {
   if (it.app) meta.push(['Kaynak', it.app]);
   meta.push([c === 'shot' ? 'Çekildi' : (it.edited ? 'Güncellendi' : 'Kopyalandı'), fullTime(it)]);
   const cols = meta.length <= 3 ? meta.length : meta.length === 4 ? 2 : 3;
-  pvEl.innerHTML = `<div class="pv-actions">${acts}</div><div class="pv-body${c === 'image' || c === 'shot' ? ' has-img' : ''}">${body}</div><dl class="pv-meta" style="--cols:${cols}">${meta.map(([k, v], i) => `<div${i === meta.length - 1 && meta.length % cols ? ` style="grid-column:span ${cols - meta.length % cols + 1}"` : ''}><i class="mi" style="--k:var(${META_ICON[k]?.[1] || '--k-text'})">${ICONS[META_ICON[k]?.[0] || 'text']}</i><span><dt>${esc(k)}</dt><dd title="${esc(v)}">${esc(v)}</dd></span></div>`).join('')}</dl>`;
+  pvEl.innerHTML = `<div class="pv-actions">${acts}</div><div class="pv-body${c === 'image' || c === 'shot' ? ' has-img' : ''}">${body}</div><dl class="pv-meta" style="--cols:${cols}">${meta.map(([k, v], i) => `<div${i === meta.length - 1 && meta.length % cols ? ` style="grid-column:span ${cols - meta.length % cols + 1}"` : ''}>${k === 'Kaynak' && appIcons[v] ? `<img class="mi srcapp" src="${appIcons[v]}" alt="">` : `<i class="mi" style="--k:var(${META_ICON[k]?.[1] || '--k-text'})">${ICONS[META_ICON[k]?.[0] || 'text']}</i>`}<span><dt>${esc(k)}</dt><dd title="${esc(v)}">${esc(v)}</dd></span></div>`).join('')}</dl>`;
 }
 
 function renderFooter() {
@@ -833,6 +838,7 @@ window.Clip = {
   setItems(data) {
     const keep = data.select || view[sel]?.id;
     items = (Array.isArray(data.items) ? data.items : []).sort(byNewest);
+    appIcons = data.apps && !Array.isArray(data.apps) ? data.apps : {};
     refresh(keep);
   },
   thumbs(map) {

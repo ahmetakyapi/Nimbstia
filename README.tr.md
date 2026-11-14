@@ -157,6 +157,7 @@ return {
   language = "en",                                                    -- arayüz dili (varsayılan "tr")
   screenshotDir = os.getenv("HOME") .. "/Documents/Screenshots",
   batteryClamshell = true,                                            -- pilde kapalı kapak + harici ekran
+  saverIdleMinutes = 10,                                              -- 10 dakika boşta kalınca ekran koruyucuyu başlat
 }
 ```
 

@@ -429,7 +429,14 @@ button.ss:hover .go{color:var(--text);transform:translate(2px,-2px)}
 .cbm i.tday{background:#f7c4ae;animation-delay:.15s}
 .cbm.b2 i.tday{background:#fde3a7}
 .cbx{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;font-size:11px;color:var(--faint)}
-.cbx .td{font-size:10.5px;font-weight:650;color:var(--accent-ink);background:var(--accent-soft);padding:1px 6px;border-radius:999px}
+.cbx .td{font-size:10.5px;font-weight:650;color:var(--accent-ink);background:var(--accent-soft);padding:1px 6px;border-radius:999px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.cbx .td.hot{color:var(--warn);background:var(--warn-soft)}
+.cbx .td.ok{color:var(--ok);background:color-mix(in srgb,var(--ok-bar) 14%,transparent)}
+/* freshness: a live dot while the reading is recent, a hollow amber one when it may be behind */
+.cup{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:11px;color:var(--faint);font-variant-numeric:tabular-nums}
+.cup i{width:6px;height:6px;border-radius:50%;background:var(--ok-bar);box-shadow:0 0 0 3px color-mix(in srgb,var(--ok-bar) 20%,transparent)}
+.cup.stale{color:var(--warn)}
+.cup.stale i{background:none;box-shadow:inset 0 0 0 1.5px var(--warn-bar)}
 /* ---------------------------------------------------------------- ambient light + hero
    The hub is the one panel that may glow: three slow blobs behind the top, tinted by the overall
    state (sky when all is well, amber on a warning, rose when something is down). Transform-only
@@ -692,7 +699,9 @@ function renderMain() {
     // One meter per limit, each with its own reset time; today's share is a lighter tail at the end.
     const barRow = (l, k) => {
       const v = pct(l), t = typeof l.today === 'number' ? Math.min(v, Math.max(0, Math.round(l.today))) : 0;
-      const sub = (l.resets ? `<span>↻ ${esc(l.resets)}</span>` : '') + (typeof l.today === 'number' ? `<span class="td">Bugün +%${l.today}</span>` : '');
+      // what the number means right now: a window that reset, or when it would fill at this pace
+      const sub = (l.reset ? `<span class="td ok">Sıfırlandı</span>` : '') + (l.resets ? `<span>↻ ${esc(l.resets)}</span>` : '') + (typeof l.today === 'number' ? `<span class="td">Bugün +%${l.today}</span>` : '') +
+        (l.fullAt ? `<span class="td hot" title="Son 45 dakikanın hızıyla"><span>Bu hızla</span> ${esc(l.fullAt)}<span>’de dolar</span></span>` : typeof l.perHour === 'number' && l.perHour > 0 ? `<span class="td">+%${l.perHour}<span>/sa</span></span>` : '');
       return `<div class="cbr ${limTone(v)}"><div class="cbt"><span>${esc(short(l))}</span><b data-roll="b${k}">${fmtP(v)}</b></div><div class="cbm b${k}"><i style="width:${Math.max(2, v - t)}%"></i>${t ? `<i class="tday" style="width:${t}%"></i>` : ''}</div>${sub ? `<div class="cbx">${sub}</div>` : ''}</div>`;
     };
     const barBody = lim ? `<div class="cbars">${barRow(lim, 1)}${lims[1] ? barRow(lims[1], 2) : ''}</div>` : '';
@@ -704,6 +713,7 @@ function renderMain() {
     row1.push(`<section class="w claude">
       ${wh(W_ICON.spark, 'Claude', parts.claude.plan)}
       ${parts.claude.body}
+      ${c.updatedAgo && lim ? `<div class="cup${c.stale ? ' stale' : ''}" title="Claude Code her yanıttan sonra günceller"><i></i><span>${esc(c.updatedAgo)}</span></div>` : ''}
       ${parts.claude.sess}
       </section>`);
   }
@@ -746,9 +756,11 @@ function renderMain() {
 
   // ---- quick toggles
   const tg = d.toggles || {};
+  const awakeMin = tg.awake && d.awakeSince && d.now ? Math.max(0, Math.floor((d.now - d.awakeSince) / 60)) : null;
+  const awakeFor = awakeMin == null || awakeMin < 1 ? '' : awakeMin < 60 ? `${awakeMin} <span>dk</span>` : `${Math.floor(awakeMin / 60)} <span>sa</span> ${awakeMin % 60} <span>dk</span>`;
   const rt = (id, label, icon, color, states) => `<button class="rt${tg[id] ? ' on' : ''}${justToggled === id && Date.now() - justAt < 2500 ? ' just' : ''}" role="switch" aria-checked="${tg[id] ? 'true' : 'false'}" data-act="toggle" data-id="${id}" style="--q:${color}"><span class="rc">${ICONS[icon]}</span><span><span class="rn">${label}</span><small>${(states || ['Açık', 'Kapalı'])[tg[id] ? 0 : 1]}</small></span></button>`;
   let q = `<section class="w quick"><div class="rw">` +
-    rt('awake', 'Her Zaman Uyanık', 'cup', '#f59e0b') + rt('saver', 'Ekran Koruyucu', 'moonf', '#6366f1', ['Açık', 'Başlat']) +
+    rt('awake', 'Her Zaman Uyanık', 'cup', '#f59e0b', [awakeFor ? `<span>Açık</span> · ${awakeFor}` : 'Açık', 'Kapalı']) + rt('saver', 'Ekran Koruyucu', 'moonf', '#6366f1', ['Açık', 'Başlat']) +
     rt('mic', 'Mikrofon', 'mic', '#f43f5e', ['Sessiz', 'Açık']) + rt('meetings', 'Toplantılar', 'cal', '#8b5cf6') + `</div>`;
   const meets = Array.isArray(d.meetings) ? d.meetings : [];
   if (tg.meetings && meets.length) {

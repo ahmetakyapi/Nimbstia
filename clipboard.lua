@@ -310,8 +310,26 @@ local function pushThumbs()
   step()
 end
 
+-- Icons of the apps the items were copied from: { [app name] = data URI }. Entries saved before the
+-- bundle id was recorded fall back to a running app of that name.
+local function sourceIcons()
+  local out, seen = {}, {}
+  for _, e in ipairs(history) do
+    if e.app and not seen[e.app] then
+      seen[e.app] = true
+      local bid = e.bid
+      if not bid then
+        local ok, app = pcall(hs.application.get, e.app)
+        bid = ok and app and app:bundleID() or nil
+      end
+      out[e.app] = Panel.appIcon(bid)
+    end
+  end
+  return out
+end
+
 local function pushItems(andOpen, selectId)
-  local json = hs.json.encode({ items = buildItems(), now = os.time(), select = selectId })
+  local json = hs.json.encode({ items = buildItems(), now = os.time(), select = selectId, apps = sourceIcons() })
   panel:js("Clip.setItems(" .. json .. ")" .. (andOpen and ";Clip.open()" or ""))
   pushThumbs()
 end
@@ -445,6 +463,7 @@ local function addEntry(e)
   end
   local app = hs.application.frontmostApplication()
   e.id, e.t, e.app = newId(), os.time(), app and app:name() or nil
+  e.bid = app and app:bundleID() or nil
   table.insert(history, 1, e)
   trim()
   save()

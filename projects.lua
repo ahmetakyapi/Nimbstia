@@ -92,7 +92,11 @@ end
 
 local function pushItems(andOpen)
   if not panel then return end
-  local json = hs.json.encode({ items = buildItems(), scanning = scanning, busy = busyState() })
+  -- the real icons of the apps the actions open (keys are the page's action names); absent = glyph
+  local icons = { vscode = Panel.appIcon("com.microsoft.VSCode"), terminal = Panel.appIcon("com.apple.Terminal"),
+    github = Panel.appIcon("com.github.GitHubClient"), reveal = Panel.appIcon("com.apple.finder"),
+    claude = Panel.appIcon("com.anthropic.claudefordesktop") }
+  local json = hs.json.encode({ items = buildItems(), scanning = scanning, busy = busyState(), icons = icons })
   panel:js("Projects.setItems(" .. json .. ")" .. (andOpen and ";Projects.open()" or ""))
 end
 
