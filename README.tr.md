@@ -55,7 +55,7 @@ Menü çubuğundaki işarete tıkla. Günün her şeyi tek bir panoda: VPN ve ge
 
 <img src="assets/screens/clipboard-dark.png" width="880" alt="Pastia pano geçmişi">
 
-Metin, bağlantı, renk, kopyalanan görseller ve ekran görüntüleri klasörü — her zaman en yeni üstte, günlere göre gruplu. Tür ve zamana göre filtrele, ara, sabitle, yerinde düzenle; paneli kapatmadan kopyala (<kbd>Cmd</kbd> <kbd>C</kbd>) ya da yapıştır (<kbd>↩</kbd>). Sabitlemediğin ekran görüntüleri 30 gün sonra Çöp Sepeti'ne taşınır.
+Metin, bağlantı, renk, kopyalanan görseller ve ekran görüntüleri klasörü — türe göre gruplu (önce metin, sonra ekran görüntüsü, bağlantı ve görsel; tek tıkla günlere göre gruplamaya geçilir), her grupta en yeni üstte. Kod, sözdizimi renkleriyle gösterilir. Tür ve zamana göre filtrele, ara, sabitle, yerinde düzenle; paneli kapatmadan kopyala (<kbd>Cmd</kbd> <kbd>C</kbd>) ya da yapıştır (<kbd>↩</kbd>). Sabitlemediğin ekran görüntüleri 30 gün sonra Çöp Sepeti'ne taşınır.
 
 ### Clipstia · ekran görüntüsü — <kbd>Cmd</kbd> <kbd>.</kbd>
 

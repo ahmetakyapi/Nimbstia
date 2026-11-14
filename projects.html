@@ -403,12 +403,101 @@ button.gs.chart:hover{background:var(--hover);box-shadow:inset 0 0 0 1px var(--l
 .skline b{display:block;height:10px;width:var(--w,60%)}
 .skline b+b{height:8px;width:38%}
 .sklabel{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+/* ---------------------------------------------------------------- Aurora round
+   The tool's own light sits behind the header and the filter bar (theme.css, TOOL IDENTITY); the
+   list and the preview are calm surfaces under it. Colour means something everywhere else. */
+.app{border-radius:20px}
+.app::before{height:300px;z-index:-1;-webkit-mask-image:linear-gradient(180deg,#000 35%,transparent);mask-image:linear-gradient(180deg,#000 35%,transparent)}
+header{gap:13px;padding-left:16px}
+#q{font-weight:500}
+.bar{border-bottom-color:var(--line)}
+.seg{background:color-mix(in srgb,var(--card) 62%,transparent);box-shadow:inset 0 0 0 1px var(--line),0 1px 2px rgba(20,24,40,.04);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4)}
+.f.on svg{color:var(--fk,var(--accent))}
+.f svg{color:color-mix(in srgb,var(--fk,var(--faint)) 72%,var(--faint))}
+.f:hover:not(.on) svg{color:var(--fk,var(--muted))}
+.f.on b{color:var(--text);background:color-mix(in srgb,var(--fk,var(--accent)) 20%,transparent);padding:3px 6px;margin-right:-5px;border-radius:var(--r-pill)}
+#list{padding:0 10px 14px;background:linear-gradient(180deg,var(--pane),color-mix(in srgb,var(--pane) 92%,var(--bg2)))}
+.row{border-radius:14px;height:58px}
+.row+.row{margin-top:2px}
+.row.sel{box-shadow:inset 0 0 0 1px var(--sel-line),var(--sel-glow)}
+.nb-glide{border-radius:14px}
+.ico{border-radius:12px;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--k) var(--tile-ring),transparent),inset 0 1px 0 rgba(255,255,255,.35),0 6px 12px -8px color-mix(in srgb,var(--k) 75%,transparent)}
+.row.sel .ico{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--k) 46%,transparent),inset 0 1px 0 rgba(255,255,255,.35),0 8px 16px -8px color-mix(in srgb,var(--k) 90%,transparent)}
+.btn{background:var(--ctl);box-shadow:inset 0 0 0 1px var(--line2),var(--ctl-shadow)}
+.btn.primary{height:34px;padding:0 6px 0 14px}
+.btn.primary .k{background:color-mix(in srgb,var(--on-primary) 16%,transparent);box-shadow:inset 0 0 0 .5px color-mix(in srgb,var(--on-primary) 22%,transparent)}
+#preview{background:linear-gradient(180deg,color-mix(in srgb,var(--pv-bg) 40%,transparent),color-mix(in srgb,var(--pv-bg) 75%,transparent))}
+.pv-card{border-radius:18px}
+.pv-meta{border-radius:16px}
+footer{background:color-mix(in srgb,var(--bg2) 70%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+/* floating layout: the window is the lit canvas; the list and the preview are cards on it, like the hub's widgets */
+.app::before{inset:0;height:auto;-webkit-mask-image:none;mask-image:none}
+.bar{border-bottom:0;padding-bottom:12px}
+main{gap:10px;padding:0 12px}
+#list{border-right:0;border-radius:18px;box-shadow:var(--card-lift);background:var(--pane);--pane:var(--card)}
+#preview{border-radius:18px;overflow:hidden;box-shadow:var(--card-lift);background:color-mix(in srgb,var(--card) 62%,transparent);-webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5)}
+.group{border-radius:18px 18px 0 0}
+.pv-actions{background:color-mix(in srgb,var(--card) 55%,transparent)}
+footer{border-top:0;background:none;-webkit-backdrop-filter:none;backdrop-filter:none;padding:11px 22px 12px}
+/* ---------------------------------------------------------------- Repostia, Aurora round */
+.f[data-k="all"]{--fk:var(--accent)}.f[data-k="dirty"]{--fk:var(--warn-bar)}.f[data-k="ahead"]{--fk:var(--k-code)}.f[data-k="behind"]{--fk:var(--ok-bar)}
+/* today: one floating glass card; every number wears the colour of what it counts */
+.today{margin:0 16px 12px;padding:8px 8px 8px 16px;border-top:0;border-radius:18px;background:color-mix(in srgb,var(--card) 68%,transparent);box-shadow:var(--card-lift);-webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5)}
+.gs{padding:8px 12px}
+.gs b{font-size:24px;font-weight:620}
+.gs.pr{--c:var(--k-code)} .gs.cm{--c:var(--accent-ink)}
+.gs.pr b,.gs.cm b,.gs.add b,.gs.del b{background:linear-gradient(180deg,var(--c),color-mix(in srgb,var(--c) 72%,var(--text)));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.gs b svg{-webkit-text-fill-color:initial}
+.bars i{border-radius:3px;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 85%,transparent),color-mix(in srgb,var(--accent-fill) 60%,transparent))}
+.bars i.b-today{background:linear-gradient(180deg,var(--tool),var(--tool-deep));box-shadow:0 0 8px -1px color-mix(in srgb,var(--tool) 80%,transparent)}
+.gb{height:34px;background:color-mix(in srgb,var(--card) 70%,transparent)}
+.gb.hot b{background:linear-gradient(180deg,#0a84cf,#0367a6);box-shadow:0 4px 10px -4px rgba(2,132,199,.8)}
+/* project monogram: a lit tile in the project's own hue */
+.rid{border-radius:12px;font-weight:700;color:oklch(.4 .13 var(--h));background:linear-gradient(160deg,oklch(.965 .035 var(--h)),oklch(.9 .075 var(--h)));
+  box-shadow:inset 0 0 0 1px oklch(.55 .12 var(--h) / .22),inset 0 1px 0 rgba(255,255,255,.7),0 6px 12px -8px oklch(.6 .17 var(--h) / .7)}
+.rid.lg{width:54px;height:54px;border-radius:17px;font-size:18px;letter-spacing:-.01em}
+/* hero: the project's name on its own light */
+.pv-head{position:relative;padding:18px 20px;border-radius:20px;overflow:hidden;background:var(--pv-card);box-shadow:var(--card-lift);gap:8px 14px}
+.pv-head::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(70% 160% at 0% 0%,oklch(.72 .15 var(--h) / .2),transparent 62%),radial-gradient(50% 140% at 100% 100%,color-mix(in srgb,var(--tool) 10%,transparent),transparent 70%)}
+.pv-head>*{position:relative}
+.pv-name{font-weight:650;font-size:27px}
+.chip.br-chip{height:26px;font-weight:600}
+/* status: each line leads with a lit dot */
+.stc,.wt,.commits{border-radius:18px}
+.stl>i{--d:var(--faint);background:var(--d);box-shadow:0 0 0 4px color-mix(in srgb,var(--d) 18%,transparent)}
+.stl.warn>i{--d:var(--warn-bar);background:var(--d)} .stl.act>i{--d:var(--accent)} .stl.ok>i{--d:var(--ok-bar)}
+/* uncommitted changes: big numbers over a glowing ratio bar */
+.wt{padding:18px 20px}
+.wt-n b{font-size:28px;font-weight:620}
+.wt-ratio{height:8px;margin-top:18px;background:none;gap:3px;overflow:visible}
+.wt-ratio i{border-radius:var(--r-pill)}
+.wt-ratio .a{background:linear-gradient(90deg,#34d399,#22c55e);box-shadow:0 4px 12px -3px rgba(34,197,94,.65)}
+.wt-ratio .d{background:linear-gradient(90deg,#fb7185,#f43f5e);box-shadow:0 4px 12px -3px rgba(244,63,94,.65)}
+/* commits: a timeline; your own commits are the filled nodes */
+.commit{position:relative;padding-left:42px}
+.commit::after{content:"";position:absolute;left:20.5px;top:0;bottom:0;width:1px;background:var(--line2)}
+.commit:first-child::after{top:22px}.commit:last-child::after{bottom:auto;height:22px}.commit:only-child::after{display:none}
+.commit::before{content:"";position:absolute;z-index:1;left:16px;top:17px;width:10px;height:10px;border-radius:50%;background:var(--pv-card);box-shadow:inset 0 0 0 2px var(--faint)}
+.commit:has(.me)::before{background:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
+.commit:hover{background:var(--hover)}
+.commit .w code{padding:3px 6px;border-radius:6px;background:var(--accent-soft)}
+.dbar{gap:2px}
+.dbar i{width:6px;height:11px;border-radius:3px}
+.dbar i.a{background:linear-gradient(180deg,#4ade80,#22c55e)}
+.dbar i.d{background:linear-gradient(180deg,#fb7185,#f43f5e)}
+.pv-path{border-radius:14px;padding:8px 8px 8px 16px}
+:root[data-theme="dark"] .rid{color:oklch(.92 .075 var(--h));background:linear-gradient(160deg,oklch(.46 .1 var(--h)),oklch(.31 .075 var(--h)));box-shadow:inset 0 0 0 1px oklch(.8 .1 var(--h) / .22),inset 0 1px 0 rgba(255,255,255,.14),0 8px 14px -8px oklch(.55 .16 var(--h) / .8)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .rid{color:oklch(.92 .075 var(--h));background:linear-gradient(160deg,oklch(.46 .1 var(--h)),oklch(.31 .075 var(--h)));box-shadow:inset 0 0 0 1px oklch(.8 .1 var(--h) / .22),inset 0 1px 0 rgba(255,255,255,.14),0 8px 14px -8px oklch(.55 .16 var(--h) / .8)}}
+:root[data-theme="dark"] .gb.hot b{color:#03273b;background:linear-gradient(180deg,#5ccbff,#1ea7ee);box-shadow:0 4px 12px -4px rgba(56,189,248,.8)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .gb.hot b{color:#03273b;background:linear-gradient(180deg,#5ccbff,#1ea7ee);box-shadow:0 4px 12px -4px rgba(56,189,248,.8)}}
+:root[data-theme="dark"] .pv-head::before{background:radial-gradient(70% 160% at 0% 0%,oklch(.6 .16 var(--h) / .3),transparent 62%),radial-gradient(50% 140% at 100% 100%,color-mix(in srgb,var(--tool) 12%,transparent),transparent 70%)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .pv-head::before{background:radial-gradient(70% 160% at 0% 0%,oklch(.6 .16 var(--h) / .3),transparent 62%),radial-gradient(50% 140% at 100% 100%,color-mix(in srgb,var(--tool) 12%,transparent),transparent 70%)}}
 </style>
 </head>
 <body>
-<div class="app grain" id="app">
+<div class="app grain" id="app" data-tool="repostia">
   <header>
-    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5.5" fill="currentColor" fill-opacity=".14" stroke="none"/><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4 4"/></svg>
+    <span class="tmark" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><g fill="currentColor" fill-opacity=".3" stroke="none"><circle cx="4.5" cy="12" r="1.9"/></g><circle cx="4.5" cy="3.8" r="1.7"/><circle cx="11.5" cy="6.2" r="1.7"/><circle cx="4.5" cy="12" r="1.9" fill="currentColor"/><path d="M4.5 5.5v4.6M11.5 7.9c0 2-2.6 2.2-5.2 3.4"/></svg></span>
     <input id="q" placeholder="Ara: repo, dal, son commit…" autocomplete="off" spellcheck="false">
     <span class="qhint" aria-hidden="true"><kbd>⌃⇧P</kbd></span>
     <div class="sync" id="sync"><i></i><span id="syncTx">Yenileniyor…</span></div>
@@ -737,7 +826,7 @@ function renderPreview() {
   if (busy.fetched) sub.push(`<span title="${esc(fullTime(busy.fetched))}"><em>Uzak Kontrol</em>${esc(rel(busy.fetched))}</span>`);
 
   pvEl.innerHTML = `<div class="pv-actions">${acts}</div>` +
-    `<div class="pv-body"><div class="pv-head">${ridHTML(p, 'lg')}<div class="pv-name">${esc(titleOf(p))}</div>${chips.join('')}</div>` +
+    `<div class="pv-body"><div class="pv-head" style="--h:${hueOf(p.name)}">${ridHTML(p, 'lg')}<div class="pv-name">${esc(titleOf(p))}</div>${chips.join('')}</div>` +
     `<div class="sec">Durum</div>${statusCard(p)}${sub.length ? `<div class="pv-sub">${sub.join('')}</div>` : ''}` +
     worktreeHTML(p) +
     `<div class="sec">Son Commit’ler${commitSum}</div><div class="commits">${commits}</div>` +

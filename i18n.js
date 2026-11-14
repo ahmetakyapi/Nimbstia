@@ -47,6 +47,7 @@
     // shared chrome
     'Kapat': 'Close', 'Kapat · Esc': 'Close · Esc', 'kapat': 'close',
     'Açık Tema': 'Light Theme', 'Koyu Tema': 'Dark Theme',
+    'Türe Göre Gruplu': 'Grouped by Kind', 'Tarihe Göre Gruplu': 'Grouped by Date',
     'Filtreleri Temizle': 'Clear Filters', 'Filtreleri Kaldır': 'Remove Filters', 'Filtreyi Kaldır': 'Remove Filter',
     'Farklı bir kelime dene ya da Esc ile aramayı temizle.': 'Try another word, or press Esc to clear the search.',
     'Bugün': 'Today', 'Dün': 'Yesterday', 'dün': 'yesterday', 'Yarın': 'Tomorrow', 'Bu Hafta': 'This Week', 'Daha Eski': 'Older',

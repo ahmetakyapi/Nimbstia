@@ -255,15 +255,75 @@ textarea{width:100%;height:100%;resize:none;border:0;outline:0;border-radius:16p
 .empty .fan>:nth-child(1){--fx:28px;animation-delay:.08s}.empty .fan>:nth-child(2){--fx:-28px;animation-delay:.12s}
 @keyframes fan{from{opacity:0;transform:translate(var(--fx,0),8px) rotate(0deg)}}
 .empty>div>svg{animation:nb-pop var(--dur-3) var(--ease-spring) both .04s}
+/* ---------------------------------------------------------------- Aurora round
+   The tool's own light sits behind the header and the filter bar (theme.css, TOOL IDENTITY); the
+   list and the preview are calm surfaces under it. Colour means something everywhere else. */
+.app{border-radius:20px}
+.app::before{height:300px;z-index:-1;-webkit-mask-image:linear-gradient(180deg,#000 35%,transparent);mask-image:linear-gradient(180deg,#000 35%,transparent)}
+header{gap:13px;padding-left:16px}
+#q{font-weight:500}
+.bar{border-bottom-color:var(--line)}
+.seg{background:color-mix(in srgb,var(--card) 62%,transparent);box-shadow:inset 0 0 0 1px var(--line),0 1px 2px rgba(20,24,40,.04);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4)}
+.f.on svg{color:var(--fk,var(--accent))}
+.f svg{color:color-mix(in srgb,var(--fk,var(--faint)) 72%,var(--faint))}
+.f:hover:not(.on) svg{color:var(--fk,var(--muted))}
+.f.on b{color:var(--text);background:color-mix(in srgb,var(--fk,var(--accent)) 20%,transparent);padding:3px 6px;margin-right:-5px;border-radius:var(--r-pill)}
+#list{padding:0 10px 14px;background:linear-gradient(180deg,var(--pane),color-mix(in srgb,var(--pane) 92%,var(--bg2)))}
+.row{border-radius:14px;height:58px}
+.row+.row{margin-top:2px}
+.row.sel{box-shadow:inset 0 0 0 1px var(--sel-line),var(--sel-glow)}
+.nb-glide{border-radius:14px}
+.ico{border-radius:12px;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--k) var(--tile-ring),transparent),inset 0 1px 0 rgba(255,255,255,.35),0 6px 12px -8px color-mix(in srgb,var(--k) 75%,transparent)}
+.row.sel .ico{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--k) 46%,transparent),inset 0 1px 0 rgba(255,255,255,.35),0 8px 16px -8px color-mix(in srgb,var(--k) 90%,transparent)}
+.btn{background:var(--ctl);box-shadow:inset 0 0 0 1px var(--line2),var(--ctl-shadow)}
+.btn.primary{height:34px;padding:0 6px 0 14px}
+.btn.primary .k{background:color-mix(in srgb,var(--on-primary) 16%,transparent);box-shadow:inset 0 0 0 .5px color-mix(in srgb,var(--on-primary) 22%,transparent)}
+#preview{background:linear-gradient(180deg,color-mix(in srgb,var(--pv-bg) 40%,transparent),color-mix(in srgb,var(--pv-bg) 75%,transparent))}
+.pv-card{border-radius:18px}
+.pv-meta{border-radius:16px}
+footer{background:color-mix(in srgb,var(--bg2) 70%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+/* floating layout: the window is the lit canvas; the list and the preview are cards on it, like the hub's widgets */
+.app::before{inset:0;height:auto;-webkit-mask-image:none;mask-image:none}
+.bar{border-bottom:0;padding-bottom:12px}
+main{gap:10px;padding:0 12px}
+#list{border-right:0;border-radius:18px;box-shadow:var(--card-lift);background:var(--pane);--pane:var(--card)}
+#preview{border-radius:18px;overflow:hidden;box-shadow:var(--card-lift);background:color-mix(in srgb,var(--card) 62%,transparent);-webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5)}
+.group{border-radius:18px 18px 0 0}
+.pv-actions{background:color-mix(in srgb,var(--card) 55%,transparent)}
+footer{border-top:0;background:none;-webkit-backdrop-filter:none;backdrop-filter:none;padding:11px 22px 12px}
+/* Pastia: every kind keeps its colour in the filter bar, so the bar reads like a legend for the list */
+.f[data-k="all"]{--fk:var(--accent)}.f[data-k="text"]{--fk:var(--k-code)}.f[data-k="link"]{--fk:var(--k-link)}.f[data-k="image"]{--fk:var(--k-image)}.f[data-k="shot"]{--fk:var(--k-shot)}.f[data-k="pin"]{--fk:var(--k-pin)}
+/* code preview: an editor window (traffic lights, language, line count) with coloured tokens */
+.pv-code .hd{gap:10px;height:42px;padding:0 14px;background:linear-gradient(180deg,color-mix(in srgb,var(--text) 3%,transparent),transparent)}
+.pv-code .dots{flex:none;width:44px;height:10px;background:radial-gradient(circle at 5px 5px,#ff5f57 4.6px,transparent 5px),radial-gradient(circle at 22px 5px,#febc2e 4.6px,transparent 5px),radial-gradient(circle at 39px 5px,#28c840 4.6px,transparent 5px)}
+.pv-code .hd .sp{flex:1}
+.pv-code .lang{display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 9px 0 8px;border-radius:var(--r-pill);font:600 11.5px/1 var(--font-ui);color:var(--ink-code);background:color-mix(in srgb,var(--k-code) 12%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--k-code) 26%,transparent)}
+.pv-code .lang::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--k-code)}
+.pv-code .lc{font:500 11.5px/1 var(--font-ui);color:var(--faint);font-variant-numeric:tabular-nums}
+.pv-code ol{line-height:1.8}
+.pv-code li::before{opacity:.6}
+.t-key{color:var(--c-key);font-weight:550}.t-str{color:var(--c-str)}.t-num{color:var(--c-num)}.t-com{color:var(--c-com);font-style:italic}.t-fn{color:var(--c-fn)}.t-punc{color:var(--c-punc)}.t-prop{color:var(--c-prop)}
+/* metadata: each cell leads with its glyph on a tinted tile */
+.pv-meta div{display:flex;align-items:center;gap:11px;padding:11px 14px}
+.pv-meta div>span{min-width:0;flex:1}
+.pv-meta .mi{flex:none;width:30px;height:30px;border-radius:10px;display:grid;place-items:center;color:color-mix(in srgb,var(--k) var(--glyph),#000);background:linear-gradient(160deg,color-mix(in srgb,var(--k) var(--t-top),var(--card)),color-mix(in srgb,var(--k) var(--t-bot),var(--card)));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--k) var(--tile-ring),transparent)}
+.pv-meta .mi svg{width:15px;height:15px}
+.pv-meta dt{margin-bottom:4px}
+/* bigger, brighter previews */
+.htile,.pv-mail .av{box-shadow:inset 0 1px 0 rgba(255,255,255,.3),inset 0 0 0 1px rgba(0,0,0,.06),0 12px 22px -10px hsl(var(--h) 80% 50% / .7)}
+.pv-swatch{border-radius:18px;box-shadow:0 18px 34px -16px var(--sw,rgba(20,24,40,.4))}
+.pv-num .pv-big{background:linear-gradient(180deg,var(--text),color-mix(in srgb,var(--k-number) 70%,var(--text)));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.pv-num .rule{width:44px;background:linear-gradient(90deg,var(--k-number),color-mix(in srgb,var(--k-number) 30%,transparent))}
 </style>
 </head>
 <body>
-<div class="app grain" id="app">
+<div class="app grain" id="app" data-tool="pastia">
   <header>
-    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5.5" fill="currentColor" fill-opacity=".14" stroke="none"/><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4 4"/></svg>
+    <span class="tmark" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><g fill="currentColor" fill-opacity=".3" stroke="none"><rect x="3.5" y="3" width="9" height="11" rx="1.8"/></g><rect x="3.5" y="3" width="9" height="11" rx="1.8"/><path d="M6.2 3v-.6c0-.5.4-.9.9-.9h1.8c.5 0 .9.4.9.9V3"/><path d="M9.6 14v-2.2c0-.4.3-.7.7-.7h2.2"/></svg></span>
     <input id="q" placeholder="Pano geçmişinde ara…" autocomplete="off" spellcheck="false">
     <span class="qhint" aria-hidden="true"><kbd>⌃V</kbd></span>
     <div class="reset" id="reset">Filtreleri Temizle</div>
+    <button class="tb" id="groupBtn" type="button"></button>
     <button class="tb" id="theme" type="button"></button>
     <button class="tb" id="closeBtn" type="button" aria-label="Kapat" data-tip="Kapat · Esc"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg></button>
   </header>
@@ -283,6 +343,8 @@ const $ = s => document.querySelector(s);
 const app = $('#app'), input = $('#q'), listEl = $('#list'), pvEl = $('#preview'), kindsEl = $('#kinds'), timesEl = $('#times'), footEl = $('#foot'), resetEl = $('#reset'), toastEl = $('#toast');
 let items = [], thumbs = {}, view = [], sel = 0, q = '', kind = 'all', span = 'any', editing = null;
 const nowS = () => Date.now() / 1000;
+let grouping = 'kind';
+try { grouping = localStorage.getItem('pastia.group') === 'date' ? 'date' : 'kind'; } catch (e) {}
 
 // Duotone set: 16px grid, 1.6px round stroke; a soft fill (same colour, 20%) sits behind part of each glyph.
 const P = (soft, line) => `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><g fill="currentColor" fill-opacity=".28" stroke="none">${soft}</g>${line}</svg>`;
@@ -325,6 +387,20 @@ function syncTheme() {
 }
 new MutationObserver(syncTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 darkMQ.addEventListener('change', syncTheme);
+const groupBtn = $('#groupBtn');
+const G_KIND = P('<rect x="2.2" y="2.4" width="4.6" height="4.6" rx="1.3"/><rect x="2.2" y="9" width="4.6" height="4.6" rx="1.3"/>', '<rect x="2.2" y="2.4" width="4.6" height="4.6" rx="1.3"/><rect x="2.2" y="9" width="4.6" height="4.6" rx="1.3"/><path d="M9.6 4.7h4.2M9.6 11.3h4.2"/>');
+const G_DATE = P('<rect x="2.2" y="3.2" width="11.6" height="10.4" rx="2.2"/>', '<rect x="2.2" y="3.2" width="11.6" height="10.4" rx="2.2"/><path d="M2.4 6.6h11.2M5.4 2v2.2M10.6 2v2.2"/>');
+function syncGroup() {
+  const tip = grouping === 'kind' ? 'Türe Göre Gruplu' : 'Tarihe Göre Gruplu';
+  groupBtn.innerHTML = grouping === 'kind' ? G_KIND : G_DATE; groupBtn.dataset.tip = tip; groupBtn.setAttribute('aria-label', tip);
+}
+syncGroup();
+groupBtn.addEventListener('mousedown', e => {
+  e.preventDefault();
+  grouping = grouping === 'kind' ? 'date' : 'kind';
+  try { localStorage.setItem('pastia.group', grouping); } catch (err) {}
+  syncGroup(); refresh(view[sel]?.id);
+});
 themeBtn.addEventListener('mousedown', e => { e.preventDefault(); post({ action: 'toggleTheme' }); });
 $('#closeBtn').addEventListener('mousedown', e => { e.preventDefault(); post({ action: 'close' }); });
 syncTheme();
@@ -389,7 +465,11 @@ function titleOf(it) {
 }
 
 const titleTR = s => String(s).split(' ').map(w => w ? w.charAt(0).toLocaleUpperCase('tr') + w.slice(1) : w).join(' ');
-function groupOf(it) {
+// Grouping: by kind (text first, then screenshots, links, images) or by day. Inside a group the
+// newest item is always first. The choice is remembered where the webview allows it.
+const SECTIONS = [['Metin', it => it.kind === 'text' && classify(it) !== 'link'], ['Ekran Görüntüsü', it => it.kind === 'shot'], ['Bağlantı', it => classify(it) === 'link'], ['Görsel', it => it.kind === 'image']];
+const sectionOf = it => { const i = SECTIONS.findIndex(s => s[1](it)); return i < 0 ? 0 : i; };
+function dayOf(it) {
   if (it.t < 1e9) return 'Daha Eski';
   const diff = Math.round((day0(nowS()) - day0(it.t)) / DAY);
   if (diff <= 0) return 'Bugün';
@@ -459,9 +539,12 @@ function byNewest(a, b) { return (b.t - a.t) || (a.id < b.id ? -1 : a.id > b.id 
 
 function matchQ(it, toks) { return toks.every(tk => hay(it).includes(tk)); }
 
+function groupOf(it) { return grouping === 'kind' ? SECTIONS[sectionOf(it)][0] : dayOf(it); }
+
 function refresh(keepId) {
   const toks = tokens(q), K = KINDS.find(x => x.key === kind), S = SPANS.find(x => x.key === span);
   view = items.filter(it => K.test(it) && S.test(it) && matchQ(it, toks));
+  if (grouping === 'kind') view = view.map((it, i) => [sectionOf(it), i, it]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(x => x[2]);
   if (keepId) { const i = view.findIndex(it => it.id === keepId); sel = i >= 0 ? i : Math.min(sel, view.length - 1); }
   else sel = 0;
   sel = Math.max(0, Math.min(sel, view.length - 1));
@@ -543,7 +626,7 @@ function colorHTML(t) {
   if (d) { sat = d / (1 - Math.abs(2 * l - 1)); h = mx === R ? ((G - B) / d) % 6 : mx === G ? (B - R) / d + 2 : (R - G) / d + 4; h = (h * 60 + 360) % 360; }
   const A = a < 1 ? ` / ${Math.round(a * 100)}%` : '';
   const rows = [['HEX', hex], ['RGB', `${Math.round(r)} ${Math.round(g)} ${Math.round(b)}${A}`], ['HSL', `${Math.round(h)}° ${Math.round(sat * 100)}% ${Math.round(l * 100)}%${A}`]];
-  return `<div class="pv-card pv-color"><div class="pv-swatch"><i style="background:${esc(t)}"></i></div>` +
+  return `<div class="pv-card pv-color"><div class="pv-swatch" style="--sw:${esc(hex.slice(0, 7))}"><i style="background:${esc(t)}"></i></div>` +
     `<div class="pv-cv"><div class="pv-big">${esc(t)}</div><dl class="cv-rows">${rows.map(([k, x]) => `<dt>${k}</dt><dd>${esc(x)}</dd>`).join('')}</dl></div></div>`;
 }
 function mailHTML(t) {
@@ -568,11 +651,30 @@ function langOf(t) {
   if (/^[^{}\n]+\{[^}]*:[^}]*\}/m.test(s)) return 'CSS';
   return '';
 }
+// Code colours: a small tokenizer, enough to make a snippet readable at a glance. Comment syntax
+// depends on the language ("#" is a comment in Shell and a colour in CSS); unknown text stays plain.
+const HL_KW = /^(const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|import|from|export|default|class|extends|new|await|async|try|catch|finally|throw|typeof|instanceof|interface|type|enum|local|then|end|elseif|def|elif|in|not|and|or|is|lambda|pass|select|insert|update|delete|create|into|values|where|join|on|as|order|by|group|limit|null|undefined|true|false|nil|None|True|False|this|self)$/i;
+const HL_COM = { JavaScript: '\\/\\/.*$|\\/\\*.*?\\*\\/', TypeScript: '\\/\\/.*$|\\/\\*.*?\\*\\/', CSS: '\\/\\*.*?\\*\\/', Python: '#.*$', Shell: '#.*$', Lua: '--.*$', SQL: '--.*$', HTML: '<!--.*?-->' };
+function hl(line, lang) {
+  if (line.length > 600) return esc(line);
+  const re = new RegExp(`(${HL_COM[lang] || '$^'})|("(?:\\\\.|[^"\\\\])*"|'(?:\\\\.|[^'\\\\])*'|\`(?:\\\\.|[^\`\\\\])*\`)|(#[0-9a-fA-F]{3,8}\\b|\\b\\d+(?:\\.\\d+)?\\w*)|([A-Za-z_$][\\w$]*)|([{}()\\[\\];,.:=<>+\\-*/!&|?%]+)`, 'g');
+  let out = '', at = 0, m;
+  while ((m = re.exec(line))) {
+    if (!m[0]) { re.lastIndex++; continue; }
+    out += esc(line.slice(at, m.index)); at = m.index + m[0].length;
+    const rest = line.slice(at);
+    const c = m[1] ? 'com' : m[2] ? (/^\s*:/.test(rest) && lang === 'JSON' ? 'prop' : 'str') : m[3] ? 'num'
+      : m[4] ? (HL_KW.test(m[4]) && lang !== 'JSON' && lang !== 'CSS' && lang !== 'HTML' || /^(true|false|null)$/.test(m[4]) ? 'key' : /^\s*\(/.test(rest) ? 'fn' : (lang === 'CSS' && /^\s*:/.test(rest)) || /\.$/.test(line.slice(0, m.index)) ? 'prop' : '') : 'punc';
+    out += c ? `<span class="t-${c}">${esc(m[0])}</span>` : esc(m[0]);
+  }
+  return out + esc(line.slice(at));
+}
 function codeHTML(t) {
   const lang = langOf(t), lines = t.replace(/\n$/, '').split('\n');
-  return `<div class="pv-card pv-code">${lang ? `<div class="hd"><span class="lang">${lang}</span></div>` : ''}<ol>${lines.map(l => `<li>${esc(l) || ' '}</li>`).join('')}</ol></div>`;
+  return `<div class="pv-card pv-code"><div class="hd"><i class="dots" aria-hidden="true"></i>${lang ? `<span class="lang">${lang}</span>` : ''}<span class="sp"></span><span class="lc">${num(lines.length)} satır</span></div><ol>${lines.map(l => `<li>${hl(l, lang) || ' '}</li>`).join('')}</ol></div>`;
 }
 
+const META_ICON = { 'Tür': ['all', '--accent'], 'Uzunluk': ['text', '--k-code'], 'Kaynak': ['clip', '--k-number'], 'Kopyalandı': ['copy', '--k-path'], 'Güncellendi': ['edit', '--k-path'], 'Çekildi': ['shot', '--k-shot'], 'Boyut': ['image', '--k-image'], 'Dosya': ['path', '--k-path'], 'Ad': ['text', '--k-text'] };
 function renderPreview() {
   const it = view[sel];
   if (!it) { pvEl.innerHTML = ''; return; }
@@ -616,7 +718,7 @@ function renderPreview() {
   if (it.app) meta.push(['Kaynak', it.app]);
   meta.push([c === 'shot' ? 'Çekildi' : (it.edited ? 'Güncellendi' : 'Kopyalandı'), fullTime(it)]);
   const cols = meta.length <= 3 ? meta.length : meta.length === 4 ? 2 : 3;
-  pvEl.innerHTML = `<div class="pv-actions">${acts}</div><div class="pv-body${c === 'image' || c === 'shot' ? ' has-img' : ''}">${body}</div><dl class="pv-meta" style="--cols:${cols}">${meta.map(([k, v], i) => `<div${i === meta.length - 1 && meta.length % cols ? ` style="grid-column:span ${cols - meta.length % cols + 1}"` : ''}><dt>${esc(k)}</dt><dd title="${esc(v)}">${esc(v)}</dd></div>`).join('')}</dl>`;
+  pvEl.innerHTML = `<div class="pv-actions">${acts}</div><div class="pv-body${c === 'image' || c === 'shot' ? ' has-img' : ''}">${body}</div><dl class="pv-meta" style="--cols:${cols}">${meta.map(([k, v], i) => `<div${i === meta.length - 1 && meta.length % cols ? ` style="grid-column:span ${cols - meta.length % cols + 1}"` : ''}><i class="mi" style="--k:var(${META_ICON[k]?.[1] || '--k-text'})">${ICONS[META_ICON[k]?.[0] || 'text']}</i><span><dt>${esc(k)}</dt><dd title="${esc(v)}">${esc(v)}</dd></span></div>`).join('')}</dl>`;
 }
 
 function renderFooter() {

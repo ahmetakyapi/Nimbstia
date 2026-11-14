@@ -61,7 +61,7 @@ Click the mark in the menu bar. Everything about your day sits in one popover: w
 
 <img src="assets/screens/clipboard-dark.png" width="880" alt="Pastia clipboard history">
 
-Text, links, colours, copied images and your screenshots folder — always newest first, grouped by day. Filter by kind and time, search, pin, edit in place, copy without closing (<kbd>Cmd</kbd> <kbd>C</kbd>) or paste (<kbd>↩</kbd>). Screenshots you have not pinned move to the Trash after 30 days.
+Text, links, colours, copied images and your screenshots folder — grouped by kind (text first, then screenshots, links and images; one click switches to days), newest first inside each group. Code is shown with syntax colours. Filter by kind and time, search, pin, edit in place, copy without closing (<kbd>Cmd</kbd> <kbd>C</kbd>) or paste (<kbd>↩</kbd>). Screenshots you have not pinned move to the Trash after 30 days.
 
 ### Clipstia · screenshots — <kbd>Cmd</kbd> <kbd>.</kbd>
 

@@ -203,6 +203,23 @@
   #editor { position: absolute; display: none; z-index: 3; min-width: 4px; white-space: pre; outline: 1px dashed var(--accent-sel);
     outline-offset: 2px; box-shadow: 0 0 0 3px rgba(255, 255, 255, .22); -webkit-user-select: text; user-select: text; cursor: text; font-family: -apple-system, "SF Pro Text", sans-serif;
     font-weight: 600; line-height: 1.25; padding: 0; margin: 0; letter-spacing: normal; font-feature-settings: normal; }
+  /* ---- Aurora round: deeper glass, rounder chrome, the active tool is lit */
+  :root { --bar-bg: rgba(255, 255, 255, .86); --tool-on-bg: linear-gradient(160deg, rgba(14, 165, 233, .22), rgba(14, 165, 233, .1)); --tool-glow: 0 6px 14px -6px rgba(14, 165, 233, .6); }
+  :root[data-theme="dark"] { --bar-bg:rgba(26,28,37,.8); --bar-border:rgba(255,255,255,.14); --tip-bg:rgba(40,42,54,.95); --chip-bg:rgba(22,24,32,.88); --tool-on-bg:linear-gradient(160deg,rgba(56,189,248,.34),rgba(56,189,248,.16)); --tool-glow:0 6px 16px -6px rgba(56,189,248,.7) }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bar-bg:rgba(26,28,37,.8); --bar-border:rgba(255,255,255,.14); --tip-bg:rgba(40,42,54,.95); --chip-bg:rgba(22,24,32,.88); --tool-on-bg:linear-gradient(160deg,rgba(56,189,248,.34),rgba(56,189,248,.16)); --tool-glow:0 6px 16px -6px rgba(56,189,248,.7) } }
+  .bar { padding: 7px; gap: 3px; border-radius: 18px; -webkit-backdrop-filter: blur(30px) saturate(1.8); backdrop-filter: blur(30px) saturate(1.8); }
+  #tools { width: 50px; }
+  .btn { width: 36px; height: 34px; border-radius: 11px; }
+  #actions .btn { width: 34px; }
+  .btn.active, .btn.active:hover, #tools .nb-glide { box-shadow: inset 0 0 0 1px var(--tool-on-ring), var(--tool-glow); }
+  #tools .nb-glide { border-radius: 11px; }
+  #actions .btn.primary { height: 34px; padding: 0 15px 0 12px; border-radius: 11px; }
+  #pill { height: 24px; line-height: 24px; padding: 0 10px; border-radius: 999px; }
+  .sw { width: 15px; height: 15px; box-shadow: inset 0 0 0 1px var(--sw-ring), inset 0 1px 0 rgba(255, 255, 255, .35); }
+  #colors { grid-template-columns: 15px 15px; }
+  .sw.active { box-shadow: inset 0 0 0 1px var(--sw-ring), 0 0 0 2px var(--bar-bg), 0 0 0 3.5px var(--sw-active), 0 4px 10px -2px var(--sw-active); }
+  #tip { border-radius: 10px; height: 28px; }
+  .h { box-shadow: 0 1px 3px rgba(0, 0, 0, .35), 0 0 0 .5px rgba(0, 0, 0, .12), 0 0 0 3px rgba(14, 165, 233, .22); }
 </style>
 </head>
 <body>

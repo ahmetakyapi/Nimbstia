@@ -2,15 +2,22 @@
    Panels link it with <link rel="stylesheet" href="theme.css">. Webview panels get it inlined by
    panel.lua (fonts as data URIs); file:// pages (shot.html, assets/*.html) load it as a file.
 
-   Direction: bright, friendly and glanceable, like good macOS widgets. Soft neutral surfaces, white
-   cards in light and graphite (not black) in dark, one sky accent for focus and the primary action,
-   colour where it carries meaning (status, app identity). Inter for everything people read (built for
-   screens, has Turkish and the ⌘⌥⌃⇧ key glyphs); Geist Mono only for code, hashes and hosts.
+   Direction: bright, friendly and glanceable, like good macOS widgets. Inter for everything people
+   read (built for screens, has Turkish and the ⌘⌥⌃⇧ key glyphs); Geist Mono only for code, hashes
+   and hosts.
 
-   Ribbon round (2026-11): cool zinc page, flat cards (1px ring + small shadow, no wash or grain),
-   sky accent split three ways for contrast: --accent (#0ea5e9) for rings, lines and icons only
-   (2.77:1, never text), --accent-ink (#0369a1, 5.93:1) for text, --accent-fill (#0273b6, white
-   text 5.08:1) for fills. One selected recipe for every panel: --sel-bg + 1px --sel-line. */
+   Aurora round (2026-11): the hub's light now reaches every panel.
+     surfaces  light is a cool porcelain page with white cards that float on layered soft shadows;
+               dark is deep ink (blue-black, never grey and never pure black) lit from above.
+     identity  every tool has its own colour pair (--tool, --tool-deep) and two companions
+               (--tool2, --tool3). <div class="app" data-tool="pastia"> gets an aurora behind its
+               header (--wash), a tight tinted glow (it must fit the 16px window margin) and the header badge (.tmark). Identity is
+               atmosphere only: it never carries state.
+     accent    one sky family for focus, selection and the primary action in every tool, split
+               three ways for contrast: --accent for rings, lines and icons only (never text),
+               --accent-ink for text, --accent-fill for fills under white text. The primary
+               button is deep sky under white text in light and luminous sky under ink in dark.
+     selected  one recipe everywhere: --sel-bg (a soft sky gradient) + 1px --sel-line + --sel-glow. */
 
 @font-face{font-family:"Inter";src:url("assets/fonts/InterVariable.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block}
 @font-face{font-family:"Geist Mono";src:url("assets/fonts/GeistMono-Variable.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block;unicode-range:U+0000-218F,U+2200-22FF,U+2400-FFFF}
@@ -36,24 +43,26 @@
   /* radii */
   --r-xs:6px; --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:24px; --r-pill:999px;
 
-  /* surfaces (light): cool zinc neutrals, white cards (faint #66666e, not zinc-500: 5.18:1 on bg) */
-  --bg:#f4f4f5; --bg2:#ececee; --top:#fafafa; --pane:#ffffff; --ctl:#ffffff; --card:#ffffff;
-  --group-bg:#f7f7f8; --pv-bg:#f4f4f5; --pv-card:#ffffff;
-  --line:rgba(24,24,27,.10); --line2:rgba(24,24,27,.16);
-  --text:#18181b; --muted:#52525b; --faint:#66666e;
-  --hover:rgba(24,24,27,.045); --chip:rgba(24,24,27,.06); --seg-on:#ffffff; --mark:rgba(255,200,0,.42);
+  /* surfaces (light): cool porcelain page, white cards (faint #626675 is 5.3:1 on --bg) */
+  --bg:#f2f3f7; --bg2:#e9ebf1; --top:#fafbfd; --pane:#ffffff; --ctl:#ffffff; --card:#ffffff;
+  --group-bg:#f6f7fa; --pv-bg:#eef0f5; --pv-card:#ffffff;
+  --line:rgba(22,26,45,.09); --line2:rgba(22,26,45,.15);
+  --text:#14151a; --muted:#4a4d59; --faint:#626675;
+  --hover:rgba(22,26,45,.045); --chip:rgba(22,26,45,.058); --seg-on:#ffffff; --mark:rgba(255,200,0,.42);
 
   /* tooltips and toasts: a white card in light, graphite ink in dark (no near-black fills in light) */
   --tt-bg:#ffffff; --tt-fg:var(--text); --tt-shadow:0 0 0 .5px rgba(20,24,40,.14),0 8px 24px -6px rgba(20,24,40,.22);
   /* ink: dark-theme tooltips and toasts (graphite, never pure black) */
   --ink:#24262f; --on-ink:#ffffff; --ink-hover:#30333d; --ink-shadow:0 1px 0 rgba(255,255,255,.1) inset,0 4px 12px -2px rgba(20,24,40,.25);
 
-  /* accent (sky): rings/lines/icons, ink for text, fill for buttons; no coloured glow */
+  /* accent (sky): rings/lines/icons, ink for text, fill for buttons */
   --accent:#0ea5e9; --accent-fill:#0273b6; --accent-hover:#0369a1; --accent-press:#075985; --accent-ink:#0369a1;
-  --accent-soft:#f0f9ff; --accent-line:#7dd3fc; --accent-ring:rgba(14,165,233,.55); --on-accent:#ffffff;
-  --accent-grad:linear-gradient(180deg,#0284c7 0%,#0369a1 100%); --accent-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 1px 2px rgba(24,24,27,.15);
-  --sel-bg:var(--accent-soft); --sel-line:var(--accent);
-  --kbd-bg:#fafafa; --kbd-line:#d4d4d8;
+  --accent-soft:#eaf6fe; --accent-line:#7dd3fc; --accent-ring:rgba(14,165,233,.55); --on-accent:#ffffff;
+  --accent-grad:linear-gradient(180deg,#0a84cf 0%,#0367a6 100%);
+  --accent-shadow:0 1px 0 rgba(255,255,255,.26) inset,0 0 0 .5px rgba(3,80,130,.5),0 1px 2px rgba(3,60,100,.2),0 8px 18px -8px rgba(2,132,199,.6);
+  --sel-bg:linear-gradient(100deg,#e3f3fe 0%,#f0f9ff 60%,#f4fbff 100%); --sel-line:var(--accent);
+  --sel-glow:0 8px 22px -12px rgba(14,165,233,.55);
+  --kbd-bg:linear-gradient(180deg,#ffffff,#f4f5f8); --kbd-line:rgba(22,26,45,.17);
   --primary:var(--accent-grad); --on-primary:#ffffff; --primary-shadow:var(--accent-shadow);
 
   /* status */
@@ -65,83 +74,120 @@
   --ink-code:#6d28d9;
   --tile-mix:11%; --tile-ring:26%; --glyph:90%;
 
+  /* code colours (Pastia preview, Repostia): each at least 4.5:1 on --pv-card */
+  --c-key:#9333ea; --c-str:#0f7b4f; --c-num:#b45309; --c-com:#727685; --c-fn:#0369a1; --c-punc:#626675; --c-prop:#be185d;
+
   /* depth */
-  --card-lift:0 0 0 1px var(--line),0 1px 2px rgba(0,0,0,.05);
+  --card-lift:0 0 0 1px rgba(22,26,45,.07),0 1px 2px rgba(22,26,45,.05),0 10px 24px -16px rgba(22,26,45,.22);
   --card-shadow:0 1px 2px rgba(20,24,40,.05);
   --ctl-shadow:0 1px 1px rgba(20,24,40,.05);
-  --shadow:0 0 0 .5px rgba(20,24,40,.18),0 1px 1px rgba(20,24,40,.04),0 12px 24px -8px rgba(20,24,40,.14),0 36px 72px -18px rgba(20,24,40,.28);
+  --shadow:0 0 0 .5px rgba(20,24,40,.18),0 1px 1px rgba(20,24,40,.04),0 12px 24px -8px rgba(20,24,40,.14),0 36px 72px -18px rgba(20,24,40,.3);
   --pop-shadow:0 0 0 .5px rgba(20,24,40,.14),0 12px 32px -6px rgba(20,24,40,.22);
   --rim:inset 0 1px 0 rgba(255,255,255,.9);
 
-  /* window canvas */
-  --app-bg:#f4f4f5;
+  /* window canvas + aurora strengths (how much of each tool colour the wash takes) */
+  --app-bg:linear-gradient(180deg,#f4f5f9 0,#eceef4 100%);
   --wash:none;
+  --wash-1:46%; --wash-2:36%; --wash-3:26%; --wash-4:18%; --tool-halo:32%;
 
-  /* film grain: kept as a token for marketing pages (README hero); panels are flat */
+  /* film grain: a whisper of texture on the aurora canvas, under the cards (.grain::after) */
   --grain:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-  --grain-op:0;
+  --grain-op:.05;
   color-scheme:light;
 }
 
-/* surfaces (dark): near-black zinc, light from above */
+/* surfaces (dark): deep ink, light from above */
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#1f2024; --bg2:#1a1b1f; --top:#26272c; --pane:#1b1c20; --ctl:rgba(255,255,255,.07); --card:#26272c;
-  --group-bg:#222327; --pv-bg:#1b1c20; --pv-card:#26272c;
-  --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.14);
-  --text:#f3f4f7; --muted:#b9bcc8; --faint:#9094a3;
+  --bg:#16171d; --bg2:#0f1014; --top:#1d1e26; --pane:#121318; --ctl:rgba(255,255,255,.07); --card:#1e2028;
+  --group-bg:#191a21; --pv-bg:#0e0f13; --pv-card:#1c1e26;
+  --line:rgba(255,255,255,.085); --line2:rgba(255,255,255,.15);
+  --text:#f4f5f9; --muted:#b6bac8; --faint:#8c91a3;
   --hover:rgba(255,255,255,.055); --chip:rgba(255,255,255,.075); --seg-on:rgba(255,255,255,.14); --mark:rgba(255,196,0,.3);
-  --ink:#3a3c45; --on-ink:#ffffff; --ink-hover:#454852; --ink-shadow:0 1px 0 rgba(255,255,255,.12) inset,0 6px 16px -4px rgba(0,0,0,.5);
+  --ink:#333541; --on-ink:#ffffff; --ink-hover:#40434f; --ink-shadow:0 1px 0 rgba(255,255,255,.12) inset,0 6px 16px -4px rgba(0,0,0,.5);
   --tt-bg:var(--ink); --tt-fg:var(--on-ink); --tt-shadow:var(--ink-shadow),0 16px 36px -10px rgba(0,0,0,.45);
   --accent:#38bdf8; --accent-fill:#0273b6; --accent-hover:#0284c7; --accent-press:#0369a1; --accent-ink:#7dd3fc;
-  --accent-soft:rgba(56,189,248,.12); --accent-line:rgba(56,189,248,.45); --accent-ring:rgba(56,189,248,.6); --on-accent:#ffffff;
-  --accent-grad:linear-gradient(180deg,#0284c7 0%,#0369a1 100%); --accent-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 1px 2px rgba(0,0,0,.35);
-  --sel-bg:var(--accent-soft); --sel-line:var(--accent);
-  --kbd-bg:rgba(255,255,255,.06); --kbd-line:rgba(255,255,255,.14);
-  --primary:var(--accent-grad); --on-primary:#ffffff; --primary-shadow:var(--accent-shadow);
+  --accent-soft:rgba(56,189,248,.13); --accent-line:rgba(56,189,248,.45); --accent-ring:rgba(56,189,248,.6); --on-accent:#ffffff;
+  --accent-grad:linear-gradient(180deg,#5ccbff 0%,#1ea7ee 100%);
+  --accent-shadow:0 1px 0 rgba(255,255,255,.4) inset,0 0 0 .5px rgba(125,211,252,.5),0 8px 22px -8px rgba(56,189,248,.65);
+  --sel-bg:linear-gradient(100deg,rgba(56,189,248,.2) 0%,rgba(56,189,248,.09) 60%,rgba(56,189,248,.06) 100%); --sel-line:rgba(56,189,248,.8);
+  --sel-glow:0 10px 26px -12px rgba(56,189,248,.6);
+  --kbd-bg:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.045)); --kbd-line:rgba(255,255,255,.15);
+  --primary:var(--accent-grad); --on-primary:#03273b; --primary-shadow:var(--accent-shadow);
   --ok:#4ade80; --danger:#ff7a8a; --warn:#fbbf24; --warn-soft:rgba(251,191,36,.14);
   --ok-bar:#34d399; --warn-bar:#fbbf24; --bad-bar:#fb7185;
   --k-text:#a7abb8; --k-code:#a78bfa; --k-link:var(--accent-ink); --k-mail:#f472b6; --k-path:#fbbf24; --k-number:#2dd4bf; --k-image:#fb7185; --k-shot:#4ade80; --k-pin:#fb923c;
   --ink-code:#c4b5fd;
   --tile-mix:18%; --tile-ring:30%; --glyph:100%;
-  --card-lift:0 0 0 1px var(--line),inset 0 1px 0 rgba(255,255,255,.04);
+  --c-key:#c4a1ff; --c-str:#7ee2a8; --c-num:#fbbf6b; --c-com:#8c91a3; --c-fn:#7dd3fc; --c-punc:#9aa0b3; --c-prop:#f9a8d4;
+  --card-lift:0 0 0 1px var(--line),inset 0 1px 0 rgba(255,255,255,.055),0 12px 26px -18px rgba(0,0,0,.8);
   --card-shadow:none; --ctl-shadow:none;
-  --shadow:0 0 0 .5px rgba(255,255,255,.16),inset 0 1px 0 rgba(255,255,255,.07),0 24px 60px -12px rgba(0,0,0,.6),0 8px 20px -8px rgba(0,0,0,.4);
+  --shadow:0 0 0 .5px rgba(255,255,255,.17),inset 0 1px 0 rgba(255,255,255,.08),0 24px 60px -12px rgba(0,0,0,.65),0 8px 20px -8px rgba(0,0,0,.45);
   --pop-shadow:0 0 0 .5px rgba(255,255,255,.16),0 16px 40px -8px rgba(0,0,0,.55);
   --rim:inset 0 1px 0 rgba(255,255,255,.06);
-  --app-bg:linear-gradient(180deg,#25262b 0,#1d1e22 100%);
+  --app-bg:linear-gradient(180deg,#14151b 0,#0d0e12 100%);
   --wash:none;
-  --grain-op:0;
+  --wash-1:58%; --wash-2:44%; --wash-3:30%; --wash-4:20%; --tool-halo:42%;
+  --grain-op:.09;
   color-scheme:dark;
 }}
 :root[data-theme="dark"]{
-  --bg:#1f2024; --bg2:#1a1b1f; --top:#26272c; --pane:#1b1c20; --ctl:rgba(255,255,255,.07); --card:#26272c;
-  --group-bg:#222327; --pv-bg:#1b1c20; --pv-card:#26272c;
-  --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.14);
-  --text:#f3f4f7; --muted:#b9bcc8; --faint:#9094a3;
+  --bg:#16171d; --bg2:#0f1014; --top:#1d1e26; --pane:#121318; --ctl:rgba(255,255,255,.07); --card:#1e2028;
+  --group-bg:#191a21; --pv-bg:#0e0f13; --pv-card:#1c1e26;
+  --line:rgba(255,255,255,.085); --line2:rgba(255,255,255,.15);
+  --text:#f4f5f9; --muted:#b6bac8; --faint:#8c91a3;
   --hover:rgba(255,255,255,.055); --chip:rgba(255,255,255,.075); --seg-on:rgba(255,255,255,.14); --mark:rgba(255,196,0,.3);
-  --ink:#3a3c45; --on-ink:#ffffff; --ink-hover:#454852; --ink-shadow:0 1px 0 rgba(255,255,255,.12) inset,0 6px 16px -4px rgba(0,0,0,.5);
+  --ink:#333541; --on-ink:#ffffff; --ink-hover:#40434f; --ink-shadow:0 1px 0 rgba(255,255,255,.12) inset,0 6px 16px -4px rgba(0,0,0,.5);
   --tt-bg:var(--ink); --tt-fg:var(--on-ink); --tt-shadow:var(--ink-shadow),0 16px 36px -10px rgba(0,0,0,.45);
   --accent:#38bdf8; --accent-fill:#0273b6; --accent-hover:#0284c7; --accent-press:#0369a1; --accent-ink:#7dd3fc;
-  --accent-soft:rgba(56,189,248,.12); --accent-line:rgba(56,189,248,.45); --accent-ring:rgba(56,189,248,.6); --on-accent:#ffffff;
-  --accent-grad:linear-gradient(180deg,#0284c7 0%,#0369a1 100%); --accent-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 1px 2px rgba(0,0,0,.35);
-  --sel-bg:var(--accent-soft); --sel-line:var(--accent);
-  --kbd-bg:rgba(255,255,255,.06); --kbd-line:rgba(255,255,255,.14);
-  --primary:var(--accent-grad); --on-primary:#ffffff; --primary-shadow:var(--accent-shadow);
+  --accent-soft:rgba(56,189,248,.13); --accent-line:rgba(56,189,248,.45); --accent-ring:rgba(56,189,248,.6); --on-accent:#ffffff;
+  --accent-grad:linear-gradient(180deg,#5ccbff 0%,#1ea7ee 100%);
+  --accent-shadow:0 1px 0 rgba(255,255,255,.4) inset,0 0 0 .5px rgba(125,211,252,.5),0 8px 22px -8px rgba(56,189,248,.65);
+  --sel-bg:linear-gradient(100deg,rgba(56,189,248,.2) 0%,rgba(56,189,248,.09) 60%,rgba(56,189,248,.06) 100%); --sel-line:rgba(56,189,248,.8);
+  --sel-glow:0 10px 26px -12px rgba(56,189,248,.6);
+  --kbd-bg:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.045)); --kbd-line:rgba(255,255,255,.15);
+  --primary:var(--accent-grad); --on-primary:#03273b; --primary-shadow:var(--accent-shadow);
   --ok:#4ade80; --danger:#ff7a8a; --warn:#fbbf24; --warn-soft:rgba(251,191,36,.14);
   --ok-bar:#34d399; --warn-bar:#fbbf24; --bad-bar:#fb7185;
   --k-text:#a7abb8; --k-code:#a78bfa; --k-link:var(--accent-ink); --k-mail:#f472b6; --k-path:#fbbf24; --k-number:#2dd4bf; --k-image:#fb7185; --k-shot:#4ade80; --k-pin:#fb923c;
   --ink-code:#c4b5fd;
   --tile-mix:18%; --tile-ring:30%; --glyph:100%;
-  --card-lift:0 0 0 1px var(--line),inset 0 1px 0 rgba(255,255,255,.04);
+  --c-key:#c4a1ff; --c-str:#7ee2a8; --c-num:#fbbf6b; --c-com:#8c91a3; --c-fn:#7dd3fc; --c-punc:#9aa0b3; --c-prop:#f9a8d4;
+  --card-lift:0 0 0 1px var(--line),inset 0 1px 0 rgba(255,255,255,.055),0 12px 26px -18px rgba(0,0,0,.8);
   --card-shadow:none; --ctl-shadow:none;
-  --shadow:0 0 0 .5px rgba(255,255,255,.16),inset 0 1px 0 rgba(255,255,255,.07),0 24px 60px -12px rgba(0,0,0,.6),0 8px 20px -8px rgba(0,0,0,.4);
+  --shadow:0 0 0 .5px rgba(255,255,255,.17),inset 0 1px 0 rgba(255,255,255,.08),0 24px 60px -12px rgba(0,0,0,.65),0 8px 20px -8px rgba(0,0,0,.45);
   --pop-shadow:0 0 0 .5px rgba(255,255,255,.16),0 16px 40px -8px rgba(0,0,0,.55);
   --rim:inset 0 1px 0 rgba(255,255,255,.06);
-  --app-bg:linear-gradient(180deg,#25262b 0,#1d1e22 100%);
+  --app-bg:linear-gradient(180deg,#14151b 0,#0d0e12 100%);
   --wash:none;
-  --grain-op:0;
+  --wash-1:58%; --wash-2:44%; --wash-3:30%; --wash-4:20%; --tool-halo:42%;
+  --grain-op:.09;
   color-scheme:dark;
 }
+
+/* TOOL IDENTITY -----------------------------------------------------------------------
+   <div class="app" data-tool="…">: the colour each tool wears in the hub's tile row, carried into
+   its own panel as light. --wash paints the aurora (the panel puts it on .app::before), the outer
+   halo tints the window shadow, .tmark is the header badge. Nothing here animates. */
+.app{--tool:#0ea5e9;--tool-deep:#0369a1;--tool2:#818cf8;--tool3:#2dd4bf}
+.app[data-tool="pastia"]{--tool:#3b82f6;--tool-deep:#1d4ed8;--tool2:#22d3ee;--tool3:#818cf8}
+.app[data-tool="clipstia"]{--tool:#22c55e;--tool-deep:#15803d;--tool2:#2dd4bf;--tool3:#a3e635}
+.app[data-tool="panestia"]{--tool:#8b5cf6;--tool-deep:#6d28d9;--tool2:#ec4899;--tool3:#38bdf8}
+.app[data-tool="repostia"]{--tool:#f59e0b;--tool-deep:#c2410c;--tool2:#f43f5e;--tool3:#a855f7}
+.app[data-tool="lexstia"]{--tool:#14b8a6;--tool-deep:#0f766e;--tool2:#38bdf8;--tool3:#a3e635}
+.app[data-tool]{
+  --wash:radial-gradient(58% 52% at 0% 0%,color-mix(in srgb,var(--tool) var(--wash-1),transparent) 0,transparent 72%),
+         radial-gradient(44% 40% at 52% -8%,color-mix(in srgb,var(--tool3) var(--wash-3),transparent) 0,transparent 74%),
+         radial-gradient(52% 50% at 100% 0%,color-mix(in srgb,var(--tool2) var(--wash-2),transparent) 0,transparent 72%),
+         radial-gradient(56% 50% at 100% 100%,color-mix(in srgb,var(--tool) var(--wash-4),transparent) 0,transparent 72%),
+         radial-gradient(48% 46% at 0% 100%,color-mix(in srgb,var(--tool2) var(--wash-4),transparent) 0,transparent 72%);
+  box-shadow:var(--shadow),0 8px 22px -10px color-mix(in srgb,var(--tool) var(--tool-halo),transparent)}
+/* header badge: the tool's glyph on its colour, the same tile the hub shows */
+.tmark{position:relative;flex:none;width:34px;height:34px;border-radius:11px;display:grid;place-items:center;color:#fff;overflow:hidden;
+  background:linear-gradient(155deg,color-mix(in srgb,var(--tool) 86%,#fff) 0%,var(--tool) 42%,var(--tool-deep) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.42),inset 0 0 0 .5px rgba(0,0,0,.14),0 8px 16px -8px color-mix(in srgb,var(--tool) 90%,transparent),0 1px 2px rgba(20,24,40,.18)}
+.tmark::before{content:"";position:absolute;inset:0;background:radial-gradient(80% 60% at 28% 8%,rgba(255,255,255,.38),transparent 70%);pointer-events:none}
+.tmark svg{position:relative;width:18px;height:18px;filter:drop-shadow(0 1px 1px rgba(0,0,0,.18))}
+
 
 /* Theme switch cross-fade: the colour tokens are typed so they interpolate. */
 @property --bg{syntax:"<color>";inherits:true;initial-value:#f4f4f5}
@@ -187,10 +233,10 @@ input::placeholder,textarea::placeholder{color:var(--faint);opacity:.85}
 .duo{letter-spacing:var(--track-display);font-weight:680}
 .duo span{color:var(--faint)}
 
-/* Keycap: flat zinc cap with a hairline (Ribbon); also used inline in hint text. */
+/* Keycap: a small lit cap with a hairline; also used inline in hint text. */
 kbd,.kbd{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:6px;
   font:600 11px/1 var(--font-ui);letter-spacing:.01em;color:var(--muted);white-space:nowrap;
-  background:var(--kbd-bg);box-shadow:inset 0 0 0 1px var(--kbd-line),0 1px 0 rgba(24,24,27,.05)}
+  background:var(--kbd-bg);box-shadow:inset 0 0 0 1px var(--kbd-line),0 1px 0 rgba(22,26,45,.08)}
 p kbd,.hint kbd,.empty kbd{vertical-align:1px;margin:0 1px}
 
 /* Tooltip on icon buttons (.tb, .ib) with data-tip: appears after a short rest, so sweeping the pointer shows nothing. */
@@ -202,7 +248,7 @@ p kbd,.hint kbd,.empty kbd{vertical-align:1px;margin:0 1px}
 :focus-visible{outline:2px solid var(--accent-ring);outline-offset:2px}
 
 /* Grain overlay: add class="grain" to a positioned container. */
-.grain::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background-image:var(--grain);background-size:160px;opacity:var(--grain-op);mix-blend-mode:overlay;z-index:50}
+.grain::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background-image:var(--grain);background-size:160px;opacity:var(--grain-op);mix-blend-mode:overlay;z-index:-1}
 
 /* Cursor spotlight on cards: set --mx/--my from JS (see spot() in the panels). */
 .spot{position:relative;isolation:isolate}
@@ -273,9 +319,9 @@ p kbd,.hint kbd,.empty kbd{vertical-align:1px;margin:0 1px}
 /* Moving selection (motion.js NB.glide): one element, moved with transform. A held arrow key
    shortens --glide-dur so it never lags behind. */
 .nb-glide{position:absolute;left:0;top:0;z-index:0;pointer-events:none;border-radius:var(--r-md);
-  background:var(--sel-bg);box-shadow:inset 0 0 0 1px var(--sel-line);
+  background:var(--sel-bg);box-shadow:inset 0 0 0 1px var(--sel-line),var(--sel-glow);
   transition:transform var(--glide-dur,.18s) var(--ease-glide);will-change:transform}
-.nb-glide.ring{z-index:3;background:none;box-shadow:0 0 0 2px var(--accent)}
+.nb-glide.ring{z-index:3;background:none;box-shadow:0 0 0 2px var(--accent),0 14px 34px -14px var(--accent)}
 
 /* Segmented control thumb (motion.js NB.thumb). */
 .seg-thumb{position:absolute;z-index:0;pointer-events:none;border-radius:var(--r-pill);transform-origin:0 50%;
