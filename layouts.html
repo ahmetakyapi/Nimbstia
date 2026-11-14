@@ -175,13 +175,14 @@ mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
 #closeBtn{color:var(--muted)}
 #closeBtn:hover{color:#fff;background:#e5484d}
 /* ---------------------------------------------------------------- Panestia, Aurora round
-   Violet light behind the header; every card is a small lit stage and the screens wear a livelier wallpaper. */
-:root{--screen:radial-gradient(80% 110% at 0% 0%,#c9d8ff 0%,transparent 60%),radial-gradient(70% 100% at 100% 100%,#ffd3c2 0%,transparent 58%),radial-gradient(60% 90% at 90% 0%,#e3ccff 0%,transparent 66%),radial-gradient(50% 70% at 20% 100%,#c6f1e7 0%,transparent 70%),linear-gradient(140deg,#dfe4fb 0%,#ecdff6 50%,#fbe6e0 100%);
-  --lift:0 0 0 1px var(--line),0 2px 4px rgba(22,26,45,.05),0 22px 40px -22px color-mix(in srgb,var(--tool,#8b5cf6) 55%,rgba(22,26,45,.3));
+   A hint of violet behind the header; every card is a small lit stage on a calm slate wallpaper. */
+:root{--screen:radial-gradient(80% 110% at 0% 0%,#d5e3f8 0%,transparent 62%),radial-gradient(70% 100% at 100% 100%,#d9ece8 0%,transparent 60%),linear-gradient(140deg,#e6ebf3 0%,#eaedf3 50%,#edf0f3 100%);
+  --lift:0 0 0 1px var(--line),0 2px 4px rgba(22,26,45,.05),0 22px 40px -22px rgba(22,26,45,.32);
   --sel-ring:0 0 0 2px var(--accent),0 18px 40px -18px var(--accent)}
-:root[data-theme="dark"]{--screen:radial-gradient(80% 110% at 0% 0%,#3d55a8 0%,transparent 60%),radial-gradient(70% 100% at 100% 100%,#8a3f5c 0%,transparent 58%),radial-gradient(60% 90% at 90% 0%,#6b3fb0 0%,transparent 66%),radial-gradient(50% 70% at 20% 100%,#1f6f78 0%,transparent 70%),linear-gradient(140deg,#262c52 0%,#33274f 50%,#40283a 100%);--win:rgba(34,36,48,.84);--win-bar:rgba(52,54,70,.9);--lift:0 0 0 1px var(--line2),inset 0 1px 0 rgba(255,255,255,.06),0 24px 44px -22px color-mix(in srgb,var(--tool,#8b5cf6) 60%,#000);--sel-ring:0 0 0 2px var(--accent),0 18px 44px -18px var(--accent)}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--screen:radial-gradient(80% 110% at 0% 0%,#3d55a8 0%,transparent 60%),radial-gradient(70% 100% at 100% 100%,#8a3f5c 0%,transparent 58%),radial-gradient(60% 90% at 90% 0%,#6b3fb0 0%,transparent 66%),radial-gradient(50% 70% at 20% 100%,#1f6f78 0%,transparent 70%),linear-gradient(140deg,#262c52 0%,#33274f 50%,#40283a 100%);--win:rgba(34,36,48,.84);--win-bar:rgba(52,54,70,.9);--lift:0 0 0 1px var(--line2),inset 0 1px 0 rgba(255,255,255,.06),0 24px 44px -22px color-mix(in srgb,var(--tool,#8b5cf6) 60%,#000);--sel-ring:0 0 0 2px var(--accent),0 18px 44px -18px var(--accent)}}
-
+:root[data-theme="dark"]{--screen:radial-gradient(80% 110% at 0% 0%,#2a3b60 0%,transparent 62%),radial-gradient(70% 100% at 100% 100%,#1f3a44 0%,transparent 60%),linear-gradient(140deg,#1b2030 0%,#1a1e2a 50%,#1b212b 100%);--win:rgba(34,36,46,.86);--win-bar:rgba(50,53,66,.92);--lift:0 0 0 1px var(--line2),inset 0 1px 0 rgba(255,255,255,.06),0 24px 44px -22px #000;--sel-ring:0 0 0 2px var(--accent),0 18px 44px -18px var(--accent)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--screen:radial-gradient(80% 110% at 0% 0%,#2a3b60 0%,transparent 62%),radial-gradient(70% 100% at 100% 100%,#1f3a44 0%,transparent 60%),linear-gradient(140deg,#1b2030 0%,#1a1e2a 50%,#1b212b 100%);--win:rgba(34,36,46,.86);--win-bar:rgba(50,53,66,.92);--lift:0 0 0 1px var(--line2),inset 0 1px 0 rgba(255,255,255,.06),0 24px 44px -22px #000;--sel-ring:0 0 0 2px var(--accent),0 18px 44px -18px var(--accent)}}
+/* the violet stays in the badge; the canvas only hints at it */
+.app[data-tool]{--tool2:#38bdf8;--tool3:#2dd4bf;--wash-1:20%;--wash-2:13%;--wash-3:8%;--wash-4:0%}
 .app{border-radius:20px;isolation:isolate}
 .app::before{content:"";position:absolute;inset:0 0 auto;height:280px;background:var(--wash);pointer-events:none;z-index:-1;-webkit-mask-image:linear-gradient(180deg,#000 30%,transparent);mask-image:linear-gradient(180deg,#000 30%,transparent)}
 header{height:64px;gap:13px;padding-left:16px;background:none}
@@ -190,8 +191,7 @@ header{height:64px;gap:13px;padding-left:16px;background:none}
 .target .live{width:7px;height:7px;box-shadow:0 0 0 3px color-mix(in srgb,var(--ok-bar) 24%,transparent)}
 .target.none .live{box-shadow:none}
 h2.eyebrow{font-size:13.5px}
-h2 small{background:color-mix(in srgb,var(--tool) 14%,transparent);color:color-mix(in srgb,var(--tool) 62%,var(--text))}
-.card{border-radius:22px;padding:8px 8px 15px;background:linear-gradient(180deg,var(--card),color-mix(in srgb,var(--card) 94%,var(--tool)))}
+.card{border-radius:22px;padding:8px 8px 15px}
 .card:hover{transform:translateY(-2px)}
 .card.sel{background:var(--sel-bg)}
 .screen{border-radius:15px;box-shadow:inset 0 0 0 1px var(--screen-line),inset 0 1px 0 rgba(255,255,255,.25)}
@@ -200,17 +200,13 @@ h2 small{background:color-mix(in srgb,var(--tool) 14%,transparent);color:color-m
 .app-ic{width:26px;height:26px;border-radius:8px;font-size:12.5px;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.3),0 4px 8px -3px color-mix(in srgb,var(--c) 75%,transparent)}
 .card:hover .win,.card.sel .win{transform:translateY(-1px)}
 .card.sel .cell.focus .win{box-shadow:0 0 0 2px var(--accent),0 8px 18px -8px var(--accent),var(--win-shadow)}
-.meta .idx{display:grid;place-items:center;width:20px;height:20px;border-radius:7px;font-size:11.5px;color:color-mix(in srgb,var(--tool) 60%,var(--text));background:color-mix(in srgb,var(--tool) 13%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--tool) 22%,transparent);align-self:start}
+.meta .idx{display:grid;place-items:center;width:20px;height:20px;border-radius:7px;font-size:11.5px;color:var(--muted);background:var(--chip);box-shadow:inset 0 0 0 1px var(--line);align-self:start}
 .meta .idx.off{color:var(--faint);background:var(--chip);box-shadow:none;opacity:1}
 .card.sel .meta .idx{color:var(--accent-ink);background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent-line)}
 .meta{column-gap:10px;margin:13px 8px 0}
 .small .card{border-radius:14px}
 .small .meta .idx{display:none}
 .small .app-ic{width:14px;height:14px;border-radius:4px;box-shadow:none}
-.small .win{--c:var(--tool)}
-.small .win .body{background:color-mix(in srgb,var(--tool) 16%,transparent)}
-.small .win .bar{background:color-mix(in srgb,var(--tool) 24%,var(--win-bar))}
-.small .card:hover .win .body,.small .card.sel .win .body{background:color-mix(in srgb,var(--tool) 30%,transparent)}
 .last{box-shadow:inset 0 0 0 1px var(--accent-line)}
 .adj{box-shadow:0 0 0 .5px var(--line2),0 1px 0 rgba(255,255,255,.1) inset,0 10px 26px -8px rgba(0,0,0,.4)}
 .app::before{inset:0;height:auto;-webkit-mask-image:none;mask-image:none}
