@@ -14,7 +14,7 @@ const args = li >= 0 ? argv.filter((_, i) => i !== li && i !== li + 1) : argv, r
 const lang = li >= 0 ? (argv[li + 1] || 'tr') : (readme ? 'en' : 'tr');
 const out = readme ? path.join(ROOT, 'assets/screens') : (args[0] || path.join(__dirname, 'out'));
 const only = readme ? [] : args.slice(1);
-const scale = readme ? 2 : 1;
+const scale = readme || process.env.SCALE === '2' ? 2 : 1;
 
 // The Clipstia demo: select the report window of desktop.html and mark two things on it.
 const WIN = { x: 245, y: 108, w: 950, h: 648 };

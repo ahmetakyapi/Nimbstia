@@ -21,6 +21,11 @@ return {
   -- while a video, a call or Her Zaman Uyanık keeps the display awake.
   -- saverIdleMinutes = 10,
 
-  -- Lid closed + external display on battery (macOS allows it only on AC). Run scripts/clamshell-setup.sh once.
+  -- Lid closed + external display on battery (macOS allows it only on AC). Run scripts/clamshell-setup.sh once;
+  -- the same rule lets Her Zaman Uyanık keep a closed Mac running.
   -- batteryClamshell = true,
+
+  -- While Her Zaman Uyanık is on, a notification asks every this many hours whether it is still needed
+  -- (every 30 minutes on battery with the lid closed and no display). 0 = never.
+  -- awakeRemindHours = 2,
 }

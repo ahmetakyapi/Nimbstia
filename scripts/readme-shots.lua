@@ -109,7 +109,7 @@ local POP = {
             { id = "repo", name = "Repostia", what = "Projeler", keys = "⌃⇧P" },
             { id = "text", name = "Lexstia", what = "Metin Oku", keys = "⌃⇧O" } },
   toggles = { awake = true, mic = false, meetings = false },
-  system = { battery = { pct = 82, charging = false }, mem = 58, disk = 412, diskUsed = 57 },
+  system = { battery = { pct = 82, charging = false }, mem = 58, disk = 412, diskUsedGB = 582, diskUsed = 57 },
   theme = "auto", shortcuts = {}, errors = {},
 }
 

@@ -19,6 +19,8 @@ local C = {
   screenshotDir = HOME .. "/Documents/Screenshots",
   -- Keep a closed MacBook driving the external display on battery too (needs scripts/clamshell-setup.sh).
   batteryClamshell = false,
+  -- While Her Zaman Uyanık is on, ask every this many hours whether it is still needed. 0 = never.
+  awakeRemindHours = 2,
   -- Start the screen saver by itself after this many idle minutes. nil = only from the hub.
   saverIdleMinutes = nil,
 }

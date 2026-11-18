@@ -264,11 +264,13 @@ end
 
 -- ---------------------------------------------------------------- keep awake / mic
 
--- Her Zaman Uyanık: the display and the system stay awake, on AC and on battery. The choice is
--- remembered, so a Hammerspoon reload or restart does not silently drop it (a reload releases every
--- assertion). On battery it lets go at 10% so a forgotten switch cannot drain the Mac to zero.
--- Closing the lid still sleeps the Mac; that is macOS's rule (see clamshell.lua for the exception).
+-- Her Zaman Uyanık: the display and the system stay awake, on AC and on battery, and with the lid
+-- closed too (clamshell.lua sets `pmset disablesleep` while it is on), so Remote Control, the VPN and
+-- long jobs keep running. It never switches itself off: the choice survives a Hammerspoon reload or
+-- restart (a reload releases every assertion) and a reminder asks every few hours whether it is still
+-- needed. The one exception is the battery floor (10%), so a forgotten switch cannot drain the Mac to zero.
 local AWAKE_KEY, AWAKE_SINCE_KEY, AWAKE_FLOOR = "nimbstia.awake", "nimbstia.awakeSince", 10
+local AWAKE_REMIND_KEY = "nimbstia.awakeRemindedAt"
 local function awakeOn() return hs.caffeinate.get("displayIdle") == true end
 local function setAwake(on)
   hs.caffeinate.set("displayIdle", on, true)
@@ -278,7 +280,9 @@ local function setAwake(on)
     if not hs.settings.get(AWAKE_SINCE_KEY) then hs.settings.set(AWAKE_SINCE_KEY, os.time()) end
   else
     hs.settings.clear(AWAKE_SINCE_KEY)
+    hs.settings.clear(AWAKE_REMIND_KEY)
   end
+  if Clamshell then Clamshell.sync() end
 end
 local function onBattery() return hs.battery.powerSource() == "Battery Power" end
 
@@ -289,8 +293,37 @@ function M.toggleAwake()
     return
   end
   setAwake(on)
-  hs.alert.show(on and "☕︎ Mac uyanık tutuluyor" or "Uyku normale döndü", 0.9)
+  hs.alert.show(on and "☕︎ Mac uyanık tutuluyor · kapak kapalıyken de" or "Uyku normale döndü", 1.2)
   render()
+  if M.pushPopover then M.pushPopover() end
+end
+
+-- Reminder while Her Zaman Uyanık is on: every awakeRemindHours (default 2), and every 30 minutes when the
+-- Mac runs on battery with the lid closed and no display (most likely in a bag, where it heats up).
+local remindNote
+local function remindAwake()
+  if not awakeOn() then return end
+  local now = os.time()
+  local since = hs.settings.get(AWAKE_SINCE_KEY) or now
+  local last = hs.settings.get(AWAKE_REMIND_KEY) or since
+  local closedOnBattery = onBattery() and Clamshell and Clamshell.lidClosed() and not Clamshell.hasExternal()
+  local every = closedOnBattery and 30 * 60 or (tonumber(Config.awakeRemindHours) or 2) * 3600
+  if every <= 0 or now - last < every then return end
+  hs.settings.set(AWAKE_REMIND_KEY, now)
+  local mins = math.floor((now - since) / 60)
+  local dur = mins < 60 and (mins .. " dk") or (math.floor(mins / 60) .. " sa " .. (mins % 60) .. " dk")
+  local detail = closedOnBattery
+    and ("Kapak kapalı, pilde (%" .. math.floor(hs.battery.percentage() or 0) .. "). Çantadaysa ısınır.")
+    or "Hâlâ gerekiyor mu? Gerekmiyorsa kapatalım."
+  if remindNote then remindNote:withdraw() end
+  remindNote = hs.notify.new(function(n)
+    if n:activationType() == hs.notify.activationTypes.actionButtonClicked and awakeOn() then M.toggleAwake() end
+  end, {
+    title = "Her Zaman Uyanık " .. dur .. "dir açık", informativeText = detail,
+    hasActionButton = true, actionButtonTitle = "Kapat", otherButtonTitle = "Açık Kalsın",
+    withdrawAfter = 0, soundName = "Glass",
+  })
+  remindNote:send()
 end
 
 -- Work-safe screen saver (saver.lua): the Mac keeps working behind it; any key or a real mouse move wakes it.
@@ -487,6 +520,7 @@ local function systemData()
     local free = root and (root.NSURLVolumeAvailableCapacityForImportantUsageKey or root.NSURLVolumeAvailableCapacityKey)
     local total = root and root.NSURLVolumeTotalCapacityKey
     if free then sys.disk = math.floor(free / 1e9 + 0.5) end
+    if free and total then sys.diskUsedGB = math.floor((total - free) / 1e9 + 0.5) end
     if free and total and total > 0 then sys.diskUsed = math.floor((1 - free / total) * 100 + 0.5) end
   end)
   return sys
@@ -833,6 +867,7 @@ function M.start(help)
   M.hubTick = hs.timer.doEvery(30, function() if M.pushPopover then M.pushPopover() end end)
   -- Her Zaman Uyanık survives a reload; on battery it lets go at the floor.
   if hs.settings.get(AWAKE_KEY) == true and not awakeOn() then setAwake(true); render() end
+  M.remindTimer = hs.timer.doEvery(60, remindAwake)
   M.batteryWatch = hs.battery.watcher.new(function()
     if awakeOn() and onBattery() and (hs.battery.percentage() or 100) <= AWAKE_FLOOR then
       setAwake(false)

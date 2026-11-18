@@ -47,7 +47,7 @@ exports.POP = { health: 'ok', status: { text: 'Her Şey Yolunda', tone: 'ok' },
     sessions: [{ name: 'Nimbstia docs', busy: true, url: 'https://claude.ai' }, { name: 'api-server', busy: true, url: 'https://claude.ai' }, { name: 'website', busy: false, url: 'https://claude.ai' }] },
   tools: [{ id: 'clip', name: 'Pastia', what: 'Pano', keys: '⌃V' }, { id: 'shot', name: 'Clipstia', what: 'Ekran Görüntüsü', keys: '⌃.' }, { id: 'layout', name: 'Panestia', what: 'Düzen', keys: '⌃Space' }, { id: 'repo', name: 'Repostia', what: 'Projeler', keys: '⌃⇧P' }, { id: 'text', name: 'Lexstia', what: 'Metin Oku', keys: '⌃⇧O' }],
   toggles: { awake: true, mic: false, meetings: false, appearance: false }, awakeSince: Math.floor(Date.now() / 1000) - 5100, now: Math.floor(Date.now() / 1000),
-  system: { battery: { pct: 82, charging: false }, mem: 58, disk: 412, diskUsed: 57 },
+  system: { cpu: 37, cores: 10, battery: { pct: 82, charging: false }, mem: 58, disk: 412, diskUsedGB: 582, diskUsed: 57 },
   theme: 'auto', shortcuts: [{ keys: '⌃V', label: 'Pastia · Pano Geçmişi' }, { keys: '⌃.', label: 'Clipstia · Ekran Görüntüsü' }], errors: [] };
 // layouts
 const COLORS = { code: '#2f80ed', chrome: '#f2b100', claude: '#d97757', teams: '#6264a7', outlook: '#0f6cbd', whatsapp: '#25d366', terminal: '#7c7c88', win1: '#0a84ff', win2: '#8e5cf7' };

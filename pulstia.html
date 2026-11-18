@@ -27,7 +27,7 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .app.show .scroll > :nth-child(4){animation-delay:calc(var(--stagger) * 3)}.app.show .scroll > :nth-child(5){animation-delay:calc(var(--stagger) * 4)}
 .app.show .scroll > :nth-child(6){animation-delay:calc(var(--stagger) * 5)}.app.show .scroll > :nth-child(n+7){animation-delay:calc(var(--stagger) * 6)}
 /* a live data update re-renders the same view: nothing enters again, rings and bars do not redraw */
-.scroll.still > *,.scroll.still .gauge .val,.scroll.still .meter i,.scroll.still .cbm i,.scroll.still .mbar i,.scroll.still .pb i,.scroll.still .ubar .sg,.scroll.still .vchip i::after,.scroll.still .pill i::after{animation:none!important}
+.scroll.still > *,.scroll.still .sbar i,.scroll.still .meter i,.scroll.still .cbm i,.scroll.still .mbar i,.scroll.still .pb i,.scroll.still .ubar .sg,.scroll.still .vchip i::after,.scroll.still .pill i::after{animation:none!important}
 
 /* ---------------------------------------------------------------- header */
 .head{display:flex;align-items:center;gap:10px;padding:12px 4px 0 4px;flex:none}
@@ -250,28 +250,19 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-rin
 .mrow span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .muted{font-size:12px;color:var(--faint);padding:8px 0 0}
 
-/* system: ring gauges */
+/* system: meter tiles */
 .sw4{display:grid;grid-template-columns:repeat(var(--n),1fr);gap:8px}
-.sc{display:flex;align-items:center;gap:10px;min-width:0;padding:6px;margin:-4px;border-radius:14px;text-align:left;transition:background var(--dur-1)}
-.sc:hover{background:var(--hover)}
-.gauge{position:relative;flex:none;width:44px;height:44px}
-.gauge svg{width:44px;height:44px;transform:rotate(-90deg)}
-.gauge circle{fill:none;stroke-width:5;stroke-linecap:round}
-.gauge .trk{stroke:color-mix(in srgb,var(--s) 16%,transparent)}
-.gauge .val{stroke:var(--s);animation:dash var(--dur-4) var(--ease-out) both .12s}
-@keyframes dash{from{stroke-dasharray:0 200}}
-.gauge .gi{position:absolute;inset:0;display:grid;place-items:center;color:var(--s)}
-.gauge .gi svg{width:16px;height:16px;transform:none}
-.sx{display:flex;flex-direction:column;gap:3px;min-width:0}
-.sx b{font:560 17px/1 var(--font-display);letter-spacing:-.025em;font-variant-numeric:tabular-nums;white-space:nowrap}
-.sx b em{font-style:normal;font-size:12px;font-weight:600;color:var(--faint);margin-left:4px}
-.sx small{font-size:11.5px;font-weight:550;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sc{display:flex;flex-direction:column;align-items:stretch;gap:6px;min-width:0;padding:10px 10px 9px;border-radius:14px;text-align:left;background:color-mix(in srgb,var(--s) 5%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--s) 11%,transparent);transition:background var(--dur-1),box-shadow var(--dur-1)}
+.sc:hover{background:color-mix(in srgb,var(--s) 10%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--s) 22%,transparent)}
+.sc .sh{display:flex;align-items:center;gap:6px;min-width:0;font-size:11.5px;font-weight:600;color:var(--muted);white-space:nowrap}
+.sc .gi{display:grid;place-items:center;flex:none;width:18px;height:18px;border-radius:6px;color:var(--s);background:color-mix(in srgb,var(--s) 16%,transparent)}
+.sc .gi svg{width:11px;height:11px}
+.sc b{font:560 19px/1 var(--font-display);letter-spacing:-.03em;font-variant-numeric:tabular-nums;white-space:nowrap;margin-top:2px}
+.sc b em{font-style:normal;font-size:11.5px;font-weight:600;letter-spacing:0;color:var(--faint);margin-left:3px}
+.sbar{position:relative;display:block;height:4px;border-radius:99px;overflow:hidden;background:color-mix(in srgb,var(--s) 15%,transparent)}
+.sbar i{position:absolute;inset:0 auto 0 0;border-radius:inherit;background:var(--s);box-shadow:0 0 8px color-mix(in srgb,var(--s) 55%,transparent);transform-origin:left;animation:grow var(--dur-4) var(--ease-out) both .12s}
+.sc small{font-size:10.5px;font-weight:500;color:var(--faint);white-space:nowrap}
 .sc.alert{--s:var(--bad-bar)!important} .sc.alert b{color:var(--danger)}
-/* four gauges in a row: smaller rings so the numbers keep their room */
-.sw4.four .sc{gap:8px}
-.sw4.four .gauge,.sw4.four .gauge svg{width:38px;height:38px}
-.sw4.four .gauge .gi svg{width:14px;height:14px}
-.sw4.four .sx b{font-size:16px}
 
 /* ---------------------------------------------------------------- footer */
 .foot{flex:none;display:flex;align-items:center;gap:4px;padding:10px 12px 12px}
@@ -477,7 +468,6 @@ button.ss:hover .go{color:var(--text);transform:translate(2px,-2px)}
 /* cards float on the light: a little translucent at rest, a hair of top light */
 .card{background:color-mix(in srgb,var(--card) 88%,transparent)}
 .wh .wi{background:linear-gradient(150deg,color-mix(in srgb,var(--wc,var(--accent)) 72%,#fff),var(--wc,var(--accent)));box-shadow:0 3px 8px -3px color-mix(in srgb,var(--wc,var(--accent)) 65%,transparent)}
-.gauge .val{filter:drop-shadow(0 0 3.5px color-mix(in srgb,var(--s) 60%,transparent))}
 .meter i{box-shadow:0 0 10px -1px color-mix(in srgb,#d97757 55%,transparent)}
 /* tool tiles: the same lit badge each tool wears in its own panel header (theme.css .tmark) */
 .ti .ico{color:#fff;background:linear-gradient(155deg,color-mix(in srgb,var(--k) 84%,#fff) 0%,var(--k) 45%,color-mix(in srgb,var(--k) 72%,#000) 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.42),inset 0 0 0 .5px rgba(0,0,0,.14),0 10px 18px -10px color-mix(in srgb,var(--k) 92%,transparent),0 1px 2px rgba(20,24,40,.16)}
@@ -503,7 +493,7 @@ button.ss:hover .go{color:var(--text);transform:translate(2px,-2px)}
 .app.tighter .rt .rc{width:30px;height:30px}
 .app.tighter .hero{padding-top:8px;gap:8px}
 .app.tighter .vbtn{margin-top:8px!important;height:30px!important}
-.app.tighter .gauge,.app.tighter .gauge svg{width:38px;height:38px}
+.app.tighter .sc{padding:8px 9px 7px;gap:5px}
 </style>
 </head>
 <body>
@@ -701,14 +691,14 @@ function renderMain() {
       const v = pct(l), t = typeof l.today === 'number' ? Math.min(v, Math.max(0, Math.round(l.today))) : 0;
       // what the number means right now: a window that reset, or when it would fill at this pace
       const sub = (l.reset ? `<span class="td ok">Sıfırlandı</span>` : '') + (l.resets ? `<span>↻ ${esc(l.resets)}</span>` : '') + (typeof l.today === 'number' ? `<span class="td">Bugün +%${l.today}</span>` : '') +
-        (l.fullAt ? `<span class="td hot" title="Son 45 dakikanın hızıyla"><span>Bu hızla</span> ${esc(l.fullAt)}<span>’de dolar</span></span>` : typeof l.perHour === 'number' && l.perHour > 0 ? `<span class="td">+%${l.perHour}<span>/sa</span></span>` : '');
+        (l.fullAt ? `<span class="td hot" title="Son 45 dakikanın hızıyla"><span>Bu Hızla</span> ${esc(l.fullAt)}<span>’de Dolar</span></span>` : typeof l.perHour === 'number' && l.perHour > 0 ? `<span class="td">+%${l.perHour}<span>/sa</span></span>` : '');
       return `<div class="cbr ${limTone(v)}"><div class="cbt"><span>${esc(short(l))}</span><b data-roll="b${k}">${fmtP(v)}</b></div><div class="cbm b${k}"><i style="width:${Math.max(2, v - t)}%"></i>${t ? `<i class="tday" style="width:${t}%"></i>` : ''}</div>${sub ? `<div class="cbx">${sub}</div>` : ''}</div>`;
     };
     const barBody = lim ? `<div class="cbars">${barRow(lim, 1)}${lims[1] ? barRow(lims[1], 2) : ''}</div>` : '';
     parts.claude = {
       plan: c.plan ? `<span class="plan">${esc(c.plan)}</span>` : '',
       body: lim ? barBody : `<div class="cnone"><b>Kullanım verisi yok</b><small>Claude Code açıkken güncellenir</small></div>`,
-      sess: sess.length ? `<button class="slink" data-act="sessions" type="button"><span class="sdot${busy ? ' b' : ''}"></span><span>${sess.length} oturum</span>${busy ? `<small>${busy} aktif</small>` : ''}<span class="sp"></span>${CHEV}</button>` : '',
+      sess: sess.length ? `<button class="slink" data-act="sessions" type="button"><span class="sdot${busy ? ' b' : ''}"></span><span>${sess.length} Oturum</span>${busy ? `<small>${busy} Aktif</small>` : ''}<span class="sp"></span>${CHEV}</button>` : '',
     };
     row1.push(`<section class="w claude">
       ${wh(W_ICON.spark, 'Claude', parts.claude.plan)}
@@ -744,7 +734,7 @@ function renderMain() {
     const shown = extra > 0 && !portsMore ? ports.slice(0, PORTS_SHOWN) : ports;
     const more = extra > 0 ? `<button class="pmore" data-act="pmore" type="button" aria-expanded="${portsMore ? 'true' : 'false'}"><span>${portsMore ? 'Daha Az Göster' : `${extra} Daha Göster`}</span><span class="chev${portsMore ? ' open' : ''}">${CHEV}</span></button>` : '';
     out.push(`<section class="w ports${folded ? ' folded' : ''}">${head}${folded ? '' : `<div class="pl">` + shown.map(x =>
-      `<div class="pr"><span class="pd"></span><button class="pp" data-act="port" data-v="open" data-port="${x.port}" type="button" aria-label="localhost:${x.port}"><span class="pnm">${esc(x.folder || x.cmd)}</span>${x.folder ? `<small>${esc(x.cmd)}</small>` : ''}<span class="sp"></span><span class="ppt">:${x.port}</span></button><button class="ib sm" data-act="port" data-v="open" data-port="${x.port}" type="button" data-tip="Aç" aria-label="Aç">${W_ICON.ext}</button><button class="ib sm stop" data-act="port" data-v="stop" data-port="${x.port}" type="button" data-tip="Durdur" aria-label="Durdur">${W_ICON.stop}</button></div>`).join('') + more + `</div>`}</section>`);
+      `<div class="pr"><span class="pd"></span><button class="pp" data-act="port" data-v="open" data-port="${x.port}" type="button" aria-label="localhost:${x.port}"><span class="pnm">${esc(x.folder || x.cmd)}</span>${x.folder ? `<small>${esc(cmdLabel(x.cmd))}</small>` : ''}<span class="sp"></span><span class="ppt">:${x.port}</span></button><button class="ib sm" data-act="port" data-v="open" data-port="${x.port}" type="button" data-tip="Aç" aria-label="Aç">${W_ICON.ext}</button><button class="ib sm stop" data-act="port" data-v="stop" data-port="${x.port}" type="button" data-tip="Durdur" aria-label="Durdur">${W_ICON.stop}</button></div>`).join('') + more + `</div>`}</section>`);
   }
 
   // ---- tools: app icons
@@ -772,20 +762,25 @@ function renderMain() {
   if (d.meetErr) q += `<div class="muted">${esc(d.meetErr)}</div>`;
   out.push(q + '</section>');
 
-  // ---- system: ring gauges
+  // ---- system: meter tiles
   const sy = d.system || {};
-  const C = 2 * Math.PI * 19.5;
-  const gauge = (id, icon, color, value, unit, label, alert, tip, fill) => `<button class="sc${alert ? ' alert' : ''}" data-act="${id === 'mem' ? 'memory' : id === 'cpu' ? 'cpu' : 'sys'}" data-id="${id}" type="button" style="--s:${color}" aria-label="${esc(tip)}"><span class="gauge"><svg viewBox="0 0 44 44"><circle class="trk" cx="22" cy="22" r="19.5"/><circle class="val" cx="22" cy="22" r="19.5" stroke-dasharray="${(C * Math.max(2, Math.min(100, fill || 0)) / 100).toFixed(1)} ${C.toFixed(1)}"/></svg><span class="gi">${ICONS[icon]}</span></span><span class="sx"><b><span data-roll="${id}">${value}</span><em>${unit}</em></b><small>${label}</small></span></button>`;
+    // Meter tile: icon + name, the value, a thin fill bar and a quiet caption saying what the number is
+  // (used / charging / left). Nothing is truncated: names stay one short word, the caption sits on its own line.
+  const gauge = (id, icon, color, value, unit, label, alert, tip, fill, sub) => `<button class="sc${alert ? ' alert' : ''}" data-act="${id === 'mem' ? 'memory' : id === 'cpu' ? 'cpu' : 'sys'}" data-id="${id}" type="button" style="--s:${color}" aria-label="${esc(tip)}"><span class="sh"><span class="gi">${ICONS[icon]}</span><span>${label}</span></span><b><span data-roll="${id}">${value}</span><em>${unit}</em></b><span class="sbar"><i style="width:${Math.max(3, Math.min(100, fill || 0))}%"></i></span>${sub ? `<small>${sub}</small>` : ''}</button>`;
   const cols = [];
-  if (typeof sy.cpu === 'number') cols.push(gauge('cpu', 'cpu', '#f97316', sy.cpu, '%', 'İşlemci', sy.cpu >= 90, 'Neyin ne kadar işlemci kullandığını gör', sy.cpu));
-  else if (sy.cores) cols.push(gauge('cpu', 'cpu', '#f97316', '–', '', 'İşlemci', false, 'Neyin ne kadar işlemci kullandığını gör', 0));
-  if (typeof sy.mem === 'number') cols.push(gauge('mem', 'memo', '#3b82f6', sy.mem, '%', 'Bellek', sy.mem >= 85, 'Neyin ne kadar kullandığını gör', sy.mem));
-  if (sy.battery) cols.push(gauge('battery', 'bat', '#22c55e', sy.battery.pct, '%', sy.battery.charging ? 'Şarjda' : 'Pil', sy.battery.pct < 20 && !sy.battery.charging, 'Pil Ayarları', sy.battery.pct));
-  if (typeof sy.disk === 'number') cols.push(gauge('disk', 'disk', '#8b5cf6', sy.disk >= 1000 ? (sy.disk / 1000).toFixed(1).replace('.', ',') : sy.disk, sy.disk >= 1000 ? 'TB' : 'GB', 'Boş Disk', sy.disk < 20 || sy.diskUsed >= 90, 'Depolama Ayarları', sy.diskUsed));
+  if (typeof sy.cpu === 'number') cols.push(gauge('cpu', 'cpu', '#f97316', sy.cpu, '%', 'İşlemci', sy.cpu >= 90, 'Neyin ne kadar işlemci kullandığını gör', sy.cpu, 'Kullanılan'));
+  else if (sy.cores) cols.push(gauge('cpu', 'cpu', '#f97316', '–', '', 'İşlemci', false, 'Neyin ne kadar işlemci kullandığını gör', 0, 'Kullanılan'));
+  if (typeof sy.mem === 'number') cols.push(gauge('mem', 'memo', '#3b82f6', sy.mem, '%', 'Bellek', sy.mem >= 85, 'Neyin ne kadar kullandığını gör', sy.mem, 'Kullanılan'));
+  if (sy.battery) cols.push(gauge('battery', 'bat', '#22c55e', sy.battery.pct, '%', 'Pil', sy.battery.pct < 20 && !sy.battery.charging, 'Pil Ayarları', sy.battery.pct, sy.battery.charging ? 'Şarjda' : 'Kalan'));
+  // Used space, like the other gauges; free space stays behind the alert (under 20 GB) and the tooltip.
+  const dk = typeof sy.diskUsedGB === 'number' ? sy.diskUsedGB : null;
+  if (typeof sy.disk === 'number' && dk !== null) cols.push(gauge('disk', 'disk', '#8b5cf6', dk >= 1000 ? (dk / 1000).toFixed(1).replace('.', ',') : dk, dk >= 1000 ? 'TB' : 'GB', 'Disk', sy.disk < 20 || sy.diskUsed >= 90, 'Depolama Ayarları', sy.diskUsed, 'Kullanılan'));
   if (cols.length) out.push(`<section class="w sys"><div class="sw4${cols.length >= 4 ? ' four' : ''}" style="--n:${cols.length}">${cols.join('')}</div></section>`);
   return out.join('');
 }
 
+// Process names as a Title Case tag: node -> Node, com.docker.backend -> Docker.
+const cmdLabel = c => { c = String(c || ''); if (/docker/i.test(c)) return 'Docker'; return c.includes('.') ? c : c.charAt(0).toLocaleUpperCase('en') + c.slice(1); };
 let procs = null;
 const pctTxt = v => String(v).replace('.', ',');
 // The same list sorted by processor use. Every number is a share of the whole processor (all cores).
@@ -856,7 +851,7 @@ function renderSessions() {
     const inner = `<span class="ss-av${x.busy ? ' b' : ''}">${esc(String(x.name || '?').charAt(0).toLocaleUpperCase('tr'))}</span><span class="ss-tx"><b>${esc(x.name)}</b>${meta ? `<small>${meta}</small>` : ''}</span><span class="ss-st${x.busy ? ' b' : ''}">${x.busy ? 'Çalışıyor' : 'Boşta'}</span>${x.url ? ext : ''}`;
     return x.url ? `<button class="ss" data-act="url" data-url="${esc(x.url)}" type="button" title="claude.ai'de aç">${inner}</button>` : `<div class="ss">${inner}</div>`;
   }).join('');
-  return `<div class="vhead"><button class="ib ring" data-act="back" aria-label="Geri">${ICONS.back}</button><div class="vht"><h2>Claude Oturumları</h2><small><span>${sess.length} oturum</span> · <span>${busy} aktif</span></small></div></div>
+  return `<div class="vhead"><button class="ib ring" data-act="back" aria-label="Geri">${ICONS.back}</button><div class="vht"><h2>Claude Oturumları</h2><small><span>${sess.length} Oturum</span> · <span>${busy} Aktif</span></small></div></div>
     <section class="card ss-list">${rows || '<div class="empty">Açık oturum yok.</div>'}</section>`;
 }
 
