@@ -40,6 +40,7 @@ local order = {}     -- paths, for stable iteration
 local lastScan = 0   -- epoch of the last completed scan
 local scanning = false
 local scanTask, scanTimeout
+local scanGen, scanStarted = 0, 0 -- generation of the running scan (late callbacks of an abandoned one are ignored) / its start
 local pendingRescan = false -- a pull / fetch finished while a scan was running: scan again afterwards
 
 -- Git sync state shown by the page (buttons spin / read "Çekiliyor…").
@@ -123,6 +124,15 @@ end
 
 local startScan
 
+-- SIGTERM to the scan and to everything it spawned (a git child that hangs would keep the pipe open and the
+-- task callback would never fire, leaving "Yenileniyor…" on screen for good).
+local function killScan(task)
+  if not task then return end
+  local pid = task:pid()
+  pcall(function() task:terminate() end)
+  if pid then Keep.task("/usr/bin/pkill", nil, { "-TERM", "-P", tostring(pid) }) end
+end
+
 local function finishScan(ok)
   scanning = false
   if scanTimeout then scanTimeout:stop(); scanTimeout = nil end
@@ -133,9 +143,18 @@ local function finishScan(ok)
 end
 
 function startScan(force)
+  -- Self-healing: a scan that outlived its own watchdog is abandoned instead of blocking every later scan.
+  if scanning and os.time() - scanStarted > SCAN_TIMEOUT + 15 then
+    killScan(scanTask)
+    scanGen = scanGen + 1
+    finishScan(false)
+  end
   if scanning then return end
   if not force and os.time() - lastScan < MIN_RESCAN_SEC then return end
   scanning = true
+  scanGen = scanGen + 1
+  scanStarted = os.time()
+  local gen = scanGen
   local fresh, freshOrder, gotDone = {}, {}, false
   local buf = ""
 
@@ -162,6 +181,7 @@ function startScan(force)
   end
 
   scanTask = hs.task.new("/usr/bin/nice", function(code) -- low CPU priority
+    if gen ~= scanGen then return end -- abandoned by the watchdog
     -- Flush a trailing line without newline, if any.
     if buf ~= "" then handleLine(buf); buf = "" end
     finishScan(gotDone and code == 0)
@@ -181,7 +201,12 @@ function startScan(force)
     return
   end
   scanTimeout = hs.timer.doAfter(SCAN_TIMEOUT, function()
-    if scanTask then scanTask:terminate() end
+    if gen ~= scanGen then return end
+    killScan(scanTask)
+    -- If the task callback does not follow within a few seconds, end the scan ourselves.
+    Keep.after(5, function()
+      if scanning and gen == scanGen then scanGen = scanGen + 1; finishScan(false) end
+    end)
   end)
   if panel and panel.visible then panel:js("Projects.setScanning(true)") end
 end
@@ -252,15 +277,25 @@ local function nameOf(path) return path:match("[^/]+$") or path end
 -- cb(exitCode, stdout, stderr, timedOut). Returns false when the process could not be started.
 local function gitTask(path, args, timeout, cb)
   local done, timedOut, t = false, false, nil
-  local full = { "GIT_TERMINAL_PROMPT=0", GIT, "-C", path }
-  for _, a in ipairs(args) do table.insert(full, a) end
-  t = Keep.task("/usr/bin/env", function(code, out, err)
+  local function finish(code, out, err)
+    if done then return end
     done = true
     cb(code, out or "", err or "", timedOut)
-  end, full)
+  end
+  local full = { "GIT_TERMINAL_PROMPT=0", GIT, "-C", path }
+  for _, a in ipairs(args) do table.insert(full, a) end
+  t = Keep.task("/usr/bin/env", function(code, out, err) finish(code, out, err) end, full)
   if not t then return false end
   Keep.after(timeout, function()
-    if not done and t:isRunning() then timedOut = true; t:terminate() end
+    if done then return end
+    timedOut = true
+    if t:isRunning() then
+      local pid = t:pid()
+      t:terminate()
+      if pid then Keep.task("/usr/bin/pkill", nil, { "-TERM", "-P", tostring(pid) }) end
+    end
+    -- A child that keeps the pipes open can delay the exit callback: do not wait for it forever.
+    Keep.after(4, function() finish(-1, "", "") end)
   end)
   return true
 end

@@ -28,4 +28,11 @@ return {
   -- While Her Zaman Uyanık is on, a notification asks every this many hours whether it is still needed
   -- (every 30 minutes on battery with the lid closed and no display). 0 = never.
   -- awakeRemindHours = 2,
+
+  -- Her Zaman Uyanık switches itself off at this battery percentage when unplugged (default 20, 5-50);
+  -- a notification warns 5 points earlier.
+  -- awakeBatteryFloor = 20,
+
+  -- Optional time limit: switch Her Zaman Uyanık off after this many hours (warns 10 minutes before). 0 = no limit.
+  -- awakeMaxHours = 8,
 }

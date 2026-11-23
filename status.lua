@@ -268,9 +268,15 @@ end
 -- closed too (clamshell.lua sets `pmset disablesleep` while it is on), so Remote Control, the VPN and
 -- long jobs keep running. It never switches itself off: the choice survives a Hammerspoon reload or
 -- restart (a reload releases every assertion) and a reminder asks every few hours whether it is still
--- needed. The one exception is the battery floor (10%), so a forgotten switch cannot drain the Mac to zero.
-local AWAKE_KEY, AWAKE_SINCE_KEY, AWAKE_FLOOR = "nimbstia.awake", "nimbstia.awakeSince", 10
+-- needed. Two things end it by themselves: the battery floor (20% on battery, config.awakeBatteryFloor) so a
+-- forgotten switch cannot drain the Mac, and an optional time limit (config.awakeMaxHours). Both warn first.
+local AWAKE_KEY, AWAKE_SINCE_KEY = "nimbstia.awake", "nimbstia.awakeSince"
 local AWAKE_REMIND_KEY = "nimbstia.awakeRemindedAt"
+local awakeWarned = {} -- "battery" / "time": warned during this awake session
+local function awakeFloor()
+  local f = tonumber(Config.awakeBatteryFloor) or 20
+  return math.max(5, math.min(50, math.floor(f)))
+end
 local function awakeOn() return hs.caffeinate.get("displayIdle") == true end
 local function setAwake(on)
   hs.caffeinate.set("displayIdle", on, true)
@@ -282,20 +288,56 @@ local function setAwake(on)
     hs.settings.clear(AWAKE_SINCE_KEY)
     hs.settings.clear(AWAKE_REMIND_KEY)
   end
+  awakeWarned = {}
   if Clamshell then Clamshell.sync() end
 end
 local function onBattery() return hs.battery.powerSource() == "Battery Power" end
 
 function M.toggleAwake()
   local on = not awakeOn()
-  if on and onBattery() and (hs.battery.percentage() or 100) <= AWAKE_FLOOR then
-    hs.alert.show("Pil %" .. AWAKE_FLOOR .. " altında: önce şarja tak", 1.6)
+  if on and onBattery() and (hs.battery.percentage() or 100) <= awakeFloor() then
+    hs.alert.show("Pil %" .. awakeFloor() .. " altında: önce şarja tak", 1.6)
     return
   end
   setAwake(on)
   hs.alert.show(on and "☕︎ Mac uyanık tutuluyor · kapak kapalıyken de" or "Uyku normale döndü", 1.2)
   render()
   if M.pushPopover then M.pushPopover() end
+end
+
+-- Ends Her Zaman Uyanık when its limits are reached and warns shortly before: on battery at the floor
+-- (warning 5 points above it, once), and after awakeMaxHours when set (warning 10 minutes before, once).
+-- Runs on every battery event and every minute, so a quiet battery never skips the floor.
+local function notifyAwake(title, text, sound)
+  hs.notify.new({ title = title, informativeText = text, soundName = sound, withdrawAfter = 0 }):send()
+end
+local function checkAwakeLimits()
+  if not awakeOn() then return end
+  local floor, now = awakeFloor(), os.time()
+  local pct = hs.battery.percentage()
+  if onBattery() and pct then
+    if pct <= floor then
+      setAwake(false)
+      notifyAwake("Her Zaman Uyanık kapatıldı", "Pil %" .. math.floor(pct) .. ": %" .. floor .. " sınırına inildi. Şarja tak; Mac artık normal uyuyabilir.", "Basso")
+      render(); if M.pushPopover then M.pushPopover() end
+      return
+    elseif pct <= floor + 5 and not awakeWarned.battery then
+      awakeWarned.battery = true
+      notifyAwake("Pil azalıyor (%" .. math.floor(pct) .. ")", "Her Zaman Uyanık %" .. floor .. "'de kendiliğinden kapanır. Şarja takarsan açık kalır.", "Glass")
+    end
+  end
+  local maxH, since = tonumber(Config.awakeMaxHours) or 0, hs.settings.get(AWAKE_SINCE_KEY)
+  if maxH > 0 and since then
+    local left = maxH * 3600 - (now - since)
+    if left <= 0 then
+      setAwake(false)
+      notifyAwake("Her Zaman Uyanık kapatıldı", maxH .. " saatlik süre doldu; Mac artık normal uyuyabilir. Gerekirse tekrar aç.", "Basso")
+      render(); if M.pushPopover then M.pushPopover() end
+    elseif left <= 600 and not awakeWarned.time then
+      awakeWarned.time = true
+      notifyAwake("Her Zaman Uyanık 10 dk içinde kapanacak", "Süre sınırına (" .. maxH .. " sa) yaklaşıldı.", "Glass")
+    end
+  end
 end
 
 -- Reminder while Her Zaman Uyanık is on: every awakeRemindHours (default 2), and every 30 minutes when the
@@ -667,8 +709,15 @@ function M.fetchDevStats(force)
   if devStatsBusy then return end
   if not force and devStats and os.time() - (devStats.at or 0) < 90 then return end
   devStatsBusy = true
+  -- Watchdog: if the helper (or a git/gh child of it) hangs, release the flag so the next refresh can run.
+  local gen = (M._devGen or 0) + 1
+  M._devGen = gen
+  Keep.after(150, function()
+    if devStatsBusy and M._devGen == gen then devStatsBusy = false; M._devGen = gen + 1 end
+  end)
   -- low CPU priority (nice): never compete with what the user is doing
   Keep.task("/usr/bin/nice", function(code, out)
+    if M._devGen ~= gen then return end -- abandoned by the watchdog
     devStatsBusy = false
     local ok, data = pcall(hs.json.decode, out or "")
     if code == 0 and ok and type(data) == "table" then
@@ -867,15 +916,9 @@ function M.start(help)
   M.hubTick = hs.timer.doEvery(30, function() if M.pushPopover then M.pushPopover() end end)
   -- Her Zaman Uyanık survives a reload; on battery it lets go at the floor.
   if hs.settings.get(AWAKE_KEY) == true and not awakeOn() then setAwake(true); render() end
-  M.remindTimer = hs.timer.doEvery(60, remindAwake)
-  M.batteryWatch = hs.battery.watcher.new(function()
-    if awakeOn() and onBattery() and (hs.battery.percentage() or 100) <= AWAKE_FLOOR then
-      setAwake(false)
-      hs.notify.new({ title = "Her Zaman Uyanık kapatıldı", informativeText = "Pil %" .. AWAKE_FLOOR .. " altına indi; Mac artık normal şekilde uyuyabilir." }):send()
-      render()
-      if M.pushPopover then M.pushPopover() end
-    end
-  end):start()
+  M.remindTimer = hs.timer.doEvery(60, function() checkAwakeLimits(); remindAwake() end)
+  M.batteryWatch = hs.battery.watcher.new(checkAwakeLimits):start()
+  checkAwakeLimits()
   Saver.watchIdle(Config.saverIdleMinutes)
   -- Re-check right away after wake or a network change instead of waiting for the next tick.
   M.wake = hs.caffeinate.watcher.new(function(ev)
