@@ -40,18 +40,20 @@ local order = {}     -- paths, for stable iteration
 local lastScan = 0   -- epoch of the last completed scan
 local scanning = false
 local scanTask, scanTimeout
+local scanProgress = nil -- { done, total } while the slow (per-repo status) phase runs
 local scanGen, scanStarted = 0, 0 -- generation of the running scan (late callbacks of an abandoned one are ignored) / its start
 local pendingRescan = false -- a pull / fetch finished while a scan was running: scan again afterwards
 
 -- Git sync state shown by the page (buttons spin / read "Çekiliyor…").
 local lastFetch = tonumber(hs.settings.get(K_FETCHED)) or 0 -- epoch of the last "Uzaktan Kontrol Et"
 local fetching, pullAllBusy = false, false
+local fetchProgress = nil -- { done, total } while "Uzaktan Kontrol Et" runs
 local pullBusy = {} -- path -> true while a `git pull` runs in it
 
 local function busyState()
   local pulling = {}
   for path in pairs(pullBusy) do table.insert(pulling, path) end
-  return { fetching = fetching, pullAll = pullAllBusy, pulling = pulling, fetched = lastFetch }
+  return { fetching = fetching, pullAll = pullAllBusy, pulling = pulling, fetched = lastFetch, progress = fetchProgress or scanProgress }
 end
 
 do
@@ -135,6 +137,7 @@ end
 
 local function finishScan(ok)
   scanning = false
+  scanProgress = nil
   if scanTimeout then scanTimeout:stop(); scanTimeout = nil end
   scanTask = nil
   if ok then lastScan = os.time(); saveCache() end
@@ -170,10 +173,12 @@ function startScan(force)
     elseif msg.type == "phase" then
       -- Cheap phase finished: swap in the fresh list (copies that vanished from disk drop out).
       current, order = fresh, freshOrder
+      scanProgress = { 0, #freshOrder }
       pushSoon()
     elseif msg.type == "dirty" then
       local p = current[msg.path]
       if p then p.dirty = msg.dirty end
+      if scanProgress then scanProgress[1] = scanProgress[1] + 1 end
       pushSoon()
     elseif msg.type == "done" then
       gotDone = true
@@ -377,21 +382,30 @@ end
 -- `git fetch --quiet --prune` in every repo, a few at a time, then a full rescan.
 local function fetchAll()
   if fetching then return end
-  local paths = {}
+  -- Worktrees share their repository's remotes: fetch each repository once (from its first folder).
+  local paths, seen = {}, {}
   for _, path in ipairs(order) do
-    if current[path] and validPath(path) then table.insert(paths, path) end
+    local p = current[path]
+    if p and validPath(path) then
+      local key = p.common or path
+      if not seen[key] then seen[key] = true; table.insert(paths, path) end
+    end
   end
   fetching = true
+  fetchProgress = { 0, #paths }
   pushBusy()
   local failed = 0
   runPool(paths, FETCH_PARALLEL, function(path, release)
     local started = gitTask(path, { "fetch", "--quiet", "--prune" }, FETCH_TIMEOUT, function(code, _, _, timedOut)
       if code ~= 0 or timedOut then failed = failed + 1 end
+      fetchProgress[1] = fetchProgress[1] + 1
+      pushBusy()
       release()
     end)
     if not started then failed = failed + 1; release() end
   end, function()
     fetching = false
+    fetchProgress = nil
     lastFetch = os.time()
     hs.settings.set(K_FETCHED, lastFetch)
     pushBusy()

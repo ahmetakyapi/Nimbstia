@@ -948,7 +948,7 @@ function toast(msg, kind) {
 // Sync state from Lua (pull / fetch in flight, last fetch time): spinners, labels and disabled buttons.
 function applyBusy(b) {
   b = b || {};
-  busy = { fetching: !!b.fetching, pullAll: !!b.pullAll, pulling: new Set(b.pulling || []), fetched: b.fetched || 0 };
+  busy = { fetching: !!b.fetching, pullAll: !!b.pullAll, pulling: new Set(b.pulling || []), fetched: b.fetched || 0, progress: Array.isArray(b.progress) ? b.progress : null };
   fetchBtn.classList.toggle('spin', busy.fetching);
   fetchBtn.dataset.tip = fetchTip();
   updateSync();
@@ -956,7 +956,9 @@ function applyBusy(b) {
 }
 function updateSync() {
   const on = scanning || busy.fetching || busy.pullAll;
-  syncTx.textContent = busy.pullAll ? 'Çekiliyor…' : busy.fetching ? 'Uzaktan Kontrol Ediliyor…' : 'Yenileniyor…';
+  // a counter shows it is moving, not stuck: "Yenileniyor · 34/84"
+  const pr = busy.progress && busy.progress[1] > 0 ? ` · ${Math.min(busy.progress[0], busy.progress[1])}/${busy.progress[1]}` : '';
+  syncTx.textContent = busy.pullAll ? 'Çekiliyor…' : busy.fetching ? 'Uzaktan Kontrol' + (pr || 'Ediliyor…') : 'Yenileniyor' + (pr || '…');
   syncEl.classList.toggle('on', on);
 }
 function renderPullAll() {

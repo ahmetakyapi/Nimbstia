@@ -49,7 +49,7 @@ def base(name):
     p = {
         "name": name, "path": path, "worktree": os.path.isfile(dotgit),
         "branch": None, "sha": None, "ahead": None, "behind": None,
-        "ct": None, "subject": None, "mtime": None,
+        "ct": None, "subject": None, "mtime": None, "common": None,
     }
     try:
         p["mtime"] = int(os.stat(path).st_mtime)
@@ -63,6 +63,10 @@ def base(name):
             p["ct"] = int(ct)
         except ValueError:
             pass
+    # the repository's shared git dir: worktrees of one repository share it (fetch once per repository)
+    rc, out = git(path, "rev-parse", "--path-format=absolute", "--git-common-dir")
+    if rc == 0 and out.strip():
+        p["common"] = out.strip()
     rc, out = git(path, "symbolic-ref", "-q", "--short", "HEAD")
     if rc == 0:
         p["branch"] = out.strip() or None
@@ -78,7 +82,7 @@ def base(name):
 
 
 def dirty(p):
-    rc, out = git(p["path"], "status", "--porcelain")
+    rc, out = git(p["path"], "status", "--porcelain", "--ignore-submodules=all")
     n = len(out.splitlines()) if rc == 0 else None
     emit({"type": "dirty", "path": p["path"], "dirty": n})
 

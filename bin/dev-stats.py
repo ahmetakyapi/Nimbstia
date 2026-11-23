@@ -27,7 +27,7 @@ TIMEOUT = 20
 # Commits before today hardly change, so they are cached and only today is re-read on every run.
 CACHE_DIR = os.path.expanduser("~/Library/Caches/nimbstia")
 PAST_MAX_AGE = 3600  # also bounds how long a commit removed by a force-push can linger in the past days
-CACHE_VERSION = "local-5"
+CACHE_VERSION = "units-6"
 HISTORY_DAYS = 90
 HISTORY_FILE = os.path.join(CACHE_DIR, "dev-stats-history.json")
 REVERT_RE = re.compile(r"This reverts commit ([0-9a-f]{40})")
@@ -57,11 +57,11 @@ def authors(repos=()):
     return sorted(names)
 
 
-def repo_commits(path, since, who, until=None):
+def repo_commits(path, since, who, until=None, heads=()):
     """sha -> (added, deleted, subject, commit time, repo path, sha this commit reverts or "").
     Commits on local and remote-tracking branches and on a detached HEAD (worktrees): what you committed today
     counts even before it is pushed. Fully discarded commits (no ref reaches them) drop out."""
-    base = ["git", "--no-optional-locks", "-C", path, "log", "--branches", "--remotes", "HEAD", "--no-merges", f"--since={since}"]
+    base = ["git", "--no-optional-locks", "-C", path, "log", "--branches", "--remotes"] + list(heads or ["HEAD"]) + ["--no-merges", f"--since={since}"]
     if until:
         base.append(f"--until={until}")
     for a in who:
@@ -154,7 +154,7 @@ def git_stats(org=None):
     since = first.isoformat()
     repos, web = [], {}
     if os.path.isdir(ROOT):
-        for name in os.listdir(ROOT):
+        for name in sorted(os.listdir(ROOT)):
             p = os.path.join(ROOT, name)
             if os.path.exists(os.path.join(p, ".git")):
                 owner, repo = origin_repo(p)
@@ -162,12 +162,24 @@ def git_stats(org=None):
                     continue
                 repos.append(p)
                 web[p] = (owner, repo)
-    who = authors(repos)
+    # Worktrees of one repository share its object store and branches: read each repository once, from
+    # its first folder, adding every worktree's HEAD (a detached HEAD is on no branch). With dozens of
+    # worktrees this is the difference between seconds and minutes.
+    groups = {}
+    with cf.ThreadPoolExecutor(max_workers=8) as ex:
+        info = list(ex.map(lambda p: (p, (run(["git", "-C", p, "rev-parse", "--path-format=absolute", "--git-common-dir"], timeout=5) or p).strip(),
+                                       (run(["git", "-C", p, "rev-parse", "--verify", "-q", "HEAD"], timeout=5) or "").strip()), repos))
+    for p, common, head in info:
+        g = groups.setdefault(common, {"path": p, "heads": []})
+        if head and head not in g["heads"]:
+            g["heads"].append(head)
+    units = list(groups.values())
+    who = authors([u["path"] for u in units])
 
     def collect(since_, until_=None):
         found = {}
         with cf.ThreadPoolExecutor(max_workers=6) as ex:  # gentle on the CPU; runs in the background
-            for commits in ex.map(lambda p: repo_commits(p, since_, who, until_), repos):
+            for commits in ex.map(lambda u: repo_commits(u["path"], since_, who, until_, u["heads"]), units):
                 found.update(commits)  # same SHA from several clones is counted once
         return found
 

@@ -704,7 +704,13 @@ end
 
 -- ---------------------------------------------------------------- GitHub / git numbers (bin/dev-stats.py)
 
-local devStats, devStatsBusy = nil, false
+-- The last good result is kept in hs.settings: the numbers show at once after a reload or restart and
+-- stay on screen while a fresh run is under way, instead of the strip vanishing until the helper finishes.
+local DEV_KEY = "nimbstia.devStats.v1"
+local devStats, devStatsBusy = hs.settings.get(DEV_KEY), false
+-- a result from an earlier day would show yesterday's work as "Bugün": drop it
+if type(devStats) ~= "table" or os.date("%Y%m%d", tonumber(devStats.at) or 0) ~= os.date("%Y%m%d") then devStats = nil end
+local devTask
 function M.fetchDevStats(force)
   if devStatsBusy then return end
   if not force and devStats and os.time() - (devStats.at or 0) < 90 then return end
@@ -712,16 +718,25 @@ function M.fetchDevStats(force)
   -- Watchdog: if the helper (or a git/gh child of it) hangs, release the flag so the next refresh can run.
   local gen = (M._devGen or 0) + 1
   M._devGen = gen
-  Keep.after(150, function()
-    if devStatsBusy and M._devGen == gen then devStatsBusy = false; M._devGen = gen + 1 end
+  Keep.after(300, function()
+    if devStatsBusy and M._devGen == gen then
+      devStatsBusy = false; M._devGen = gen + 1
+      if devTask and devTask:isRunning() then
+        local pid = devTask:pid()
+        devTask:terminate()
+        if pid then Keep.task("/usr/bin/pkill", nil, { "-TERM", "-P", tostring(pid) }) end
+      end
+      print("status: dev-stats did not finish in 300 s; stopped")
+    end
   end)
   -- low CPU priority (nice): never compete with what the user is doing
-  Keep.task("/usr/bin/nice", function(code, out)
+  devTask = Keep.task("/usr/bin/nice", function(code, out)
     if M._devGen ~= gen then return end -- abandoned by the watchdog
     devStatsBusy = false
     local ok, data = pcall(hs.json.decode, out or "")
     if code == 0 and ok and type(data) == "table" then
       devStats = data
+      hs.settings.set(DEV_KEY, data)
       if M.pushPopover then M.pushPopover() end
       -- Repostia shows these numbers; refresh it if it is open.
       if Projects and Projects.panel and Projects.panel.visible and githubData then
