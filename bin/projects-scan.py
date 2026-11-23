@@ -67,6 +67,9 @@ def base(name):
     rc, out = git(path, "rev-parse", "--path-format=absolute", "--git-common-dir")
     if rc == 0 and out.strip():
         p["common"] = out.strip()
+        # a worktree's main checkout is the folder that holds the shared .git
+        if p["worktree"] and p["common"].endswith("/.git"):
+            p["mainPath"] = p["common"][:-5]
     rc, out = git(path, "symbolic-ref", "-q", "--short", "HEAD")
     if rc == 0:
         p["branch"] = out.strip() or None
@@ -84,7 +87,16 @@ def base(name):
 def dirty(p):
     rc, out = git(p["path"], "status", "--porcelain", "--ignore-submodules=all")
     n = len(out.splitlines()) if rc == 0 else None
-    emit({"type": "dirty", "path": p["path"], "dirty": n})
+    msg = {"type": "dirty", "path": p["path"], "dirty": n}
+    if p["branch"]:
+        # "[gone]": the branch had an upstream that no longer exists on the remote (PR merged and branch deleted)
+        rc, out = git(p["path"], "for-each-ref", "--format=%(upstream:track)", "refs/heads/" + p["branch"])
+        msg["gone"] = rc == 0 and "gone" in out
+    if p["worktree"]:
+        # True when every commit of HEAD is on some remote branch: removing the folder loses no commit
+        rc, out = git(p["path"], "rev-list", "-n1", "HEAD", "--not", "--remotes")
+        msg["onRemote"] = (rc == 0 and out.strip() == "") if rc == 0 else None
+    emit(msg)
 
 
 def main():

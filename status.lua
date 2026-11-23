@@ -711,6 +711,7 @@ local devStats, devStatsBusy = hs.settings.get(DEV_KEY), false
 -- a result from an earlier day would show yesterday's work as "Bugün": drop it
 if type(devStats) ~= "table" or os.date("%Y%m%d", tonumber(devStats.at) or 0) ~= os.date("%Y%m%d") then devStats = nil end
 local devTask
+local devStatsErr -- short reason of the last failed run, shown in Repostia's strip instead of nothing
 function M.fetchDevStats(force)
   if devStatsBusy then return end
   if not force and devStats and os.time() - (devStats.at or 0) < 90 then return end
@@ -730,17 +731,28 @@ function M.fetchDevStats(force)
     end
   end)
   -- low CPU priority (nice): never compete with what the user is doing
-  devTask = Keep.task("/usr/bin/nice", function(code, out)
+  devTask = Keep.task("/usr/bin/nice", function(code, out, err)
     if M._devGen ~= gen then return end -- abandoned by the watchdog
     devStatsBusy = false
     local ok, data = pcall(hs.json.decode, out or "")
-    if code == 0 and ok and type(data) == "table" then
+    if code == 0 and ok and type(data) == "table" and type(data.git) == "table" then
       devStats = data
-      hs.settings.set(DEV_KEY, data)
+      devStatsErr = nil
+      pcall(hs.settings.set, DEV_KEY, data)
+      if type(data.errors) == "table" and #data.errors > 0 then print("status: dev-stats: " .. table.concat(data.errors, " | ")) end
       if M.pushPopover then M.pushPopover() end
       -- Repostia shows these numbers; refresh it if it is open.
       if Projects and Projects.panel and Projects.panel.visible and githubData then
         Projects.panel:js("Projects.setGitHub(" .. hs.json.encode(githubData() or {}) .. ")")
+      end
+    else
+      -- keep the last good numbers; say why instead of silently showing nothing
+      local last
+      for line in (err or ""):gmatch("[^\n]+") do if line:match("%S") then last = line end end
+      devStatsErr = (last or ("çıkış kodu " .. tostring(code))):sub(1, 160)
+      print("status: dev-stats failed: " .. tostring(err or code))
+      if not devStats and Projects and Projects.panel and Projects.panel.visible then
+        Projects.panel:js("Projects.setGitHub(" .. hs.json.encode(M.githubStatus()) .. ")")
       end
     end
   end, (function()
@@ -951,6 +963,10 @@ end
 M.render = render
 M._popoverData = popoverData -- exposed for tests
 function M.githubData() return githubData and githubData() or nil end
+-- What Repostia's strip shows before the first result: still counting, or why it failed.
+function M.githubStatus()
+  return { status = devStatsErr and "error" or "pending", error = devStatsErr }
+end
 function M.iconFrame() return bar and bar:frame() end
 M.state = state
 return M

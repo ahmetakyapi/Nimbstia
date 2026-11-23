@@ -194,7 +194,10 @@ body{-webkit-font-smoothing:auto}
 .btn.sq.on svg{color:var(--accent)}
 .pv-sub{display:flex;flex-wrap:wrap;gap:6px 20px;margin-top:12px;font:500 12px/1.3 var(--font-ui);color:var(--muted);font-variant-numeric:tabular-nums}
 .pv-sub em{font-style:normal;color:var(--faint);margin-right:6px}
-#pullall{flex:none}
+#pullall,#cleanbtn{flex:none}
+#cleanbtn b{display:grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:var(--r-pill);font:650 11.5px/1 var(--font-ui);font-variant-numeric:tabular-nums;color:var(--ok);background:color-mix(in srgb,var(--ok) 13%,transparent)}
+#cleanbtn.on{box-shadow:inset 0 0 0 1.5px var(--ok)}
+#cleanbtn[hidden]{display:none}
 #pullall b{display:grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:var(--r-pill);font:650 11.5px/1 var(--font-ui);font-variant-numeric:tabular-nums;color:var(--accent-ink);background:var(--accent-soft)}
 #pullall.dim{color:var(--faint)}
 #pullall[hidden]{display:none}
@@ -525,6 +528,67 @@ footer{border-top:0;background:none;-webkit-backdrop-filter:none;backdrop-filter
   :root:not([data-theme="light"]) .gs.pr{--c:oklch(.78 .15 295);--c2:oklch(.8 .14 335)} :root:not([data-theme="light"]) .gs.cm{--c:oklch(.8 .13 235);--c2:oklch(.84 .12 195)}
   :root:not([data-theme="light"]) .gs.add{--c:oklch(.82 .16 160);--c2:oklch(.87 .16 125)} :root:not([data-theme="light"]) .gs.del{--c:oklch(.8 .16 18);--c2:oklch(.82 .15 350)}
 }
+/* ---------------------------------------------------------------- clarity: filter notes, hints, worktrees, incoming */
+.gmsg{display:flex;flex-direction:column;justify-content:center;gap:4px;padding:6px 16px;font:500 12px/1.35 var(--font-ui);color:var(--faint)}
+.gmsg b{font:600 13.5px/1.3 var(--font-ui);color:var(--text)}
+.gmsg.err b{color:var(--danger)}
+.gmsg .nb-skel{display:block;width:180px;height:6px;margin-bottom:4px}
+.gs.net{--c:oklch(.6 .14 250);--c2:oklch(.62 .16 290)}
+:root[data-theme="dark"] .gs.net{--c:oklch(.82 .11 245);--c2:oklch(.8 .13 290)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .gs.net{--c:oklch(.82 .11 245);--c2:oklch(.8 .13 290)}}
+.gs.net b{background:linear-gradient(120deg in oklch,var(--c),var(--c2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+footer span i{font-style:normal;margin:0 3px;color:var(--faint);font-size:11px}
+footer span em{font-style:normal;margin-left:7px}
+.sheet{position:absolute;inset:0;z-index:60;display:grid;place-items:center;padding:24px;background:color-mix(in srgb,#0b0d14 0%,transparent);transition:background .16s ease-out}
+.sheet[hidden]{display:none}
+.sheet.on{background:color-mix(in srgb,#0b0d14 38%,transparent);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.shc{width:min(520px,100%);max-height:100%;display:flex;flex-direction:column;border-radius:20px;background:var(--pane);box-shadow:var(--pop-shadow),0 40px 80px -24px rgba(8,10,20,.5);
+  opacity:0;transform:translateY(10px) scale(.97);transition:opacity .16s ease-out,transform .24s var(--ease-spring,cubic-bezier(.2,.9,.3,1.2))}
+.sheet.on .shc{opacity:1;transform:none}
+.shh{display:flex;gap:14px;padding:20px 20px 14px}
+.shh b{display:block;font:620 16px/1.3 var(--font-display);letter-spacing:-.01em;color:var(--text)}
+.shh p{margin:6px 0 0;font:500 12.5px/1.5 var(--font-ui);color:var(--muted)}
+.shh p b{display:inline;font:inherit;font-weight:600}
+.shh code,.shm code{font:500 11.5px/1 var(--font-mono);color:var(--accent-ink)}
+.shic{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--danger);background:color-mix(in srgb,var(--danger) 12%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--danger) 25%,transparent)}
+.shic svg{width:20px;height:20px}
+.shl{overflow:auto;margin:0 12px;padding:4px;border-radius:14px;background:color-mix(in srgb,var(--chip) 70%,transparent);box-shadow:inset 0 0 0 1px var(--line)}
+.shi{display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:10px}
+.shi+.shi{border-top:1px solid var(--line)}
+.shi .rid{width:30px;height:30px;border-radius:9px;font-size:11px}
+.shi .rid i{display:none}
+.shm{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.shm b{font:580 13px/1.2 var(--font-ui);color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.shm span{font:500 11.5px/1.2 var(--font-ui);color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sht{flex:none;padding:3px 8px;border-radius:var(--r-pill);font:600 10.5px/1.2 var(--font-ui);color:var(--muted);background:var(--chip);box-shadow:inset 0 0 0 1px var(--line2)}
+.shmore{padding:8px 10px;font:500 12px/1 var(--font-ui);color:var(--faint)}
+.shk{display:flex;flex-direction:column;gap:7px;padding:14px 22px 4px}
+.shk div{display:flex;align-items:flex-start;gap:9px;font:500 12.5px/1.4 var(--font-ui);color:var(--muted)}
+.shk svg{flex:none;width:14px;height:14px;margin-top:2px;color:var(--ok)}
+.shf{display:flex;justify-content:flex-end;gap:8px;padding:16px 20px 18px}
+.shf .btn{height:34px;padding:0 10px 0 14px;gap:8px}
+.shf kbd{font:600 10.5px/1 var(--font-ui);padding:3px 6px;border-radius:6px;color:var(--faint);background:var(--chip);box-shadow:inset 0 0 0 1px var(--line2)}
+.shf .shok{color:#fff;background:linear-gradient(135deg in oklch,oklch(.64 .21 25),oklch(.56 .22 5));box-shadow:0 6px 16px -6px oklch(.55 .22 15 / .8)}
+.shf .shok svg,.shf .shok:hover svg{color:#fff}
+.shf .shok:hover{filter:brightness(1.07);background:linear-gradient(135deg in oklch,oklch(.64 .21 25),oklch(.56 .22 5))}
+.shf .shok kbd{color:rgba(255,255,255,.85);background:rgba(255,255,255,.18);box-shadow:none}
+.knote{margin:10px 2px 4px;padding:12px 14px;border-radius:14px;font:500 12.5px/1.45 var(--font-ui);color:var(--muted);background:color-mix(in srgb,var(--accent) 6%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 16%,transparent)}
+.knote .kact{display:flex;margin-top:10px}
+.stl .tx small{display:block;margin-top:3px;font:500 12px/1.4 var(--font-ui);color:var(--faint);letter-spacing:0}
+.su .tg{display:inline-block;margin-left:2px;padding:2px 7px;border-radius:var(--r-pill);font:600 10.5px/1.2 var(--font-ui);color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,transparent)}
+.su .tg.w{color:var(--muted);background:var(--chip)}
+.btn.dim{opacity:.45;cursor:default;pointer-events:auto}
+.btn.dim:hover{background:var(--ctl,transparent)}
+.wtc{border-radius:14px;background:var(--pv-card);box-shadow:var(--card-lift);padding:14px 16px}
+.wtc p{margin:0 0 10px;font:500 13px/1.5 var(--font-ui);color:var(--muted)}
+.wtc p b{color:var(--text);font-weight:600}
+.wtl{display:flex;align-items:flex-start;gap:10px;font:500 12.5px/1.45 var(--font-ui);color:var(--muted)}
+.wtl>i{flex:none;width:8px;height:8px;margin-top:5px;border-radius:50%;background:var(--faint)}
+.wtl.ok>i{background:var(--ok-bar)} .wtl.warn>i{background:var(--warn)}
+.wtl b{color:var(--text);font-weight:600}
+.wta{display:flex;gap:8px;margin-top:12px}
+.commits.incoming .commit::before{box-shadow:inset 0 0 0 2px var(--accent)}
+.commit .lc{display:inline-block;margin-right:6px;padding:2px 7px;border-radius:var(--r-pill);font:650 10.5px/1.2 var(--font-ui);color:var(--k-code,var(--accent));background:color-mix(in srgb,var(--k-code,var(--accent)) 13%,transparent);vertical-align:1px}
 </style>
 </head>
 <body>
@@ -544,6 +608,7 @@ footer{border-top:0;background:none;-webkit-backdrop-filter:none;backdrop-filter
   <div class="bar">
     <div class="seg" id="kinds"></div>
     <span class="sp"></span>
+    <div class="btn" id="cleanbtn" hidden></div>
     <div class="btn" id="pullall" hidden></div>
     <div class="seg time" id="sorts"></div>
   </div>
@@ -553,12 +618,13 @@ footer{border-top:0;background:none;-webkit-backdrop-filter:none;backdrop-filter
   </main>
   <footer id="foot"></footer>
   <div class="toast" id="toast"></div>
+  <div class="sheet" id="sheet" hidden></div>
 </div>
 <script>
 const $ = s => document.querySelector(s);
 const app = $('#app'), input = $('#q'), listEl = $('#list'), pvEl = $('#preview'), kindsEl = $('#kinds'), sortsEl = $('#sorts'), footEl = $('#foot'), resetEl = $('#reset'), toastEl = $('#toast'), syncEl = $('#sync'), syncTx = $('#syncTx'), fetchBtn = $('#fetchBtn'), pullAllEl = $('#pullall');
 let items = [], view = [], sel = 0, q = '', kind = 'all', sort = 'recent', logs = {}, wts = {}, scanning = false, selPath = null;
-let busy = { fetching: false, pullAll: false, pulling: new Set(), fetched: 0 };
+let busy = { fetching: false, pullAll: false, pulling: new Set(), fetched: 0, removing: new Set() };
 const nowS = () => Date.now() / 1000;
 
 // Duotone set: 16px grid, 1.6px round stroke; a soft fill (same colour, 20%) sits behind part of each glyph.
@@ -662,14 +728,96 @@ const canPull = p => p.behind > 0 && !(p.ahead > 0);
 // "Tümünü Çek" only touches repos where a fast-forward cannot collide with local work.
 const canPullAll = p => p.behind > 0 && p.dirty === 0 && !(p.ahead > 0);
 
+// ---- worktrees ------------------------------------------------------------
+// A worktree is an extra working folder of another clone: same history, its own branch and files.
+const idleDays = p => Math.max(0, Math.floor((nowS() - lastUsed(p)) / DAY));
+const folderOf = path => String(path || '').split('/').filter(Boolean).pop() || '';
+// Why a worktree cannot be removed safely; null when it can.
+function wtBlock(p) {
+  if (!p.worktree) return 'worktree değil';
+  if (p.dirty == null || p.onRemote == null) return 'durumu hesaplanıyor';
+  if (p.dirty > 0) return `${num(p.dirty)} dosyada commit’lenmemiş değişiklik var`;
+  if (!p.onRemote) return 'GitHub’da olmayan commit’i var';
+  return null;
+}
+// Why a removable worktree is probably not needed any more; null when it still looks in use.
+function staleWhy(p) {
+  if (wtBlock(p)) return null;
+  if (p.gone) return 'Dalı GitHub’da silinmiş (PR birleşmiş ya da kapanmış olabilir)';
+  const d = idleDays(p);
+  if (!p.branch && d >= 2) return `Bir dalda değil, ${d} gündür kullanılmadı`;
+  if (d >= 7) return `${d} gündür kullanılmadı`;
+  return null;
+}
+// the other folders that share this one's repository (worktrees of one clone)
+const siblingsOf = p => p.common ? items.filter(x => x.common === p.common && x.path !== p.path) : [];
+// ---- confirmation sheet ------------------------------------------------------
+// Destructive actions open a sheet over the panel that lists exactly what goes away, what was checked
+// and what stays; Enter (or the red button) confirms, Esc / a click outside cancels.
+let sheet = null;
+const sheetEl = $('#sheet');
+function openSheet(o) {
+  sheet = o;
+  const list = o.items.slice(0, 8).map(it => `<div class="shi">${ridHTML(it.p)}<div class="shm"><b>${esc(it.p.name)}</b><span>${it.sub}</span></div>${it.tag ? `<span class="sht">${esc(it.tag)}</span>` : ''}</div>`).join('') +
+    (o.items.length > 8 ? `<div class="shmore">ve ${num(o.items.length - 8)} klasör daha</div>` : '');
+  sheetEl.innerHTML = `<div class="shc" role="dialog" aria-modal="true"><div class="shh"><span class="shic">${ICONS.broom}</span><div><b>${esc(o.title)}</b><p>${o.lead}</p></div></div>` +
+    `<div class="shl">${list}</div>` +
+    `<div class="shk">${o.checks.map(c => `<div>${ICONS.check}<span>${c}</span></div>`).join('')}</div>` +
+    `<div class="shf"><div class="btn" data-sh="no">Vazgeç<kbd>Esc</kbd></div><div class="btn shok" data-sh="ok">${ICONS.broom}${esc(o.ok)}<kbd>Enter</kbd></div></div></div>`;
+  sheetEl.hidden = false;
+  requestAnimationFrame(() => sheetEl.classList.add('on'));
+}
+function closeSheet(ok) {
+  if (!sheet) return;
+  const o = sheet; sheet = null;
+  sheetEl.classList.remove('on');
+  setTimeout(() => { if (!sheet) { sheetEl.hidden = true; sheetEl.innerHTML = ''; } }, 160);
+  if (ok) o.onOk();
+}
+sheetEl.addEventListener('mousedown', e => {
+  e.preventDefault(); e.stopPropagation();
+  const b = e.target.closest('[data-sh]');
+  if (b) closeSheet(b.dataset.sh === 'ok');
+  else if (!e.target.closest('.shc')) closeSheet(false);
+});
+// One row of the sheet: branch, last use and what happens to the branch.
+function sheetItem(p) {
+  const br = p.branch ? `<code>${esc(p.branch)}</code>` : `detached <code>${esc(p.sha || '')}</code>`;
+  return { p, sub: `${br} · ${esc(rel(lastUsed(p)))} kullanıldı`, tag: p.gone ? 'dal da silinir' : '' };
+}
+function confirmRemove(list) {
+  const n = list.length, branches = list.filter(p => p.gone && p.branch).length;
+  const main = folderOf(list[0].mainPath) || 'ana klon';
+  openSheet({
+    title: n === 1 ? `“${list[0].name}” silinsin mi?` : `${num(n)} worktree silinsin mi?`,
+    lead: `${n === 1 ? 'Bu klasör' : 'Bu klasörler'} diskten kaldırılır (<code>git worktree remove</code>). <b>${esc(main)}</b> ana klonu ve GitHub’daki her şey olduğu gibi kalır.`,
+    items: list.map(sheetItem),
+    checks: ['Commit’lenmemiş değişiklik yok', 'Her commit GitHub’da; hiçbir iş kaybolmaz',
+      branches ? `GitHub’da silinmiş ${num(branches)} yerel dal da temizlenir` : 'Yerel dallar yerinde kalır',
+      'Silmeden hemen önce her klasör yeniden kontrol edilir; bir şey değiştiyse o klasör atlanır'],
+    ok: n === 1 ? 'Worktree’yi Sil' : `${num(n)} Worktree’yi Sil`,
+    onOk() {
+      list.forEach(p => busy.removing.add(p.path));
+      if (n === 1) post({ action: 'removeWorktree', path: list[0].path });
+      else post({ action: 'cleanWorktrees', paths: list.map(p => p.path) });
+      renderList(tokens(q)); renderPreview();
+    },
+  });
+}
+
 // ---- filters / sorting / search -------------------------------------------
 // Filters answer "what do I have to do?": commit, push or pull. Whether a folder is the main clone or a
 // copy stays a small detail of the preview.
 const KINDS = [
-  { key: 'all',    label: 'Tümü',            icon: 'all',   tip: 'Bütün projeler',                                      test: () => true },
-  { key: 'dirty',  label: 'Commit’lenmemiş', icon: 'dirty', tip: 'Commit’lenmemiş değişikliği olan repolar',             test: p => p.dirty > 0 },
-  { key: 'ahead',  label: 'Push Edilmemiş',  icon: 'up',    tip: 'Commit’i var ama GitHub’a gönderilmemiş repolar',      test: p => p.ahead > 0 },
-  { key: 'behind', label: 'Güncelleme Var',  icon: 'down',  tip: 'GitHub’da yeni commit’i olan repolar (son uzaktan kontrole göre)', test: p => p.behind > 0 },
+  { key: 'all',    label: 'Tümü',            icon: 'all',   tip: 'Bütün projeler', test: () => true },
+  { key: 'dirty',  label: 'Commit’lenmemiş', icon: 'dirty', tip: 'Kaydedilmemiş dosya değişikliği olan klasörler', test: p => p.dirty > 0,
+    desc: 'Dosyalarında henüz commit’lenmemiş değişiklik olan klasörler. Commit’le ya da geri al; aksi halde bu değişiklikler yalnız bu Mac’te durur.' },
+  { key: 'ahead',  label: 'Push Edilmemiş',  icon: 'up',    tip: 'Commit’lenmiş ama GitHub’a gönderilmemiş işler', test: p => p.ahead > 0,
+    desc: 'Bu Mac’te commit’lenmiş ama GitHub’a push edilmemiş işler. Push edilene kadar yalnız burada durur; ekip göremez.' },
+  { key: 'behind', label: 'Güncelleme Var',  icon: 'down',  tip: 'GitHub’da bu klasörde olmayan yeni commit’ler var', test: p => p.behind > 0,
+    desc: 'GitHub’da bu klasörlerde olmayan yeni commit’ler var (son uzaktan kontrole göre). Pull onları indirir; “Tümünü Çek” yalnız temiz ve ayrışmamış olanlara dokunur.' },
+  { key: 'stale',  label: 'Temizlenebilir',  icon: 'broom', chip: false, tip: 'Silmesi güvenli, kullanılmayan worktree’ler', test: p => !!staleWhy(p),
+    desc: 'Silmesi güvenli worktree’ler: commit’lenmemiş değişiklik yok, her commit GitHub’da, uzun süredir kullanılmıyor ya da dalı GitHub’da silinmiş. Ana klon ve diğer dallar etkilenmez.' },
 ];
 const SORTS = [{ key: 'recent', label: 'Son Kullanılan' }, { key: 'name', label: 'Ad' }];
 const isDefault = () => kind === 'all';
@@ -727,9 +875,9 @@ function refresh(keepPath) {
 
 function renderFilters(toks) {
   // Built once and patched afterwards: the pills stay in the DOM, so the thumb slides between them.
-  if (!kindsEl.querySelector('.f')) kindsEl.innerHTML = KINDS.map(f => `<div class="f" data-k="${f.key}" title="${esc(f.tip)}">${ICONS[f.icon]}<span class="lb">${f.label}</span><b></b></div>`).join('');
+  if (!kindsEl.querySelector('.f')) kindsEl.innerHTML = KINDS.filter(f => f.chip !== false).map(f => `<div class="f" data-k="${f.key}" title="${esc(f.tip)}">${ICONS[f.icon]}<span class="lb">${f.label}</span><b></b></div>`).join('');
   if (!sortsEl.querySelector('.t')) sortsEl.innerHTML = SORTS.map(s => `<div class="t" data-s="${s.key}">${s.label}</div>`).join('');
-  KINDS.forEach(f => {
+  KINDS.filter(f => f.chip !== false).forEach(f => {
     const el = kindsEl.querySelector(`[data-k="${f.key}"]`), n = items.filter(p => f.test(p) && (!toks.length || score(p, toks))).length, tx = num(n);
     el.classList.toggle('on', f.key === kind); el.classList.toggle('zero', !n);
     const b = el.querySelector('b'); if (b.textContent !== tx) b.textContent = tx;
@@ -754,7 +902,8 @@ function emptyHTML(toks) {
 // Second row line: "branch · time" (a detached HEAD shows a badge and the commit instead).
 function subOf(p, toks) {
   const head = p.branch ? `<span class="br">${highlight(p.branch, toks)}</span>` : `<span class="dt">detached</span><span class="br">${highlight(p.sha || '', toks)}</span>`;
-  return `${head} · ${esc(rel(activity(p)))}`;
+  const tag = staleWhy(p) ? ` <span class="tg" title="${esc(staleWhy(p))}">temizlenebilir</span>` : p.gone ? ` <span class="tg w" title="Dalı GitHub’da silinmiş">dal silinmiş</span>` : '';
+  return `${head} · ${esc(rel(activity(p)))}${tag}`;
 }
 function syncOf(p) {
   if (p.ahead == null) return '';
@@ -784,12 +933,24 @@ function ridHTML(p, cls = '') {
 // The selection is one element that glides from row to row (motion.js); without it the row keeps its own fill.
 function glide(animate) { if (window.NB) NB.glide(listEl, listEl.querySelector('.row.sel'), { animate }); }
 
+// What the active filter means, in a sentence; the cleanup filter adds its bulk action.
+function kindNote() {
+  const K = KINDS.find(x => x.key === kind);
+  if (!K || !K.desc) return '';
+  let extra = '';
+  if (kind === 'stale' && view.length) {
+    const busyN = view.filter(p => busy.removing.has(p.path)).length;
+    extra = busyN ? `<div class="btn busy">${ICONS.broom}Siliniyor… ${num(busyN)}</div>`
+      : `<div class="btn danger" data-act="cleanAll">${ICONS.broom}Hepsini Sil (${num(view.length)})</div>`;
+  }
+  return `<div class="knote">${esc(K.desc)}${extra ? `<div class="kact">${extra}</div>` : ''}</div>`;
+}
 function renderList(toks) {
   if (!view.length) { listEl.innerHTML = emptyHTML(toks); glide(false); return; }
   const flat = toks.length > 0;
   const counts = {};
   if (!flat) for (const p of view) { const g = groupOf(p); counts[g] = (counts[g] || 0) + 1; }
-  let html = flat ? `<div class="group">Sonuçlar<span>${num(view.length)}</span></div>` : '', last = null;
+  let html = kindNote() + (flat ? `<div class="group">Sonuçlar<span>${num(view.length)}</span></div>` : ''), last = null;
   view.forEach((p, i) => {
     if (!flat) {
       const g = groupOf(p);
@@ -819,19 +980,25 @@ function ibtn(act, icon, label, on = false) {
 // One sentence per state, with the action it asks for. Nothing to do -> a single "Güncel, temiz" line.
 function statusCard(p) {
   const rows = [];
-  const row = (cls, text, action = '') => rows.push(`<div class="stl ${cls}"><i></i><div class="tx">${esc(text)}</div>${action}</div>`);
+  const row = (cls, text, action = '', hint = '') => rows.push(`<div class="stl ${cls}"><i></i><div class="tx">${esc(text)}${hint ? `<small>${esc(hint)}</small>` : ''}</div>${action}</div>`);
   const ghBtn = btn('github', 'gh', 'GitHub Desktop', '');
   const pulling = busy.pulling.has(p.path);
   if (p.behind > 0) {
-    if (p.ahead > 0) row('act', `${num(p.behind)} yeni commit var · dallar ayrıştı`, ghBtn);
-    else row('act', `${num(p.behind)} yeni commit var`, `<div class="btn${pulling ? ' busy' : ''}" data-act="pull" title="Pull (⌘U)">${ICONS.down}${pulling ? 'Çekiliyor…' : 'Pull'}</div>`);
+    if (p.ahead > 0) row('act', `Dallar ayrıştı: GitHub’da ${num(p.behind)}, burada ${num(p.ahead)} farklı commit var`, ghBtn,
+      'Otomatik pull yapılamaz. GitHub Desktop’ta birleştir (merge ya da rebase), sonra push et.');
+    else row('act', `GitHub’da ${num(p.behind)} yeni commit var`, `<div class="btn${pulling ? ' busy' : ''}" data-act="pull" title="Pull (⌘U)">${ICONS.down}${pulling ? 'Çekiliyor…' : 'Pull'}</div>`,
+      p.dirty > 0 ? 'Pull bunları indirir; commit’lenmemiş değişiklik aynı dosyalara dokunuyorsa git durdurur, hiçbir şey kaybolmaz.' : 'Pull bunları bu klasöre indirir (yalnız ileri sarma, birleştirme yapmaz). Aşağıda neler geleceği listeleniyor.');
   }
-  if (p.ahead > 0) row('act', `${num(p.ahead)} commit push edilmedi`, p.behind > 0 ? '' : ghBtn);
-  if (p.dirty > 0) row('warn', `${num(p.dirty)} dosya commit’lenmedi`);
+  if (p.ahead > 0 && !(p.behind > 0)) row('act', `${num(p.ahead)} commit GitHub’a push edilmedi`, ghBtn, 'Yalnız bu Mac’te duruyor; push edince GitHub’a gider. Listede “push edilmedi” ile işaretli.');
+  if (p.dirty > 0) row('warn', `${num(p.dirty)} dosyada commit’lenmemiş değişiklik`, '', 'Henüz hiçbir commit’e girmedi. Satır farkı aşağıda.');
   const unknown = p.dirty == null, hasUp = p.ahead != null;
   if (unknown) row('mute', 'Durum hesaplanıyor…');
-  else if (!rows.length) row('ok', hasUp ? 'Güncel, temiz' : 'Temiz');
-  if (!hasUp) row('mute', p.branch ? 'Uzak dal yok' : 'Detached HEAD');
+  else if (!rows.length) row('ok', hasUp ? 'Güncel ve temiz' : 'Temiz', '', hasUp ? 'GitHub ile aynı, commit’lenmemiş değişiklik yok.' : 'Commit’lenmemiş değişiklik yok.');
+  if (!hasUp) {
+    if (p.gone) row('mute', 'Dalı GitHub’da silinmiş', '', 'Genelde PR birleşince olur. İş GitHub’daysa bu klasör artık gerekmeyebilir.');
+    else if (p.branch) row('mute', 'Bu dal GitHub’a hiç push edilmedi', '', 'Push edilene kadar karşılaştırılacak bir uzak dal yok.');
+    else row('mute', 'Bir dalda değil (detached HEAD)', '', 'Belli bir commit açık. Burada yapılan yeni commit’ler bir dala ait olmaz; çalışacaksan önce dal oluştur.');
+  }
   return `<div class="stc">${rows.join('')}</div>`;
 }
 
@@ -840,13 +1007,13 @@ function renderPreview() {
   if (!p) { pvEl.innerHTML = ''; renderFooter(); return; }
   const keepScroll = selPath === p.path ? (pvEl.querySelector('.pv-body')?.scrollTop || 0) : 0;
   selPath = p.path;
-  const acts = btn('vscode', 'code', 'VS Code\'da Aç', '↩', 'primary') + btn('claude', 'spark', 'Claude', '⌥↩') + btn('terminal', 'term', 'Terminal', '⌘↩') +
+  const acts = btn('vscode', 'code', 'VS Code\'da Aç', 'Enter', 'primary') + btn('claude', 'spark', 'Claude', 'Option + Enter') + btn('terminal', 'term', 'Terminal', 'Cmd + Enter') +
     '<span class="sp"></span>' + ibtn('github', 'gh', 'GitHub Desktop (⌘G)') + ibtn('reveal', 'folder', 'Finder (⌘O)') + ibtn('pin', p.pinned ? 'pin' : 'pinO', p.pinned ? 'Sabitli (⌘P)' : 'Sabitle (⌘P)', !!p.pinned);
   const chips = [p.branch ? `<span class="chip br-chip" title="Dal">${ICONS.branch}<span class="br">${esc(p.branch)}</span></span>`
       : `<span class="chip" title="Bir dalda değil">Detached HEAD${p.sha ? ` · <span class="br">${esc(p.sha)}</span>` : ''}</span>`];
-  if (p.worktree) chips.push('<span class="chip" title="Ana klonun ek çalışma dizini">Worktree</span>');
+  if (p.worktree) chips.push(`<span class="chip" title="${esc(folderOf(p.mainPath) || 'Ana klon')} klonunun ek çalışma klasörü">Worktree${p.mainPath ? ` · ${esc(folderOf(p.mainPath))}` : ''}</span>`);
 
-  const lg = logs[p.path];
+  const lg = logs[p.path] && logs[p.path].sha === logKey(p) ? logs[p.path] : (logs[p.path] && logs[p.path].path === p.path ? logs[p.path] : null);
   let commits = '', commitSum = '';
   if (!lg) commits = '<span class="sklabel">Yükleniyor…</span>' + [72, 54, 64].map(w => `<div class="skline" style="--w:${w}%"><b class="nb-skel"></b><b class="nb-skel"></b></div>`).join('');
   else if (!lg.commits.length) commits = '<div class="pv-note">Commit bulunamadı.</div>';
@@ -865,11 +1032,47 @@ function renderPreview() {
     `<div class="pv-body"><div class="pv-head" style="--h:${hueOf(p.name)}">${ridHTML(p, 'lg')}<div class="pv-name">${esc(titleOf(p))}</div>${chips.join('')}</div>` +
     `<div class="sec">Durum</div>${statusCard(p)}${sub.length ? `<div class="pv-sub">${sub.join('')}</div>` : ''}` +
     worktreeHTML(p) +
+    incomingHTML(p, lg) +
     `<div class="sec">Son Commit’ler${commitSum}</div><div class="commits">${commits}</div>` +
+    wtCardHTML(p) +
     `<div class="sec">Konum</div><div class="pv-path"><code>${esc(p.path)}</code><div class="cp" data-act="copy" title="Yolu Kopyala">${ICONS.copyi}</div></div></div>`;
   if (keepScroll) pvEl.querySelector('.pv-body').scrollTop = keepScroll;
   renderFooter();
   wantLog(p);
+}
+
+// What a pull would bring: the commits on GitHub that this folder does not have yet.
+function incomingHTML(p, lg) {
+  if (!(p.behind > 0)) return '';
+  const inc = lg && lg.incoming;
+  const more = inc && p.behind > inc.length ? `<div class="pv-note">ve ${num(p.behind - inc.length)} commit daha${inc.length >= 20 ? '' : ' (merge commit’leri listelenmez)'}</div>` : '';
+  const body = !inc ? '<div class="pv-note">Yükleniyor…</div>' : !inc.length ? '<div class="pv-note">Yalnız merge commit’leri geliyor.</div>' : inc.map(commitHTML).join('') + more;
+  return `<div class="sec">${p.ahead > 0 ? 'GitHub’da Olup Burada Olmayan' : 'Pull ile Gelecek'}<span class="sx">${num(p.behind)} commit</span></div><div class="commits incoming">${body}</div>`;
+}
+// The worktree card: whose folder this is, whether it can go and why; on a main clone, its worktrees.
+function wtCardHTML(p) {
+  const sib = siblingsOf(p);
+  if (p.worktree) {
+    const block = wtBlock(p), why = staleWhy(p), rm = busy.removing.has(p.path);
+    const main = folderOf(p.mainPath) || 'ana klon';
+    const lead = `<b>${esc(main)}</b> klonunun ek çalışma klasörü (worktree). Geçmişi ve GitHub bağlantısı ortak; dalı ve dosyaları ayrı.` +
+      (sib.length > 1 ? ` Bu klonun ${num(sib.length)} klasörü daha var.` : '');
+    let state;
+    if (block === 'durumu hesaplanıyor') state = `<div class="wtl mute"><i></i>Silinebilir mi, hesaplanıyor…</div>`;
+    else if (block) state = `<div class="wtl warn"><i></i><span><b>Silinemez:</b> ${esc(block)}. Önce commit’le ve push et.</span></div>`;
+    else if (why) state = `<div class="wtl ok"><i></i><span><b>Temizlenebilir:</b> ${esc(why)}. Değişiklik yok, her commit GitHub’da; silmek hiçbir işi kaybettirmez.</span></div>`;
+    else state = `<div class="wtl ok"><i></i><span><b>Güvenle silinebilir</b> (değişiklik yok, her commit GitHub’da) ama yakın zamanda kullanılmış.</span></div>`;
+    const label = 'Worktree’yi Sil';
+    const action = rm ? `<div class="btn busy">${ICONS.broom}Siliniyor…</div>`
+      : block ? `<div class="btn dim" title="${esc(block)}">${ICONS.broom}Worktree’yi Sil</div>`
+      : `<div class="btn danger" data-act="removeWorktree" title="Klasörü kaldırır (git worktree remove)${p.gone ? '; GitHub’da silinmiş dalı da siler' : ''}. Ana klon etkilenmez.">${ICONS.broom}${label}</div>`;
+    return `<div class="sec">Worktree</div><div class="wtc"><p>${lead}</p>${state}<div class="wta">${action}</div></div>`;
+  }
+  const wts2 = sib.filter(x => x.worktree);
+  if (!wts2.length) return '';
+  const staleN = wts2.filter(x => staleWhy(x)).length;
+  return `<div class="sec">Worktree’ler</div><div class="wtc"><p>Bu klona bağlı <b>${num(wts2.length)}</b> worktree klasörü var${staleN ? `; <b>${num(staleN)}</b> tanesi temizlenebilir` : ''}. Her biri aynı geçmişi paylaşan ayrı bir çalışma klasörü.</p>` +
+    (staleN ? `<div class="wta"><div class="btn" data-act="showStale">${ICONS.broom}Temizlenebilirleri Göster</div></div>` : '') + `</div>`;
 }
 
 // Five blocks split by the added/deleted ratio, as GitHub draws it; grey when nothing changed.
@@ -888,7 +1091,7 @@ function commitHTML(c) {
   const st = has
     ? `<span class="st" title="${filesText(c.files)} · +${num(c.added)} −${num(c.deleted)}"><span class="n"><span class="pl">+${num(c.added)}</span><span class="mi">−${num(c.deleted)}</span></span>${diffBar(c.added, c.deleted)}</span>`
     : `<span class="st"><span class="fz">Değişiklik yok</span></span>`;
-  return `<div class="commit"><span class="s" title="${esc(c.subject)}">${subjectHTML(c.subject)}</span>${st}` +
+  return `<div class="commit${c.unpushed ? ' lo' : ''}"><span class="s" title="${esc(c.subject)}">${c.unpushed ? '<span class="lc" title="Yalnız bu Mac’te; GitHub’da yok">push edilmedi</span>' : ''}${subjectHTML(c.subject)}</span>${st}` +
     `<span class="w"><code>${esc(c.sha)}</code>· ${c.mine ? '<span class="me" title="Senin commit’in">Sen</span>' : `<span class="who">${esc(c.author)}</span>`} · ${esc(rel(c.t))}${has ? ` · <span class="fz">${filesText(c.files)}</span>` : ''}</span></div>`;
 }
 // Uncommitted lines against HEAD; only for dirty projects.
@@ -911,17 +1114,23 @@ function worktreeHTML(p) {
 }
 
 let logTimer;
+const logKey = p => `${p.sha || ''}|${p.ahead ?? ''}|${p.behind ?? ''}`;
 function wantLog(p) {
   const lg = logs[p.path], w = wts[p.path];
-  const needLog = !lg || lg.sha !== p.sha, needWt = p.dirty > 0 && (!w || w.dirty !== p.dirty || nowS() - w.at > 15);
+  const needLog = !lg || lg.sha !== logKey(p), needWt = p.dirty > 0 && (!w || w.dirty !== p.dirty || nowS() - w.at > 15);
   if (!needLog && !needWt) return;
   clearTimeout(logTimer);
-  logTimer = setTimeout(() => post({ action: 'log', path: p.path, sha: p.sha || '', dirty: needWt }), 90);
+  logTimer = setTimeout(() => post({ action: 'log', path: p.path, sha: logKey(p), dirty: needWt }), 90);
 }
 
 function renderFooter() {
-  const h = ['<span><kbd>↩</kbd>VS Code</span>', '<span><kbd>⌥↩</kbd>Claude</span>', '<span><kbd>⌘↩</kbd>Terminal</span>', '<span><kbd>⌘C</kbd>Yolu Kopyala</span>'];
-  if (view[sel] && canPull(view[sel])) h.push('<span><kbd>⌘U</kbd>Pull</span>');
+  // keys spelled out: symbols alone (⌥↩) are hard to read; each chip says the key and what it opens
+  const K = (keys, label, tip) => `<span title="${tip}">${keys.map(k => `<kbd>${k}</kbd>`).join('<i>+</i>')}<em>${label}</em></span>`;
+  const h = [K(['Enter'], 'VS Code’da aç', 'Enter: seçili projeyi VS Code’da açar'),
+    K(['⌥ Option', 'Enter'], 'Claude', 'Option + Enter: projede Terminal açıp Claude Code başlatır'),
+    K(['⌘ Cmd', 'Enter'], 'Terminal', 'Cmd + Enter: projede Terminal açar'),
+    K(['⌘ Cmd', 'C'], 'Yolu kopyala', 'Cmd + C: klasör yolunu panoya kopyalar')];
+  if (view[sel] && canPull(view[sel])) h.push(K(['⌘ Cmd', 'U'], 'Pull', 'Cmd + U: GitHub’daki yeni commit’leri indirir'));
   footEl.innerHTML = h.join('') + `<span class="sp"></span><span class="cnt"><b>${num(view.length)}</b>Proje</span>`;
 }
 
@@ -948,7 +1157,7 @@ function toast(msg, kind) {
 // Sync state from Lua (pull / fetch in flight, last fetch time): spinners, labels and disabled buttons.
 function applyBusy(b) {
   b = b || {};
-  busy = { fetching: !!b.fetching, pullAll: !!b.pullAll, pulling: new Set(b.pulling || []), fetched: b.fetched || 0, progress: Array.isArray(b.progress) ? b.progress : null };
+  busy = { fetching: !!b.fetching, pullAll: !!b.pullAll, pulling: new Set(b.pulling || []), fetched: b.fetched || 0, progress: Array.isArray(b.progress) ? b.progress : null, removing: new Set(b.removing || []) };
   fetchBtn.classList.toggle('spin', busy.fetching);
   fetchBtn.dataset.tip = fetchTip();
   updateSync();
@@ -961,7 +1170,18 @@ function updateSync() {
   syncTx.textContent = busy.pullAll ? 'Çekiliyor…' : busy.fetching ? 'Uzaktan Kontrol' + (pr || 'Ediliyor…') : 'Yenileniyor' + (pr || '…');
   syncEl.classList.toggle('on', on);
 }
+// "Temizlenebilir": the safe-to-remove worktrees, as a toggle next to "Tümünü Çek" (only when there are some).
+const cleanEl = $('#cleanbtn');
+cleanEl.addEventListener('mousedown', e => { e.preventDefault(); setKind('stale'); });
+function renderClean() {
+  const n = items.filter(p => staleWhy(p)).length;
+  cleanEl.hidden = !n && kind !== 'stale';
+  cleanEl.classList.toggle('on', kind === 'stale');
+  cleanEl.title = 'Silmesi güvenli, kullanılmayan worktree’leri göster';
+  cleanEl.innerHTML = `${ICONS.broom}Temizlenebilir<b>${num(n)}</b>`;
+}
 function renderPullAll() {
+  renderClean();
   const behindN = items.filter(p => p.behind > 0).length, ready = items.filter(canPullAll).length;
   pullAllEl.hidden = !behindN;
   pullAllEl.classList.toggle('busy', busy.pullAll);
@@ -976,6 +1196,11 @@ function act(a, p = view[sel]) {
   if (a === 'copy') {
     const row = listEl.querySelector(`.row[data-i="${view.indexOf(p)}"]`);
     if (row && window.NB) NB.confirm(row.querySelector('.cp'));
+  }
+  if (a === 'showStale') { kind = 'stale'; refresh(); listEl.scrollTop = 0; return; }
+  if (a === 'removeWorktree') {
+    if (wtBlock(p) || busy.removing.has(p.path)) return;
+    return confirmRemove([p]);
   }
   if (a === 'pull') {
     if (busy.pulling.has(p.path) || !canPull(p)) return; // no double trigger while it runs
@@ -996,6 +1221,12 @@ pullAllEl.addEventListener('mousedown', e => { e.preventDefault(); if (!busy.pul
 listEl.addEventListener('mousedown', e => {
   const b = e.target.closest('[data-act]');
   if (b && b.dataset.act === 'clear') { e.preventDefault(); return clearAll(); }
+  if (b && b.dataset.act === 'cleanAll') {
+    e.preventDefault();
+    const list = view.filter(p => staleWhy(p) && !busy.removing.has(p.path));
+    if (list.length) confirmRemove(list);
+    return;
+  }
   const r = e.target.closest('.row'); if (!r) return;
   e.preventDefault();
   select(+r.dataset.i, false);
@@ -1011,6 +1242,11 @@ function hasTextSelection() { const s = window.getSelection(); return s && !s.is
 document.addEventListener('keydown', e => {
   const k = e.key, m = e.metaKey;
   // the history sheet owns the keyboard while it is open: Esc closes it, everything else types
+  if (sheet) { // the sheet owns the keyboard
+    e.preventDefault();
+    if (k === 'Escape') closeSheet(false); else if (k === 'Enter') closeSheet(true);
+    return;
+  }
   if (histOpen) {
     if (k === 'Escape') { e.preventDefault(); if (hQ) { hQ = ''; $('#hq').value = ''; renderHistoryBody(); } else closeHistory(); }
     else if (m && lower(k) === 'f') { e.preventDefault(); $('#hq').focus(); }
@@ -1115,6 +1351,14 @@ function barsHTML(period) {
 function renderGitHub() {
   if (!gh) { ghEl.hidden = true; return; }
   ghEl.hidden = false;
+  // no numbers yet: say so (counting, or why it failed) instead of hiding the strip
+  if (gh.status && gh.commits == null) {
+    ghEl.innerHTML = `<span class="gl"><span class="eyebrow">Bugün</span><b>Bugün Yaptıkların</b></span>` +
+      (gh.status === 'error'
+        ? `<span class="gmsg err"><b>Sayılar alınamadı</b>${esc(gh.error || '')}<small>Ayrıntı Hammerspoon konsolunda (status: dev-stats).</small></span>`
+        : `<span class="gmsg"><i class="nb-skel"></i><b>Commit ve satır sayıları hesaplanıyor…</b><small>İlk hesap birkaç saniye sürer; sonra anında gelir.</small></span>`);
+    return;
+  }
   const n = v => Number(v || 0).toLocaleString('tr-TR');
   // The week / month numbers come from `periods`; an older hub without them only has today.
   const P = PERIODS[ghPeriod], pd = gh.periods && gh.periods[ghPeriod];
@@ -1135,6 +1379,7 @@ function renderGitHub() {
     stat('pr', cur.prs == null ? '–' : n(cur.prs), 'Açılan PR', cur.opened ? 'opened' : null) +
     stat('cm', n(cur.commits), 'Commit', 'commits') +
     stat('add', '+' + n(cur.added), 'Eklenen Satır') + stat('del', '−' + n(cur.deleted), 'Silinen Satır') +
+    stat('net', (cur.added - cur.deleted >= 0 ? '+' : '−') + n(Math.abs((cur.added || 0) - (cur.deleted || 0))), 'Net Değişim') +
     (ghPeriod !== 'day' && gh.days ? barsHTML(ghPeriod) : '') +
     `<span class="sp"></span>` + btn('review', 'İnceleme Bekleyen', gh.reviewCount) + btn('open', 'Açık PR\'larım', gh.openCount);
   if (ghOpen && LISTS[ghOpen]) {
@@ -1153,8 +1398,8 @@ function renderGitHub() {
   if (!window.NB) return;
   // the period thumb slides from where it was; the four numbers count to the new period's values
   const seg2 = ghEl.querySelector('.seg'); if (seg2) NB.thumb(seg2, true, from);
-  const raw = { pr: cur.prs, cm: cur.commits, add: cur.added, del: cur.deleted }, sign = { add: '+', del: '−' };
-  ghEl.querySelectorAll('.nv').forEach(el => { const c = el.dataset.c; if (typeof raw[c] === 'number') NB.count(el, 'gh.' + c, raw[c], v => (sign[c] || '') + n(Math.round(v))); });
+  const raw = { pr: cur.prs, cm: cur.commits, add: cur.added, del: cur.deleted, net: (cur.added || 0) - (cur.deleted || 0) }, sign = { add: '+', del: '−' };
+  ghEl.querySelectorAll('.nv').forEach(el => { const c = el.dataset.c; if (typeof raw[c] === 'number') NB.count(el, 'gh.' + c, raw[c], v => (c === 'net' ? (v < 0 ? '−' : '+') : (sign[c] || '')) + n(Math.abs(Math.round(v)))); });
 }
 ghEl.addEventListener('mousedown', e => {
   if (e.target.closest('[data-hist]')) { e.preventDefault(); e.stopPropagation(); ghOpen = null; renderGitHub(); openHistory(); return; }
@@ -1302,8 +1547,8 @@ window.Projects = {
   },
   setBusy(b) { applyBusy(b); renderPreview(); },
   setScanning(on) { scanning = !!on; updateSync(); if (!items.length) renderList(tokens(q)); },
-  log(path, sha, commits) {
-    logs[path] = { sha, commits: Array.isArray(commits) ? commits : [] };
+  log(path, sha, commits, incoming) {
+    logs[path] = { path, sha, commits: Array.isArray(commits) ? commits : [], incoming: Array.isArray(incoming) ? incoming : [] };
     if (view[sel]?.path === path) renderPreview();
   },
   worktree(path, w) {

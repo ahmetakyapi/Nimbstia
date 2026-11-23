@@ -297,10 +297,22 @@ def main():
     org = None
     if "--org" in sys.argv[1:-1]:
         org = sys.argv[sys.argv.index("--org") + 1].strip() or None
+    errors = []
+
+    def safe(fn, label):
+        # one half failing (a git quirk, gh output in a new shape) must not take the other half down
+        try:
+            return fn(org)
+        except Exception as e:  # noqa: BLE001
+            import traceback
+            traceback.print_exc(file=sys.stderr)
+            errors.append(f"{label}: {type(e).__name__}: {e}")
+            return None
+
     with cf.ThreadPoolExecutor(max_workers=2) as ex:
-        g = ex.submit(git_stats, org)
-        h = ex.submit(gh_stats, org)
-        out = {"git": g.result(), "gh": h.result(), "org": org, "at": int(dt.datetime.now().timestamp())}
+        g = ex.submit(safe, git_stats, "git")
+        h = ex.submit(safe, gh_stats, "gh")
+        out = {"git": g.result(), "gh": h.result(), "org": org, "at": int(dt.datetime.now().timestamp()), "errors": errors}
     print(json.dumps(out, ensure_ascii=False))
 
 

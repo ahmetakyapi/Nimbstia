@@ -15,7 +15,7 @@ local SCAN_SCRIPT = BASE .. "/bin/projects-scan.py"
 local GIT = "/usr/bin/git"
 local PYTHON = "/usr/bin/python3"
 local OPEN = "/usr/bin/open"
-local W, H = 1060, 660
+local W, H = 1180, 700
 local MIN_RESCAN_SEC = 20   -- opening the panel again within this window does not rescan
 local SCAN_TIMEOUT = 90     -- hard stop for a runaway scan
 
@@ -48,12 +48,15 @@ local pendingRescan = false -- a pull / fetch finished while a scan was running:
 local lastFetch = tonumber(hs.settings.get(K_FETCHED)) or 0 -- epoch of the last "Uzaktan Kontrol Et"
 local fetching, pullAllBusy = false, false
 local fetchProgress = nil -- { done, total } while "Uzaktan Kontrol Et" runs
+local removing = {} -- path -> true while its worktree is being removed
 local pullBusy = {} -- path -> true while a `git pull` runs in it
 
 local function busyState()
   local pulling = {}
   for path in pairs(pullBusy) do table.insert(pulling, path) end
-  return { fetching = fetching, pullAll = pullAllBusy, pulling = pulling, fetched = lastFetch, progress = fetchProgress or scanProgress }
+  local rm = {}
+  for path in pairs(removing) do table.insert(rm, path) end
+  return { removing = rm, fetching = fetching, pullAll = pullAllBusy, pulling = pulling, fetched = lastFetch, progress = fetchProgress or scanProgress }
 end
 
 do
@@ -168,6 +171,7 @@ function startScan(force)
       local p = msg.p
       local old = current[p.path]
       p.dirty = old and old.dirty or nil -- keep the cached count until the slow phase reports
+      if old then p.gone, p.onRemote = old.gone, old.onRemote end
       fresh[p.path] = p
       table.insert(freshOrder, p.path)
     elseif msg.type == "phase" then
@@ -177,7 +181,7 @@ function startScan(force)
       pushSoon()
     elseif msg.type == "dirty" then
       local p = current[msg.path]
-      if p then p.dirty = msg.dirty end
+      if p then p.dirty, p.gone, p.onRemote = msg.dirty, msg.gone, msg.onRemote end
       if scanProgress then scanProgress[1] = scanProgress[1] + 1 end
       pushSoon()
     elseif msg.type == "done" then
@@ -239,12 +243,13 @@ local function rescanRepos(paths)
       local p = msg.p
       local old = current[p.path]
       p.dirty = old and old.dirty or nil -- keep the cached count until the slow phase reports
+      if old then p.gone, p.onRemote = old.gone, old.onRemote end
       if not old then table.insert(order, p.path) end
       current[p.path] = p
       pushSoon()
     elseif msg.type == "dirty" then
       local p = current[msg.path]
-      if p then p.dirty = msg.dirty end
+      if p then p.dirty, p.gone, p.onRemote = msg.dirty, msg.gone, msg.onRemote end
       pushSoon()
     end
   end
@@ -469,17 +474,75 @@ local function pullAll()
   end)
 end
 
+-- ---------------------------------------------------------------- worktree cleanup
+
+-- Removes one worktree folder, only when nothing can be lost: no uncommitted or untracked file and every
+-- commit of its HEAD on a remote branch (checked again here, not trusted from the page). `git worktree
+-- remove` without --force refuses anything else as well. A branch whose upstream is gone (PR merged, branch
+-- deleted on GitHub) is deleted too; any other branch stays. The main checkout is never touched.
+local function removeWorktree(path, cb)
+  local p = current[path]
+  local dotgit = hs.fs.attributes(path .. "/.git")
+  if not p or not validPath(path) or not dotgit or dotgit.mode ~= "file" then return cb(false, "worktree değil") end
+  local main = (p.mainPath and validPath(p.mainPath)) and p.mainPath or path
+  gitTask(path, { "status", "--porcelain" }, 30, function(code, out, _, to)
+    if code ~= 0 or to then return cb(false, "durum okunamadı") end
+    if out:match("%S") then return cb(false, "commit’lenmemiş değişiklik var") end
+    gitTask(path, { "rev-list", "-n1", "HEAD", "--not", "--remotes" }, 30, function(c2, o2, _, t2)
+      if c2 ~= 0 or t2 then return cb(false, "GitHub ile karşılaştırılamadı") end
+      if o2:match("%S") then return cb(false, "push edilmemiş commit var") end
+      local branch, gone = p.branch, p.gone
+      gitTask(main, { "worktree", "remove", path }, 120, function(c3, o3, e3, t3)
+        if t3 then return cb(false, "zaman aşımı") end
+        if c3 ~= 0 then return cb(false, gitError(e3 ~= "" and e3 or o3, c3)) end
+        local function done()
+          current[path] = nil
+          for i, x in ipairs(order) do if x == path then table.remove(order, i); break end end
+          opens[path], pins[path] = nil, nil
+          hs.settings.set(K_OPENS, opens); hs.settings.set(K_PINS, pins)
+          saveCache()
+          cb(true)
+        end
+        if branch and gone then gitTask(main, { "branch", "-D", branch }, 20, function() done() end) else done() end
+      end)
+    end)
+  end)
+end
+
+local function removeWorktrees(paths)
+  local todo = {}
+  for _, path in ipairs(paths) do
+    if type(path) == "string" and not removing[path] and current[path] then table.insert(todo, path); removing[path] = true end
+  end
+  if #todo == 0 then return end
+  pushBusy()
+  local okCount, failures = 0, {}
+  runPool(todo, 1, function(path, release) -- one at a time: they share the repository's lock
+    removeWorktree(path, function(ok, msg)
+      removing[path] = nil
+      if ok then okCount = okCount + 1 else table.insert(failures, nameOf(path) .. ": " .. msg) end
+      pushItems(false)
+      release()
+    end)
+  end, function()
+    pushItems(false)
+    if #todo == 1 then
+      if okCount == 1 then toast(nameOf(todo[1]) .. " silindi", "ok") else toast(failures[1], "err") end
+    else
+      local parts = {}
+      if okCount > 0 then table.insert(parts, okCount .. " worktree silindi") end
+      if #failures > 0 then table.insert(parts, #failures .. " silinemedi" .. (#failures == 1 and (" (" .. failures[1] .. ")") or "")) end
+      toast(table.concat(parts, ", "), #failures > 0 and "err" or "ok")
+    end
+  end)
+end
+
 -- ---------------------------------------------------------------- per-project commit log
 
 local LOG_COUNT = 8
 local logCache = {} -- path -> { sha = ..., commits = {...} }
 local logBusy = {}
 local wtBusy = {}
-
-local function sendLog(path, sha, commits)
-  panel:js(string.format("Projects.log(%s,%s,%s)", hs.json.encode({ path })  :sub(2, -2),
-    hs.json.encode({ sha or "" }):sub(2, -2), #commits > 0 and hs.json.encode(commits) or "[]"))
-end
 
 -- "3 files changed, 10 insertions(+), 2 deletions(-)"; either count is left out when it is zero.
 local function shortstat(line)
@@ -507,34 +570,68 @@ local function identityOf(path, cb)
   if not started then cb({ t = 0, name = "", email = "" }) end
 end
 
-local function fetchLog(path, sha)
+-- One run: the last commits, which of them exist only on this Mac (not on the upstream yet), and the
+-- commits a pull would bring (HEAD..@{u}). Sections are split by marker lines.
+local LOG_SCRIPT = [[
+F='--format=%x1e%H%x1f%ct%x1f%an%x1f%ae%x1f%s'
+"$0" -C "$1" --no-optional-locks log -"$2" --shortstat --no-merges "$F"
+echo "@@LOCAL@@"
+"$0" -C "$1" --no-optional-locks rev-list -200 '@{u}..HEAD' 2>/dev/null
+echo "@@INCOMING@@"
+"$0" -C "$1" --no-optional-locks log -20 --shortstat --no-merges "$F" 'HEAD..@{u}' 2>/dev/null
+]]
+local INCOMING_COUNT = 20
+
+local function parseCommits(out, id)
+  local commits = {}
+  local myEmail, myName = id.email:lower(), id.name
+  for rec in (out or ""):gmatch("\30([^\30]*)") do
+    local head, rest = rec:match("^([^\n]*)\n?(.*)$")
+    local h, ct, author, email, subject = head:match("^(.-)\31(.-)\31(.-)\31(.-)\31(.*)$")
+    if h then
+      local c = { sha = h:sub(1, 10), full = h, t = tonumber(ct), author = author, subject = subject }
+      if (myEmail ~= "" and email:lower() == myEmail) or (myName ~= "" and author == myName) then c.mine = true end
+      local st = rest:match("[^\n]*changed[^\n]*")
+      if st then local sst = shortstat(st); c.files, c.added, c.deleted = sst.files, sst.added, sst.deleted end
+      table.insert(commits, c)
+    end
+  end
+  return commits
+end
+
+local function sendLogFull(path, key, commits, incoming)
+  local enc = function(v) return #v > 0 and hs.json.encode(v) or "[]" end
+  panel:js(string.format("Projects.log(%s,%s,%s,%s)", hs.json.encode({ path }):sub(2, -2),
+    hs.json.encode({ key or "" }):sub(2, -2), enc(commits), enc(incoming)))
+end
+
+-- key: an opaque cache key from the page (HEAD sha + ahead/behind), so a fetch that moves @{u} refreshes it.
+local function fetchLog(path, key)
   local c = logCache[path]
-  if c and c.sha == sha then return sendLog(path, sha, c.commits) end
+  if c and c.sha == key then return sendLogFull(path, key, c.commits, c.incoming) end
   if logBusy[path] then return end
   logBusy[path] = true
   identityOf(path, function(id)
-    -- Each record starts with \30; the --shortstat line follows it (missing for empty commits). Merge commits
-    -- are left out on purpose: they would credit a whole merged PR (and its lines) to whoever pressed merge,
-    -- so every listed commit shows its real author and its own lines.
-    local t = Keep.task(GIT, function(_, out)
+    -- Merge commits are left out on purpose: they would credit a whole merged PR (and its lines) to whoever
+    -- pressed merge, so every listed commit shows its real author and its own lines.
+    local t = Keep.task("/bin/sh", function(_, out)
       logBusy[path] = nil
-      local commits = {}
-      local myEmail, myName = id.email:lower(), id.name
-      for rec in (out or ""):gmatch("\30([^\30]*)") do
-        local head, rest = rec:match("^([^\n]*)\n?(.*)$")
-        local h, ct, author, email, subject = head:match("^(.-)\31(.-)\31(.-)\31(.-)\31(.*)$")
-        if h then
-          local c = { sha = h, t = tonumber(ct), author = author, subject = subject }
-          if (myEmail ~= "" and email:lower() == myEmail) or (myName ~= "" and author == myName) then c.mine = true end
-          local st = rest:match("[^\n]*changed[^\n]*")
-          if st then local s = shortstat(st); c.files, c.added, c.deleted = s.files, s.added, s.deleted end
-          table.insert(commits, c)
-        end
+      out = out or ""
+      local mainPart, rest = out:match("^(.-)@@LOCAL@@\n?(.*)$")
+      mainPart, rest = mainPart or out, rest or ""
+      local localPart, inPart = rest:match("^(.-)@@INCOMING@@\n?(.*)$")
+      local localOnly = {}
+      for sha in (localPart or ""):gmatch("%x+") do localOnly[sha] = true end
+      local commits = parseCommits(mainPart, id)
+      for _, cm in ipairs(commits) do
+        if localOnly[cm.full] then cm.unpushed = true end
+        cm.full = nil
       end
-      logCache[path] = { sha = sha, commits = commits }
-      if panel then sendLog(path, sha, commits) end
-    end, { "--no-optional-locks", "-C", path, "log", "-" .. LOG_COUNT, "--shortstat", "--no-merges",
-      "--format=%x1e%h%x1f%ct%x1f%an%x1f%ae%x1f%s" })
+      local incoming = parseCommits(inPart or "", id)
+      for _, cm in ipairs(incoming) do cm.full = nil end
+      logCache[path] = { sha = key, commits = commits, incoming = incoming }
+      if panel then sendLogFull(path, key, commits, incoming) end
+    end, { "-c", LOG_SCRIPT, GIT, path, tostring(LOG_COUNT) })
     if not t then logBusy[path] = nil end
   end)
 end
@@ -616,8 +713,14 @@ local function handle(p, msg)
   end
   if a == "fetch" then return fetchAll() end
   if a == "pullAll" then return pullAll() end
+  if a == "cleanWorktrees" then
+    if type(msg.paths) == "table" then removeWorktrees(msg.paths) end
+    return
+  end
   if not validPath(path) then return end
-  if a == "pull" then
+  if a == "removeWorktree" then
+    removeWorktrees({ path })
+  elseif a == "pull" then
     pullOne(path)
   elseif a == "log" then
     fetchLog(path, msg.sha or "")
@@ -655,7 +758,7 @@ local function onShow()
   startScan(false)
   -- Today's GitHub numbers come from the Nimbstia hub (status.lua / bin/dev-stats.py).
   if Status and Status.githubData then
-    local g = Status.githubData()
+    local g = Status.githubData() or (Status.githubStatus and Status.githubStatus())
     if g then panel:js("Projects.setGitHub(" .. hs.json.encode(g) .. ")") end
     Status.fetchDevStats(false)
   end
