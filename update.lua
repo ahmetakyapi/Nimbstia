@@ -15,7 +15,8 @@ local M = {}
 local DIR = os.getenv("HOME") .. "/.hammerspoon"
 local GIT = "/usr/bin/git"
 local CHECK_EVERY = 6 * 3600
-local CHECK_ON_OPEN_AFTER = 30 * 60
+local CHECK_ON_OPEN_AFTER = 5 * 60
+local GIT_TIMEOUT = { fetch = 40, pull = 90, default = 15 } -- seconds; a hung git must never block updates for good
 local MAX_SUBJECTS = 5
 
 local state = { behind = 0, subjects = {}, checkedAt = 0, checking = false, updating = false, error = nil }
@@ -24,11 +25,27 @@ local onChange
 local function changed() if onChange then onChange() end end
 
 -- git with the checkout as its work tree; cb(ok, stdout, stderr)
+-- Never waits on a credential prompt, and is cut off after a timeout; cb runs exactly once.
 local function git(args, cb)
-  local full = { "-C", DIR }
+  local full = { "GIT_TERMINAL_PROMPT=0", GIT, "-C", DIR }
   for _, a in ipairs(args) do table.insert(full, a) end
-  local t = Keep.task(GIT, function(code, out, err) cb(code == 0, out or "", err or "") end, full)
-  if not t then cb(false, "", "git could not start") end
+  local done = false
+  local function finish(ok, out, err)
+    if done then return end
+    done = true
+    cb(ok, out or "", err or "")
+  end
+  local t = Keep.task("/usr/bin/env", function(code, out, err) finish(code == 0, out, err) end, full)
+  if not t then return finish(false, "", "git could not start") end
+  Keep.after(GIT_TIMEOUT[args[1]] or GIT_TIMEOUT.default, function()
+    if done then return end
+    local pid = t:isRunning() and t:pid() or nil
+    if pid then
+      t:terminate()
+      Keep.task("/usr/bin/pkill", nil, { "-TERM", "-P", tostring(pid) })
+    end
+    Keep.after(3, function() finish(false, "", "timeout") end)
+  end)
 end
 
 local function trim(s) return (s:gsub("^%s+", ""):gsub("%s+$", "")) end
@@ -51,10 +68,15 @@ function M.check(force)
   if not force and os.time() - state.checkedAt < CHECK_ON_OPEN_AFTER then return end
   state.checking = true
   git({ "rev-parse", "--abbrev-ref", "HEAD" }, function(ok, branch)
-    if not ok or trim(branch) ~= "main" then state.checking = false; return end
+    if not ok or trim(branch) ~= "main" then
+      state.checking = false
+      state.checkedAt = os.time()
+      print("update: not checking, the checkout is not on main (" .. trim(branch) .. ")")
+      return
+    end
     git({ "fetch", "--quiet", "origin", "main" }, function(fetched)
       state.checkedAt = os.time()
-      if not fetched then state.checking = false; return end -- offline: stay quiet, try again later
+      if not fetched then state.checking = false; state.checkedAt = os.time() - CHECK_ON_OPEN_AFTER + 60; return end -- offline: stay quiet, retry in a minute
       git({ "rev-list", "--count", "HEAD..origin/main" }, function(counted, n)
         local behind = counted and tonumber(trim(n)) or 0
         if behind == 0 then
