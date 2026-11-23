@@ -442,7 +442,7 @@ footer{border-top:0;background:none;-webkit-backdrop-filter:none;backdrop-filter
 /* ---------------------------------------------------------------- Repostia, Aurora round */
 .f[data-k="all"]{--fk:var(--accent)}.f[data-k="dirty"]{--fk:var(--warn-bar)}.f[data-k="ahead"]{--fk:var(--k-code)}.f[data-k="behind"]{--fk:var(--ok-bar)}
 /* today: one floating glass card; every number wears the colour of what it counts */
-.today{margin:0 16px 12px;padding:8px 8px 8px 16px;border-top:0;border-radius:18px;background:color-mix(in srgb,var(--card) 68%,transparent);box-shadow:var(--card-lift);-webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5)}
+.today{z-index:20;margin:0 16px 12px;padding:8px 8px 8px 16px;border-top:0;border-radius:18px;background:color-mix(in srgb,var(--card) 68%,transparent);box-shadow:var(--card-lift);-webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5)}
 .gs{padding:8px 12px}
 .gs b{font-size:24px;font-weight:620}
 .gs.pr{--c:var(--k-code)} .gs.cm{--c:var(--accent-ink)}
@@ -497,6 +497,34 @@ footer{border-top:0;background:none;-webkit-backdrop-filter:none;backdrop-filter
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .gb.hot b{color:#03273b;background:linear-gradient(180deg,#5ccbff,#1ea7ee);box-shadow:0 4px 12px -4px rgba(56,189,248,.8)}}
 :root[data-theme="dark"] .pv-head::before{background:radial-gradient(70% 160% at 0% 0%,oklch(.6 .16 var(--h) / .3),transparent 62%)}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .pv-head::before{background:radial-gradient(70% 160% at 0% 0%,oklch(.6 .16 var(--h) / .3),transparent 62%)}}
+/* ---------------------------------------------------------------- gradients: hue-travelling, interpolated in OKLCH
+   Every gradient drifts through neighbouring hues instead of fading one colour to a darker copy of itself. */
+:root{--hg:34}
+.rid{background:linear-gradient(150deg in oklch,oklch(.97 .04 calc(var(--h) - var(--hg))),oklch(.915 .085 var(--h)) 55%,oklch(.88 .1 calc(var(--h) + var(--hg))))}
+.pv-head::before{background:radial-gradient(70% 160% at 0% 0%,oklch(.78 .15 calc(var(--h) - 20) / .24),transparent 60%),radial-gradient(60% 140% at 100% 100%,oklch(.8 .13 calc(var(--h) + 50) / .16),transparent 62%)}
+.gs.pr{--c:oklch(.58 .2 295);--c2:oklch(.6 .19 335)} .gs.cm{--c:oklch(.58 .17 240);--c2:oklch(.64 .15 200)}
+.gs.add{--c:oklch(.62 .17 160);--c2:oklch(.7 .17 125)} .gs.del{--c:oklch(.62 .21 18);--c2:oklch(.68 .19 350)}
+.gs.pr b,.gs.cm b,.gs.add b,.gs.del b{background:linear-gradient(120deg in oklch,var(--c),var(--c2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.bars i{background:linear-gradient(180deg in oklch,oklch(.72 .15 215 / .9),oklch(.6 .17 265 / .55))}
+.bars i.b-zero{background:var(--line2)} .bars i.b-next{background:none}
+.bars i.b-today{background:linear-gradient(180deg in oklch,oklch(.78 .15 200),oklch(.58 .2 280))}
+.gb.hot b{background:linear-gradient(135deg in oklch,oklch(.7 .15 220),oklch(.55 .2 275));box-shadow:0 4px 12px -4px oklch(.55 .2 260 / .8)}
+.wt-ratio .a{background:linear-gradient(90deg in oklch,oklch(.76 .17 165),oklch(.72 .19 130));box-shadow:0 4px 12px -3px oklch(.7 .17 150 / .6)}
+.wt-ratio .d{background:linear-gradient(90deg in oklch,oklch(.7 .19 15),oklch(.64 .22 355));box-shadow:0 4px 12px -3px oklch(.65 .21 5 / .6)}
+.dbar i.a{background:linear-gradient(180deg in oklch,oklch(.8 .17 150),oklch(.68 .17 165))}
+.dbar i.d{background:linear-gradient(180deg in oklch,oklch(.72 .18 10),oklch(.62 .21 350))}
+:root[data-theme="dark"] .rid{background:linear-gradient(150deg in oklch,oklch(.5 .11 calc(var(--h) - var(--hg))),oklch(.38 .1 var(--h)) 55%,oklch(.3 .085 calc(var(--h) + var(--hg))))}
+:root[data-theme="dark"] .gb.hot b{color:#031c33;background:linear-gradient(135deg in oklch,oklch(.82 .13 205),oklch(.68 .17 265))}
+:root[data-theme="dark"] .pv-head::before{background:radial-gradient(70% 160% at 0% 0%,oklch(.62 .17 calc(var(--h) - 20) / .34),transparent 60%),radial-gradient(60% 140% at 100% 100%,oklch(.55 .15 calc(var(--h) + 50) / .22),transparent 62%)}
+:root[data-theme="dark"] .gs.pr{--c:oklch(.78 .15 295);--c2:oklch(.8 .14 335)} :root[data-theme="dark"] .gs.cm{--c:oklch(.8 .13 235);--c2:oklch(.84 .12 195)}
+:root[data-theme="dark"] .gs.add{--c:oklch(.82 .16 160);--c2:oklch(.87 .16 125)} :root[data-theme="dark"] .gs.del{--c:oklch(.8 .16 18);--c2:oklch(.82 .15 350)}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .rid{background:linear-gradient(150deg in oklch,oklch(.5 .11 calc(var(--h) - var(--hg))),oklch(.38 .1 var(--h)) 55%,oklch(.3 .085 calc(var(--h) + var(--hg))))}
+  :root:not([data-theme="light"]) .gb.hot b{color:#031c33;background:linear-gradient(135deg in oklch,oklch(.82 .13 205),oklch(.68 .17 265))}
+  :root:not([data-theme="light"]) .pv-head::before{background:radial-gradient(70% 160% at 0% 0%,oklch(.62 .17 calc(var(--h) - 20) / .34),transparent 60%),radial-gradient(60% 140% at 100% 100%,oklch(.55 .15 calc(var(--h) + 50) / .22),transparent 62%)}
+  :root:not([data-theme="light"]) .gs.pr{--c:oklch(.78 .15 295);--c2:oklch(.8 .14 335)} :root:not([data-theme="light"]) .gs.cm{--c:oklch(.8 .13 235);--c2:oklch(.84 .12 195)}
+  :root:not([data-theme="light"]) .gs.add{--c:oklch(.82 .16 160);--c2:oklch(.87 .16 125)} :root:not([data-theme="light"]) .gs.del{--c:oklch(.8 .16 18);--c2:oklch(.82 .15 350)}
+}
 </style>
 </head>
 <body>

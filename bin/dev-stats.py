@@ -27,7 +27,7 @@ TIMEOUT = 20
 # Commits before today hardly change, so they are cached and only today is re-read on every run.
 CACHE_DIR = os.path.expanduser("~/Library/Caches/nimbstia")
 PAST_MAX_AGE = 3600  # also bounds how long a commit removed by a force-push can linger in the past days
-CACHE_VERSION = "remotes-4"
+CACHE_VERSION = "local-5"
 HISTORY_DAYS = 90
 HISTORY_FILE = os.path.join(CACHE_DIR, "dev-stats-history.json")
 REVERT_RE = re.compile(r"This reverts commit ([0-9a-f]{40})")
@@ -42,20 +42,26 @@ def run(args, cwd=None, timeout=TIMEOUT):
         return None
 
 
-def authors():
-    """Every identity that counts as 'me': global git name/email plus the GitHub noreply address."""
+def authors(repos=()):
+    """Every identity that counts as 'me': the global git name/email plus the ones configured inside each
+    repository (work clones often carry a different e-mail than the global one, and would otherwise count as zero)."""
     names = set()
     for key in ("user.name", "user.email"):
         v = run(["git", "config", "--global", key])
         if v and v.strip():
             names.add(v.strip())
+        for p in repos:
+            v = run(["git", "--no-optional-locks", "-C", p, "config", "--local", key], timeout=5)
+            if v and v.strip():
+                names.add(v.strip())
     return sorted(names)
 
 
 def repo_commits(path, since, who, until=None):
     """sha -> (added, deleted, subject, commit time, repo path, sha this commit reverts or "").
-    Only commits reachable from remote-tracking branches: what was pushed and is still there."""
-    base = ["git", "--no-optional-locks", "-C", path, "log", "--remotes", "--no-merges", f"--since={since}"]
+    Commits on local and remote-tracking branches and on a detached HEAD (worktrees): what you committed today
+    counts even before it is pushed. Fully discarded commits (no ref reaches them) drop out."""
+    base = ["git", "--no-optional-locks", "-C", path, "log", "--branches", "--remotes", "HEAD", "--no-merges", f"--since={since}"]
     if until:
         base.append(f"--until={until}")
     for a in who:
@@ -146,7 +152,6 @@ def git_stats(org=None):
     starts = period_starts()
     first = min(list(starts.values()) + [starts["day"] - dt.timedelta(days=HISTORY_DAYS - 1)])
     since = first.isoformat()
-    who = authors()
     repos, web = [], {}
     if os.path.isdir(ROOT):
         for name in os.listdir(ROOT):
@@ -157,6 +162,8 @@ def git_stats(org=None):
                     continue
                 repos.append(p)
                 web[p] = (owner, repo)
+    who = authors(repos)
+
     def collect(since_, until_=None):
         found = {}
         with cf.ThreadPoolExecutor(max_workers=6) as ex:  # gentle on the CPU; runs in the background
@@ -241,14 +248,17 @@ def pr_item(p):
 
 def gh_stats(org=None):
     starts = period_starts()
-    first = min(starts.values()).date().isoformat()
+    # --created compares UTC dates: start one day early so PRs opened just after local midnight are found;
+    # the exact local-time cut is applied below.
+    first = (min(starts.values()) - dt.timedelta(days=1)).date().isoformat()
     scope = ["--owner", org] if org else []
     fields = "number,title,url,repository,isDraft,updatedAt,createdAt,author"
     # PRs opened since the earliest period start; split into today / week / month below.
     opened = gh_json(["search", "prs"] + scope + ["--author", "@me", "--created", f">={first}", "--json", fields,
-                                                  "--limit", "100", "--sort", "created"])
-    mine = gh_json(["search", "prs"] + scope + ["--author", "@me", "--state", "open", "--json", fields, "--limit", "30", "--sort", "updated"])
-    review = gh_json(["search", "prs"] + scope + ["--review-requested", "@me", "--state", "open", "--json", fields, "--limit", "30", "--sort", "updated"])
+                                                  "--limit", "200", "--sort", "created"])
+    mine = gh_json(["search", "prs"] + scope + ["--author", "@me", "--state", "open", "--json", fields, "--limit", "100", "--sort", "updated"])
+    review = gh_json(["search", "prs"] + scope + ["--review-requested", "@me", "--state", "open", "--archived=false",
+                                                   "--json", fields, "--limit", "100", "--sort", "updated"])
     if opened is None and mine is None and review is None:
         return None
     def created_local(p):
@@ -256,15 +266,18 @@ def gh_stats(org=None):
             return dt.datetime.fromisoformat(p.get("createdAt", "").replace("Z", "+00:00")).astimezone().replace(tzinfo=None)
         except ValueError:
             return None
+    me = (gh_json(["api", "user"]) or {}).get("login", "")
     by_period = {}
     for key, start in starts.items():
         by_period[key] = [pr_item(p) for p in (opened or []) if (created_local(p) or start) >= start]
+    # Not yours, not a draft: a PR you cannot review yet is no pending review.
+    review = [p for p in (review or []) if not p.get("isDraft") and (p.get("author") or {}).get("login") != me]
     return {
         "openedToday": len(by_period["day"]),
         "opened": by_period["day"],
         "openedPeriods": by_period,
         "open": [pr_item(p) for p in (mine or [])],
-        "review": [pr_item(p) for p in (review or [])],
+        "review": [pr_item(p) for p in review],
     }
 
 
