@@ -760,7 +760,7 @@ function M.fetchDevStats(force)
     -- config.githubOrg limits every number and PR list to one GitHub organisation
     if type(Config.githubOrg) == "string" and Config.githubOrg ~= "" then table.insert(args, "--org"); table.insert(args, Config.githubOrg) end
     return args
-  end)())
+  end)(), true) -- streamed: the JSON passes 64 KB on busy days
 end
 
 function githubData()
